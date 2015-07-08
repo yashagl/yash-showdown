@@ -718,7 +718,7 @@ exports.Formats = [
 		searchShow: false,
 		ruleset: ['Pokemon', 'HP Percentage Mod', 'Cancel Mod']
 	},
-
+	{
 		name: "Triples Hackmons Cup",
 		section: "Random Battles (aka Randbats)",
 
