@@ -1097,13 +1097,6 @@ exports.Formats = [
 		]
 	},
 	{
-		name: "Hackmons Cup",
-		section: "Other Metagames",
-
-		team: 'randomHC',
-		ruleset: ['Pokemon', 'HP Percentage Mod', 'Cancel Mod']
-	},
-	{
 		name: "2v2 Doubles",
 		section: "Other Metagames",
 
