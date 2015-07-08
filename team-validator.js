@@ -118,35 +118,14 @@ if (!process.send) {
 	 * Otherwise, an empty string will be returned.
 	 */
 	global.toId = function (text) {
-		if (text && text.id) text = text.id;
-		else if (text && text.userid) text = text.userid;
-
-		return string(text).toLowerCase().replace(/[^a-z0-9]+/g, '');
-	};
-
-	/**
-	 * Validates a username or Pokemon nickname
-	 */
-	var bannedNameStartChars = {'~':1, '&':1, '@':1, '%':1, '+':1, '-':1, '!':1, '?':1, '#':1, ' ':1};
-	global.toName = function (name) {
-		name = string(name);
-		name = name.replace(/[\|\s\[\]\,]+/g, ' ').trim();
-		while (bannedNameStartChars[name.charAt(0)]) {
-			name = name.substr(1);
+		if (text && text.id) {
+			text = text.id;
+		} else if (text && text.userid) {
+			text = text.userid;
 		}
-		if (name.length > 18) name = name.substr(0, 18);
-		return name.trim();
-	};
 
-	/**
-	 * Safely ensures the passed variable is a string
-	 * Simply doing '' + str can crash if str.toString crashes or isn't a function
-	 * If we're expecting a string and being given anything that isn't a string
-	 * or a number, it's safe to assume it's an error, and return ''
-	 */
-	global.string = function (str) {
-		if (typeof str === 'string' || typeof str === 'number') return '' + str;
-		return '';
+		if (typeof text !== 'string' && typeof text !== 'number') return '';
+		return ('' + text).toLowerCase().replace(/[^a-z0-9]+/g, '');
 	};
 
 	global.Tools = require('./tools.js');
@@ -170,7 +149,20 @@ if (!process.send) {
 		if (!validators[format]) validators[format] = new Validator(format);
 		var parsedTeam = [];
 		parsedTeam = Tools.fastUnpackTeam(message.substr(pipeIndex2 + 1));
-		var problems = validators[format].validateTeam(parsedTeam);
+
+		var problems;
+		try {
+			problems = validators[format].validateTeam(parsedTeam);
+		} catch (err) {
+			var stack = err.stack + '\n\n' +
+					'Additional information:\n' +
+					'team = ' + message.substr(pipeIndex2 + 1) + '\n';
+			var fakeErr = {stack: stack};
+
+			require('./crashlogger.js')(fakeErr, 'A team validation');
+			problems = ["Your team crashed the team validator. We've been automatically notified and will fix this crash, but you should use a different team for now."];
+		}
+
 		if (problems && problems.length) {
 			respond(id, false, problems.join('\n'));
 		} else {
@@ -211,17 +203,17 @@ Validator = (function () {
 			return ["Your team has more than 6 pokemon."];
 		}
 		switch (format.gameType) {
-			case 'doubles':
-				if (team.length < 2) return ["Your Doubles team needs at least 2 pokemon."];
-				break;
-			case 'triples':
-				if (team.length < 3) return ["Your Triples team needs at least 3 pokemon."];
-				break;
-			case 'rotation':
-				if (team.length < 3) return ["Your Rotation team needs at least 3 pokemon."];
-				break;
-			default:
-				if (team.length < 1) return ["Your team has no pokemon."];
+		case 'doubles':
+			if (team.length < 2) return ["Your Doubles team needs at least 2 pokemon."];
+			break;
+		case 'triples':
+			if (team.length < 3) return ["Your Triples team needs at least 3 pokemon."];
+			break;
+		case 'rotation':
+			if (team.length < 3) return ["Your Rotation team needs at least 3 pokemon."];
+			break;
+		default:
+			if (team.length < 1) return ["Your team has no pokemon."];
 		}
 		var teamHas = {};
 		for (var i = 0; i < team.length; i++) {
@@ -271,16 +263,16 @@ Validator = (function () {
 			return ["This is not a Pokemon."];
 		}
 
-		var template = tools.getTemplate(string(set.species));
+		var template = tools.getTemplate(Tools.getString(set.species));
 		if (!template.exists) {
 			return ["The Pokemon '" + set.species + "' does not exist."];
 		}
 		set.species = template.species;
 
-		set.name = toName(set.name);
-		var item = tools.getItem(string(set.item));
+		set.name = tools.getName(set.name);
+		var item = tools.getItem(Tools.getString(set.item));
 		set.item = item.name;
-		var ability = tools.getAbility(string(set.ability));
+		var ability = tools.getAbility(Tools.getString(set.ability));
 		set.ability = ability.name;
 		if (!Array.isArray(set.moves)) set.moves = [];
 
@@ -408,7 +400,7 @@ Validator = (function () {
 
 			for (var i = 0; i < set.moves.length; i++) {
 				if (!set.moves[i]) continue;
-				var move = tools.getMove(string(set.moves[i]));
+				var move = tools.getMove(Tools.getString(set.moves[i]));
 				set.moves[i] = move.name;
 				check = move.id;
 				setHas[check] = true;
@@ -687,6 +679,7 @@ Validator = (function () {
 														// We have to test here that the father of both moves doesn't get both by egg breeding
 														var learnsFrom = false;
 														var lsetToCheck = (dexEntry.learnset[lsetData.hasEggMove]) ? dexEntry.learnset[lsetData.hasEggMove] : dexEntry.learnset['sketch'];
+														if (!lsetToCheck || !lsetToCheck.length) continue;
 														for (var ltype = 0; ltype < lsetToCheck.length; ltype++) {
 															// Save first learning type. After that, only save it if we have egg and it's not egg.
 															learnsFrom = !learnsFrom || learnsFrom === 'E' ? lsetToCheck[ltype].charAt(1) : learnsFrom;

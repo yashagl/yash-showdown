@@ -89,7 +89,7 @@ exports.BattleAbilities = {
 		onStart: function (pokemon) {
 			this.add('-ability', pokemon, 'Air Lock');
 		},
-		onAnyTryWeather: false,
+		suppressWeather: true,
 		id: "airlock",
 		name: "Air Lock",
 		rating: 3,
@@ -321,7 +321,7 @@ exports.BattleAbilities = {
 		onStart: function (pokemon) {
 			this.add('-ability', pokemon, 'Cloud Nine');
 		},
-		onAnyTryWeather: false,
+		suppressWeather: true,
 		id: "cloudnine",
 		name: "Cloud Nine",
 		rating: 3,
@@ -331,12 +331,11 @@ exports.BattleAbilities = {
 		desc: "This Pokemon's type changes to match the type of the last move that hit it, unless that type is already one of its types. This effect applies after all hits from a multi-hit move; Sheer Force prevents it from activating if the move has a secondary effect.",
 		shortDesc: "This Pokemon's type changes to the type of a move it's hit by, unless it has the type.",
 		onAfterMoveSecondary: function (target, source, move) {
-			if (target.isActive && move && move.effectType === 'Move' && move.category !== 'Status') {
-				if (!target.hasType(move.type)) {
-					if (!target.setType(move.type)) return false;
-					this.add('-start', target, 'typechange', move.type, '[from] Color Change');
-					target.update();
-				}
+			var type = move.type;
+			if (target.isActive && move.effectType === 'Move' && move.category !== 'Status' && type !== '???' && !target.hasType(type)) {
+				if (!target.setType(type)) return false;
+				this.add('-start', target, 'typechange', type, '[from] Color Change');
+				target.update();
 			}
 		},
 		id: "colorchange",
@@ -368,7 +367,7 @@ exports.BattleAbilities = {
 	},
 	"compoundeyes": {
 		shortDesc: "This Pokemon's moves have their accuracy multiplied by 1.3.",
-		onSourceAccuracy: function (accuracy) {
+		onSourceModifyAccuracy: function (accuracy) {
 			if (typeof accuracy !== 'number') return;
 			this.debug('compoundeyes - enhancing accuracy');
 			return accuracy * 1.3;
@@ -1359,7 +1358,7 @@ exports.BattleAbilities = {
 		},
 		onAnyRedirectTargetPriority: 1,
 		onAnyRedirectTarget: function (target, source, source2, move) {
-			if (move.type !== 'Electric') return;
+			if (move.type !== 'Electric' || move.id in {firepledge:1, grasspledge:1, waterpledge:1}) return;
 			if (this.validTarget(this.effectData.target, source, move.target)) {
 				return this.effectData.target;
 			}
@@ -1700,7 +1699,7 @@ exports.BattleAbilities = {
 		onUpdate: function (pokemon) {
 			if (pokemon.volatiles['attract']) {
 				pokemon.removeVolatile('attract');
-				this.add('-end', pokemon, 'move: Attract');
+				this.add('-end', pokemon, 'move: Attract', '[from] ability: Oblivious');
 			}
 			if (pokemon.volatiles['taunt']) {
 				pokemon.removeVolatile('taunt');
@@ -2215,7 +2214,7 @@ exports.BattleAbilities = {
 		onImmunity: function (type, pokemon) {
 			if (type === 'sandstorm') return false;
 		},
-		onAccuracy: function (accuracy) {
+		onModifyAccuracy: function (accuracy) {
 			if (typeof accuracy !== 'number') return;
 			if (this.isWeather('sandstorm')) {
 				this.debug('Sand Veil - decreasing accuracy');
@@ -2429,7 +2428,7 @@ exports.BattleAbilities = {
 		onImmunity: function (type, pokemon) {
 			if (type === 'hail') return false;
 		},
-		onAccuracy: function (accuracy) {
+		onModifyAccuracy: function (accuracy) {
 			if (typeof accuracy !== 'number') return;
 			if (this.isWeather('hail')) {
 				this.debug('Snow Cloak - decreasing accuracy');
@@ -2585,7 +2584,8 @@ exports.BattleAbilities = {
 	"stickyhold": {
 		shortDesc: "This Pokemon cannot lose its held item due to another Pokemon's attack.",
 		onTakeItem: function (item, pokemon, source) {
-			if (source && source !== pokemon) {
+			if (this.suppressingAttackEvents() && pokemon !== this.activePokemon) return;
+			if ((source && source !== pokemon) || this.activeMove.id === 'knockoff') {
 				this.add('-activate', pokemon, 'ability: Sticky Hold');
 				return false;
 			}
@@ -2608,7 +2608,7 @@ exports.BattleAbilities = {
 		},
 		onAnyRedirectTargetPriority: 1,
 		onAnyRedirectTarget: function (target, source, source2, move) {
-			if (move.type !== 'Water') return;
+			if (move.type !== 'Water' || move.id in {firepledge:1, grasspledge:1, waterpledge:1}) return;
 			if (this.validTarget(this.effectData.target, source, move.target)) {
 				move.accuracy = true;
 				return this.effectData.target;
@@ -2767,7 +2767,7 @@ exports.BattleAbilities = {
 	},
 	"tangledfeet": {
 		shortDesc: "This Pokemon's evasiveness is doubled as long as it is confused.",
-		onAccuracy: function (accuracy, target) {
+		onModifyAccuracy: function (accuracy, target) {
 			if (typeof accuracy !== 'number') return;
 			if (target && target.volatiles['confusion']) {
 				this.debug('Tangled Feet - decreasing accuracy');
@@ -3127,7 +3127,7 @@ exports.BattleAbilities = {
 		onTryHit: function (target, source, move) {
 			if (target === source || move.category === 'Status' || move.type === '???' || move.id === 'struggle' || move.isFutureMove) return;
 			this.debug('Wonder Guard immunity: ' + move.id);
-			if ((target.negateImmunity[move.type] === 'IgnoreEffectiveness' && !this.getImmunity(move.type, target)) || target.runEffectiveness(move) <= 0) {
+			if (target.runEffectiveness(move) <= 0) {
 				this.add('-activate', target, 'ability: Wonder Guard');
 				return null;
 			}
@@ -3140,8 +3140,8 @@ exports.BattleAbilities = {
 	"wonderskin": {
 		desc: "All non-damaging moves that check accuracy have their accuracy changed to 50% when used on this Pokemon. This change is done before any other accuracy modifying effects.",
 		shortDesc: "Status moves with accuracy checks are 50% accurate when used on this Pokemon.",
-		onAccuracyPriority: 10,
-		onAccuracy: function (accuracy, target, source, move) {
+		onModifyAccuracyPriority: 10,
+		onModifyAccuracy: function (accuracy, target, source, move) {
 			if (move.category === 'Status' && typeof move.accuracy === 'number') {
 				this.debug('Wonder Skin - setting accuracy to 50');
 				return 50;

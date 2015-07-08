@@ -107,9 +107,7 @@ exports.BattleItems = {
 	},
 	"ironball": {
 		inherit: true,
-		onModifyPokemon: function (pokemon) {
-			pokemon.negateImmunity['Ground'] = true;
-		},
+		onEffectiveness: function () {},
 		desc: "Holder's Speed is halved and it becomes grounded."
 	},
 	"lifeorb": {
@@ -169,12 +167,15 @@ exports.BattleItems = {
 		fling: {
 			basePower: 10,
 			effect: function (pokemon) {
-				pokemon.removeVolatile('attract');
+				if (pokemon.removeVolatile('attract')) {
+					this.add('-end', pokemon, 'move: Attract', '[from] item: Mental Herb');
+				}
 			}
 		},
 		onUpdate: function (pokemon) {
 			if (pokemon.volatiles.attract && pokemon.useItem()) {
 				pokemon.removeVolatile('attract');
+				this.add('-end', pokemon, 'move: Attract', '[from] item: Mental Herb');
 			}
 		},
 		desc: "Cures infatuation. One-time use."

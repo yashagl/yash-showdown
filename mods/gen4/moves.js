@@ -834,7 +834,8 @@ exports.BattleMovedex = {
 	},
 	outrage: {
 		inherit: true,
-		pp: 15
+		pp: 15,
+		onAfterMove: function () {}
 	},
 	payback: {
 		inherit: true,
@@ -848,7 +849,8 @@ exports.BattleMovedex = {
 	petaldance: {
 		inherit: true,
 		basePower: 90,
-		pp: 20
+		pp: 20,
+		onAfterMove: function () {}
 	},
 	poisongas: {
 		inherit: true,
@@ -1062,12 +1064,40 @@ exports.BattleMovedex = {
 	},
 	taunt: {
 		inherit: true,
-		flags: {protect: 1, mirror: 1, authentic: 1}
+		flags: {protect: 1, mirror: 1, authentic: 1},
+		effect: {
+			durationCallback: function () {
+				return this.random(3, 6);
+			},
+			onStart: function (target) {
+				this.add('-start', target, 'move: Taunt');
+			},
+			onResidualOrder: 12,
+			onEnd: function (target) {
+				this.add('-end', target, 'move: Taunt');
+			},
+			onDisableMove: function (pokemon) {
+				var moves = pokemon.moveset;
+				for (var i = 0; i < moves.length; i++) {
+					if (this.getMove(moves[i].move).category === 'Status') {
+						pokemon.disableMove(moves[i].id);
+					}
+				}
+			},
+			onBeforeMovePriority: 5,
+			onBeforeMove: function (attacker, defender, move) {
+				if (move.category === 'Status') {
+					this.add('cant', attacker, 'move: Taunt', move);
+					return false;
+				}
+			}
+		}
 	},
 	thrash: {
 		inherit: true,
 		basePower: 90,
-		pp: 20
+		pp: 20,
+		onAfterMove: function () {}
 	},
 	torment: {
 		inherit: true,

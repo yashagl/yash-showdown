@@ -665,8 +665,7 @@ Tournament = (function () {
 		user.sendTo(this.room, '|tournament|update|{"challenged":null}');
 
 		this.inProgressMatches.set(challenge.from, {to: user, room: room});
-		this.room.add('|tournament|battlestart|' + challenge.from.name + '|' + user.name + '|' + room.id);
-		this.room.update();
+		this.room.add('|tournament|battlestart|' + challenge.from.name + '|' + user.name + '|' + room.id).update();
 
 		this.isBracketInvalidated = true;
 		this.runAutoDisqualify();
@@ -709,8 +708,7 @@ Tournament = (function () {
 		var error = this.generator.setMatchResult([from, to], result, room.battle.score);
 		if (error) {
 			// Should never happen
-			this.room.add("Unexpected " + error + " from setMatchResult([" + from.userid + ", " + to.userid + "], " + result + ", " + room.battle.score + ") in onBattleWin(" + room.id + ", " + winner.userid + "). Please report this to an admin.");
-			return this.room.update();
+			return this.room.add("Unexpected " + error + " from setMatchResult([" + from.userid + ", " + to.userid + "], " + result + ", " + room.battle.score + ") in onBattleWin(" + room.id + ", " + winner.userid + "). Please report this to an admin.").update();
 		}
 
 		this.room.add('|tournament|battleend|' + from.name + '|' + to.name + '|' + result + '|' + room.battle.score.join(','));
@@ -937,19 +935,7 @@ CommandParser.commands.tournament = function (paramString, room, user) {
 			return {room: tournament.room.title, format: tournament.format, generator: tournament.generator.name, isStarted: tournament.isTournamentStarted};
 		})));
 	} else if (cmd === 'help') {
-		if (!this.canBroadcast()) return;
-		return this.sendReplyBox(
-			"- create/new &lt;format>, &lt;type> [, &lt;comma-separated arguments>]: Creates a new tournament in the current room.<br />" +
-			"- settype &lt;type> [, &lt;comma-separated arguments>]: Modifies the type of tournament after it's been created, but before it has started.<br />" +
-			"- end/stop/delete: Forcibly ends the tournament in the current room.<br />" +
-			"- begin/start: Starts the tournament in the current room.<br />" +
-			"- dq/disqualify &lt;user>: Disqualifies a user.<br />" +
-			"- autodq/setautodq &lt;minutes|off>: Sets the automatic disqualification timeout.<br />" +
-			"- runautodq: Manually run the automatic disqualifier.<br />" +
-			"- getusers: Lists the users in the current tournament.<br />" +
-			"- on/off: Enables/disables allowing mods to start tournaments.<br />" +
-			"More detailed help can be found <a href=\"https://gist.github.com/verbiage/0846a552595349032fbe\">here</a>"
-		);
+		return this.parse('/help tournament');
 	} else if (cmd === 'on' || cmd === 'enable') {
 		if (!this.can('tournamentsmanagement', null, room)) return;
 		if (room.toursEnabled) {
@@ -1030,6 +1016,21 @@ CommandParser.commands.tournament = function (paramString, room, user) {
 			commandHandler.call(this, tournament, user, params, cmd);
 		}
 	}
+};
+CommandParser.commands.tournamenthelp = function (target, room, user) {
+	if (!this.canBroadcast()) return;
+	return this.sendReplyBox(
+		"- create/new &lt;format>, &lt;type> [, &lt;comma-separated arguments>]: Creates a new tournament in the current room.<br />" +
+		"- settype &lt;type> [, &lt;comma-separated arguments>]: Modifies the type of tournament after it's been created, but before it has started.<br />" +
+		"- end/stop/delete: Forcibly ends the tournament in the current room.<br />" +
+		"- begin/start: Starts the tournament in the current room.<br />" +
+		"- dq/disqualify &lt;user>: Disqualifies a user.<br />" +
+		"- autodq/setautodq &lt;minutes|off>: Sets the automatic disqualification timeout.<br />" +
+		"- runautodq: Manually run the automatic disqualifier.<br />" +
+		"- getusers: Lists the users in the current tournament.<br />" +
+		"- on/off: Enables/disables allowing mods to start tournaments.<br />" +
+		"More detailed help can be found <a href=\"https://gist.github.com/verbiage/0846a552595349032fbe\">here</a>"
+	);
 };
 
 exports.Tournament = Tournament;

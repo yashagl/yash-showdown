@@ -38,31 +38,14 @@ if (Config.crashguard) {
  * Otherwise, an empty string will be returned.
  */
 global.toId = function (text) {
-	if (text && text.id) text = text.id;
-	else if (text && text.userid) text = text.userid;
+	if (text && text.id) {
+		text = text.id;
+	} else if (text && text.userid) {
+		text = text.userid;
+	}
 
-	return string(text).toLowerCase().replace(/[^a-z0-9]+/g, '');
-};
-
-/**
- * Validates a username or Pokemon nickname
- */
-global.toName = function (name) {
-	name = string(name);
-	name = name.replace(/[\|\s\[\]\,]+/g, ' ').trim();
-	if (name.length > 18) name = name.substr(0, 18).trim();
-	return name;
-};
-
-/**
- * Safely ensures the passed variable is a string
- * Simply doing '' + str can crash if str.toString crashes or isn't a function
- * If we're expecting a string and being given anything that isn't a string
- * or a number, it's safe to assume it's an error, and return ''
- */
-global.string = function (str) {
-	if (typeof str === 'string' || typeof str === 'number') return '' + str;
-	return '';
+	if (typeof text !== 'string' && typeof text !== 'number') return '';
+	return ('' + text).toLowerCase().replace(/[^a-z0-9]+/g, '');
 };
 
 global.Tools = require('./tools.js');
@@ -204,7 +187,6 @@ BattlePokemon = (function () {
 
 		this.statusData = {};
 		this.volatiles = {};
-		this.negateImmunity = {};
 
 		this.height = this.template.height;
 		this.heightm = this.template.heightm;
@@ -365,7 +347,6 @@ BattlePokemon = (function () {
 		return this.details + '|' + this.getHealth(side);
 	};
 	BattlePokemon.prototype.update = function (init) {
-		this.negateImmunity = {};
 		this.trapped = this.maybeTrapped = false;
 		this.maybeDisabled = false;
 		for (var i in this.moveset) {
@@ -512,10 +493,10 @@ BattlePokemon = (function () {
 		return null;
 	};
 	BattlePokemon.prototype.ignoringAbility = function () {
-		return !!this.volatiles['gastroacid'];
+		return !!((this.battle.gen >= 5 && !this.isActive) || this.volatiles['gastroacid']);
 	};
 	BattlePokemon.prototype.ignoringItem = function () {
-		return !!(this.hasAbility('klutz') || this.volatiles['embargo'] || this.battle.pseudoWeather['magicroom']);
+		return !!((this.battle.gen >= 5 && !this.isActive) || this.hasAbility('klutz') || this.volatiles['embargo'] || this.battle.pseudoWeather['magicroom']);
 	};
 	BattlePokemon.prototype.deductPP = function (move, amount, source) {
 		move = this.battle.getMove(move);
@@ -1112,7 +1093,6 @@ BattlePokemon = (function () {
 		return this.battle.getAbility(this.ability);
 	};
 	BattlePokemon.prototype.hasAbility = function (ability) {
-		if (!this.isActive && this.battle.gen >= 5) return false;
 		if (this.ignoringAbility()) return false;
 		var ownAbility = this.ability;
 		if (!Array.isArray(ability)) {
@@ -1292,16 +1272,13 @@ BattlePokemon = (function () {
 		if (!type || type === '???') {
 			return true;
 		}
-		if (this.negateImmunity[type]) return true;
-		if (!(this.negateImmunity['Type'] && type in this.battle.data.TypeChart)) {
-			// Ring Target not active
-			if (!this.battle.getImmunity(type, this)) {
-				this.battle.debug('natural immunity');
-				if (message) {
-					this.battle.add('-immune', this, '[msg]');
-				}
-				return false;
+		if (!this.battle.runEvent('NegateImmunity', this, type)) return true;
+		if (!this.battle.getImmunity(type, this)) {
+			this.battle.debug('natural immunity');
+			if (message) {
+				this.battle.add('-immune', this, '[msg]');
 			}
+			return false;
 		}
 		var immunity = this.battle.runEvent('Immunity', this, null, null, type);
 		if (!immunity) {
@@ -1662,6 +1639,7 @@ Battle = (function () {
 	Battle.prototype.lastMoveLine = 0;
 	Battle.prototype.reportPercentages = false;
 	Battle.prototype.supportCancel = false;
+	Battle.prototype.events = null;
 
 	Battle.prototype.toString = function () {
 		return 'Battle: ' + this.format;
@@ -1816,7 +1794,7 @@ Battle = (function () {
 		if (this.event) {
 			if (!target) target = this.event.target;
 		}
-		if (!this.runEvent('TryWeather', target)) return '';
+		if (this.suppressingWeather()) return '';
 		return this.weather;
 	};
 	Battle.prototype.isWeather = function (weather, target) {
@@ -1922,6 +1900,21 @@ Battle = (function () {
 		delete this.pseudoWeather[status.id];
 		this.update();
 		return true;
+	};
+	Battle.prototype.suppressingAttackEvents = function () {
+		return (this.activePokemon && this.activePokemon.isActive && !this.activePokemon.ignoringAbility() && this.activePokemon.getAbility().stopAttackEvents);
+	};
+	Battle.prototype.suppressingWeather = function () {
+		var pokemon;
+		for (var i = 0; i < this.sides.length; i++) {
+			for (var j = 0; j < this.sides[i].active.length; j++) {
+				pokemon = this.sides[i].active[j];
+				if (pokemon && !pokemon.ignoringAbility() && pokemon.getAbility().suppressWeather) {
+					return true;
+				}
+			}
+		}
+		return false;
 	};
 	Battle.prototype.setActiveMove = function (move, pokemon, target) {
 		if (!move) move = null;
@@ -2056,7 +2049,7 @@ Battle = (function () {
 			// it's changed; call it off
 			return relayVar;
 		}
-		if (eventid !== 'Start' && effect.effectType === 'Item' && (target instanceof BattlePokemon) && target.ignoringItem()) {
+		if (eventid !== 'Start' && eventid !== 'TakeItem' && effect.effectType === 'Item' && (target instanceof BattlePokemon) && target.ignoringItem()) {
 			this.debug(eventid + ' handler suppressed by Embargo, Klutz or Magic Room');
 			return relayVar;
 		}
@@ -2064,7 +2057,7 @@ Battle = (function () {
 			this.debug(eventid + ' handler suppressed by Gastro Acid');
 			return relayVar;
 		}
-		if (effect.effectType === 'Weather' && eventid !== 'TryWeather' && !this.runEvent('TryWeather', target)) {
+		if (effect.effectType === 'Weather' && eventid !== 'TryWeather' && this.suppressingWeather()) {
 			this.debug(eventid + ' handler suppressed by Air Lock');
 			return relayVar;
 		}
@@ -2233,7 +2226,7 @@ Battle = (function () {
 				// it's changed; call it off
 				continue;
 			}
-			if (status.effectType === 'Ability' && this.activePokemon && this.activePokemon !== thing && !this.activePokemon.ignoringAbility() && this.activePokemon.getAbility().stopAttackEvents) {
+			if (status.effectType === 'Ability' && this.suppressingAttackEvents() && this.activePokemon !== thing) {
 				// ignore attacking events
 				var AttackingEvents = {
 					BeforeMove: 1,
@@ -2241,10 +2234,7 @@ Battle = (function () {
 					Immunity: 1,
 					Accuracy: 1,
 					RedirectTarget: 1,
-					Damage: 1,
-					SubDamage: 1,
 					Heal: 1,
-					TakeItem: 1,
 					SetStatus: 1,
 					CriticalHit: 1,
 					ModifyPokemon: 1,
@@ -2264,8 +2254,12 @@ Battle = (function () {
 						this.debug(eventid + ' handler suppressed by Mold Breaker');
 					}
 					continue;
+				} else if (eventid === 'Damage' && effect && effect.effectType === 'Move') {
+					this.debug(eventid + ' handler suppressed by Mold Breaker');
+					continue;
 				}
-			} else if (eventid !== 'Start' && status.effectType === 'Item' && (thing instanceof BattlePokemon) && thing.ignoringItem()) {
+			}
+			if (eventid !== 'Start' && eventid !== 'TakeItem' && status.effectType === 'Item' && (thing instanceof BattlePokemon) && thing.ignoringItem()) {
 				if (eventid !== 'ModifyPokemon' && eventid !== 'Update') {
 					this.debug(eventid + ' handler suppressed by Embargo, Klutz or Magic Room');
 				}
@@ -2276,7 +2270,7 @@ Battle = (function () {
 				}
 				continue;
 			}
-			if ((status.effectType === 'Weather' || eventid === 'Weather') && eventid !== 'TryWeather' && !this.runEvent('TryWeather', target)) {
+			if ((status.effectType === 'Weather' || eventid === 'Weather') && eventid !== 'TryWeather' && this.suppressingWeather()) {
 				this.debug(eventid + ' handler suppressed by Air Lock');
 				continue;
 			}
@@ -2368,6 +2362,17 @@ Battle = (function () {
 				statuses.push({status: status, callback: status[callbackType], statusData: this.formatData, end: function () {}, thing: thing, priority: status[callbackType + 'Priority'] || 0});
 				this.resolveLastPriority(statuses, callbackType);
 			}
+			if (this.events && this.events[callbackType] !== undefined) {
+				var handler, statusData;
+				for (var i = 0; i < this.events[callbackType].length; i++) {
+					handler = this.events[callbackType][i];
+					switch (handler.target.effectType) {
+					case 'Format':
+						statusData = this.formatData;
+					}
+					statuses.push({status: handler.target, callback: handler.callback, statusData: statusData, end: function () {}, thing: thing, priority: handler.priority, order: handler.order, subOrder: handler.subOrder});
+				}
+			}
 			if (bubbleDown) {
 				statuses = statuses.concat(this.getRelevantEffectsInner(this.p1, callbackType, null, null, false, true, getAll));
 				statuses = statuses.concat(this.getRelevantEffectsInner(this.p2, callbackType, null, null, false, true, getAll));
@@ -2403,7 +2408,7 @@ Battle = (function () {
 		}
 
 		if (!thing.getStatus) {
-			this.debug(JSON.stringify(thing));
+			//this.debug(JSON.stringify(thing));
 			return statuses;
 		}
 		var status = thing.getStatus();
@@ -2469,6 +2474,61 @@ Battle = (function () {
 			statuses = statuses.concat(this.getRelevantEffectsInner(thing.side, callbackType, foeCallbackType, null, true, false, getAll));
 		}
 		return statuses;
+	};
+	/**
+	 * Use this function to attach custom event handlers to a battle. See Battle#runEvent for
+	 * more information on how to write callbacks for event handlers.
+	 *
+	 * Try to use this sparingly. Most event handlers can be simply placed in a format instead.
+	 *
+	 *     this.on(eventid, target, callback)
+	 * will set the callback as an event handler for the target when eventid is called with the
+	 * default priority. Currently only valid formats are supported as targets but this will
+	 * eventually be expanded to support other target types.
+	 *
+	 *     this.on(eventid, target, priority, callback)
+	 * will set the callback as an event handler for the target when eventid is called with the
+	 * provided priority. Priority can either be a number or an object that contains the priority,
+	 * order, and subOrder for the evend handler as needed (undefined keys will use default values)
+	 */
+	Battle.prototype.on = function (eventid, target /*[, priority], callback*/) {
+		if (!eventid) throw TypeError("Event handlers must have an event to listen to");
+		if (!target) throw TypeError("Event handlers must have a target");
+		if (arguments.length < 3) throw TypeError("Event handlers must have a callback");
+
+		if (target.effectType !== 'Format') {
+			throw TypeError("" + target.effectType + " targets are not supported at this time");
+		}
+
+		var callback, priority, order, subOrder;
+		if (arguments.length === 3) {
+			callback = arguments[2];
+			priority = 0;
+			order = false;
+			subOrder = 0;
+		} else {
+			callback = arguments[3];
+			var data = arguments[2];
+			if (typeof data === 'object') {
+				priority = data['priority'] || 0;
+				order = data['order'] || false;
+				subOrder = data['subOrder'] || 0;
+			} else {
+				priority = data || 0;
+				order = false;
+				subOrder = 0;
+			}
+		}
+
+		var eventHandler = {callback: callback, target: target, priority: priority, order: order, subOrder: subOrder};
+
+		var callbackType = 'on' + eventid;
+		if (!this.events) this.events = {};
+		if (this.events[callbackType] === undefined) {
+			this.events[callbackType] = [eventHandler];
+		} else {
+			this.events[callbackType].push(eventHandler);
+		}
 	};
 	Battle.prototype.getPokemon = function (id) {
 		if (typeof id !== 'string') id = id.id;
@@ -2635,6 +2695,7 @@ Battle = (function () {
 				pokemon.copyVolatileFrom(oldActive);
 			}
 		}
+		pokemon.isActive = true;
 		this.runEvent('BeforeSwitchIn', pokemon);
 		if (side.active[pos]) {
 			var oldActive = side.active[pos];
@@ -2649,14 +2710,13 @@ Battle = (function () {
 			oldActive.clearVolatile();
 		}
 		side.active[pos] = pokemon;
-		pokemon.isActive = true;
 		pokemon.activeTurns = 0;
 		for (var m in pokemon.moveset) {
 			pokemon.moveset[m].used = false;
 		}
 		this.add('switch', pokemon, pokemon.getDetails);
 		pokemon.update();
-		this.addQueue({pokemon: pokemon, choice: 'runSwitch'});
+		this.insertQueue({pokemon: pokemon, choice: 'runSwitch'});
 	};
 	Battle.prototype.canSwitch = function (side) {
 		var canSwitchIn = [];
@@ -2710,12 +2770,23 @@ Battle = (function () {
 		side.active[pos] = pokemon;
 		pokemon.isActive = true;
 		pokemon.activeTurns = 0;
+		if (this.gen === 2) pokemon.draggedIn = this.turn;
 		for (var m in pokemon.moveset) {
 			pokemon.moveset[m].used = false;
 		}
 		this.add('drag', pokemon, pokemon.getDetails);
 		pokemon.update();
-		this.addQueue({pokemon: pokemon, choice: 'runSwitch'});
+		if (this.gen >= 5) {
+			this.runEvent('SwitchIn', pokemon);
+			if (!pokemon.hp) return true;
+			pokemon.isStarted = true;
+			if (!pokemon.fainted) {
+				this.singleEvent('Start', pokemon.getAbility(), pokemon.abilityData, pokemon);
+				this.singleEvent('Start', pokemon.getItem(), pokemon.itemData, pokemon);
+			}
+		} else {
+			this.insertQueue({pokemon: pokemon, choice: 'runSwitch'});
+		}
 		return true;
 	};
 	Battle.prototype.swapPosition = function (pokemon, slot, attributes) {
@@ -2750,6 +2821,7 @@ Battle = (function () {
 				pokemon.newlySwitched = false;
 				pokemon.disabledMoves = {};
 				this.runEvent('DisableMove', pokemon);
+				if (!pokemon.ateBerry) pokemon.disableMove('belch');
 				if (pokemon.lastAttackedBy) {
 					if (pokemon.lastAttackedBy.pokemon.isActive) {
 						pokemon.lastAttackedBy.thisTurn = false;
@@ -2852,6 +2924,9 @@ Battle = (function () {
 					boost[i] = -boost[i];
 				}
 				switch (effect.id) {
+				case 'bellydrum':
+					// No message
+					break;
 				case 'intimidate': case 'gooey':
 					this.add(msg, target, i, boost[i]);
 					break;
@@ -2891,7 +2966,7 @@ Battle = (function () {
 				this.debug('damage event failed');
 				return damage;
 			}
-			if (target.illusion && effect && effect.effectType === 'Move') {
+			if (target.illusion && effect && effect.effectType === 'Move' && effect.id !== 'confused') {
 				this.debug('illusion cleared');
 				target.illusion = null;
 				this.add('replace', target, target.getDetails);
@@ -2908,6 +2983,9 @@ Battle = (function () {
 			break;
 		case 'powder':
 			this.add('-damage', target, target.getHealth, '[silent]');
+			break;
+		case 'confused':
+			this.add('-damage', target, target.getHealth, '[from] confusion');
 			break;
 		default:
 			if (effect.effectType === 'Move') {
@@ -3001,10 +3079,17 @@ Battle = (function () {
 	};
 	Battle.prototype.chain = function (previousMod, nextMod) {
 		// previousMod or nextMod can be either a number or an array [numerator, denominator]
-		if (previousMod.length) previousMod = Math.floor(previousMod[0] * 4096 / previousMod[1]);
-		else previousMod = Math.floor(previousMod * 4096);
-		if (nextMod.length) nextMod = Math.floor(nextMod[0] * 4096 / nextMod[1]);
-		else nextMod = Math.floor(nextMod * 4096);
+		if (previousMod.length) {
+			previousMod = Math.floor(previousMod[0] * 4096 / previousMod[1]);
+		} else {
+			previousMod = Math.floor(previousMod * 4096);
+		}
+
+		if (nextMod.length) {
+			nextMod = Math.floor(nextMod[0] * 4096 / nextMod[1]);
+		} else {
+			nextMod = Math.floor(nextMod * 4096);
+		}
 		return ((previousMod * nextMod + 2048) >> 12) / 4096; // M'' = ((M * M') + 0x800) >> 12
 	};
 	Battle.prototype.chainModify = function (numerator, denominator) {
@@ -3146,11 +3231,17 @@ Battle = (function () {
 			defBoosts = 0;
 		}
 
-		if (move.useTargetOffensive) attack = defender.calculateStat(attackStat, atkBoosts);
-		else attack = attacker.calculateStat(attackStat, atkBoosts);
+		if (move.useTargetOffensive) {
+			attack = defender.calculateStat(attackStat, atkBoosts);
+		} else {
+			attack = attacker.calculateStat(attackStat, atkBoosts);
+		}
 
-		if (move.useSourceDefensive) defense = attacker.calculateStat(defenseStat, defBoosts);
-		else defense = defender.calculateStat(defenseStat, defBoosts);
+		if (move.useSourceDefensive) {
+			defense = attacker.calculateStat(defenseStat, defBoosts);
+		} else {
+			defense = defender.calculateStat(defenseStat, defBoosts);
+		}
 
 		// Apply Stat Modifiers
 		attack = this.runEvent('Modify' + statTable[attackStat], attacker, defender, move, attack);
@@ -3175,11 +3266,7 @@ Battle = (function () {
 
 		// randomizer
 		// this is not a modifier
-		if (this.gen <= 5) {
-			baseDamage = Math.floor(baseDamage * (100 - this.random(16)) / 100);
-		} else {
-			baseDamage = Math.floor(baseDamage * (85 + this.random(16)) / 100);
-		}
+		baseDamage = Math.floor(baseDamage * (100 - this.random(16)) / 100);
 
 		// STAB
 		if (move.hasSTAB || type !== '???' && pokemon.hasType(type)) {
@@ -3190,11 +3277,7 @@ Battle = (function () {
 			baseDamage = this.modify(baseDamage, move.stab || 1.5);
 		}
 		// types
-		move.typeMod = 0;
-
-		if (target.negateImmunity[move.type] !== 'IgnoreEffectiveness' || this.getImmunity(move.type, target)) {
-			move.typeMod = target.runEffectiveness(move);
-		}
+		move.typeMod = target.runEffectiveness(move);
 
 		move.typeMod = this.clampIntRange(move.typeMod, -6, 6);
 		if (move.typeMod > 0) {
@@ -3392,14 +3475,8 @@ Battle = (function () {
 		}
 		return false;
 	};
-	Battle.prototype.addQueue = function (decision, noSort, side) {
+	Battle.prototype.resolvePriority = function (decision, side) {
 		if (decision) {
-			if (Array.isArray(decision)) {
-				for (var i = 0; i < decision.length; i++) {
-					this.addQueue(decision[i], noSort);
-				}
-				return;
-			}
 			if (!decision.side && side) decision.side = side;
 			if (!decision.side && decision.pokemon) decision.side = decision.pokemon.side;
 			if (!decision.choice && decision.move) decision.choice = 'move';
@@ -3407,9 +3484,9 @@ Battle = (function () {
 				var priorities = {
 					'beforeTurn': 100,
 					'beforeTurnMove': 99,
-					'switch': 6,
-					'runSwitch': 6.1,
-					'megaEvo': 5.9,
+					'switch': 7,
+					'runSwitch': 7.1,
+					'megaEvo': 6.9,
 					'residual': -100,
 					'team': 102,
 					'start': 101
@@ -3455,11 +3532,44 @@ Battle = (function () {
 				// if there's no actives, switches happen before activations
 				decision.priority = 6.2;
 			}
+		}
+	};
+	Battle.prototype.addQueue = function (decision, noSort, side) {
+		if (decision) {
+			if (Array.isArray(decision)) {
+				for (var i = 0; i < decision.length; i++) {
+					this.addQueue(decision[i], noSort);
+				}
+				return;
+			}
+			this.resolvePriority(decision, side);
 
 			this.queue.push(decision);
 		}
 		if (!noSort) {
 			this.queue.sort(Battle.comparePriority);
+		}
+	};
+	Battle.prototype.insertQueue = function (decision, side) {
+		// WARNING: Do not use this function if the queue is not already sorted!
+		if (decision) {
+			if (Array.isArray(decision)) {
+				for (var i = 0; i < decision.length; i++) {
+					this.insertQueue(decision[i], side);
+				}
+				return;
+			}
+			this.resolvePriority(decision, side);
+
+			for (var i = 0; i <= this.queue.length; i++) {
+				if (i === this.queue.length) {
+					this.queue.push(decision);
+					break;
+				} else if (Battle.comparePriority(decision, this.queue[i]) < 0) {
+					this.queue.splice(i, 0, decision);
+					break;
+				}
+			}
 		}
 	};
 	Battle.prototype.prioritizeQueue = function (decision, source, sourceEffect) {
@@ -3625,13 +3735,14 @@ Battle = (function () {
 			break;
 		case 'runSwitch':
 			this.runEvent('SwitchIn', decision.pokemon);
-			if (this.gen === 1 && !decision.pokemon.side.faintedThisTurn) this.runEvent('AfterSwitchInSelf', decision.pokemon);
+			if (this.gen <= 2 && !decision.pokemon.side.faintedThisTurn && decision.pokemon.draggedIn !== this.turn) this.runEvent('AfterSwitchInSelf', decision.pokemon);
 			if (!decision.pokemon.hp) break;
 			decision.pokemon.isStarted = true;
 			if (!decision.pokemon.fainted) {
 				this.singleEvent('Start', decision.pokemon.getAbility(), decision.pokemon.abilityData, decision.pokemon);
 				this.singleEvent('Start', decision.pokemon.getItem(), decision.pokemon.itemData, decision.pokemon);
 			}
+			delete decision.pokemon.draggedIn;
 			break;
 		case 'shift':
 			if (!decision.pokemon.isActive) return false;

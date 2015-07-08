@@ -294,6 +294,7 @@ exports.BattleFormats = {
 		}
 	},
 	teampreviewvgc: {
+		effectType: 'Rule',
 		onStartPriority: -10,
 		onStart: function () {
 			this.add('clearpoke');
@@ -309,6 +310,7 @@ exports.BattleFormats = {
 		}
 	},
 	teampreview1v1: {
+		effectType: 'Rule',
 		onStartPriority: -10,
 		onStart: function () {
 			this.add('clearpoke');
@@ -324,6 +326,7 @@ exports.BattleFormats = {
 		}
 	},
 	teampreview: {
+		effectType: 'Rule',
 		onStartPriority: -10,
 		onStart: function () {
 			this.add('clearpoke');
@@ -339,6 +342,7 @@ exports.BattleFormats = {
 		}
 	},
 	teampreviewgbu: {
+		effectType: 'Rule',
 		onStartPriority: -10,
 		onStart: function () {
 			this.add('clearpoke');
@@ -375,7 +379,7 @@ exports.BattleFormats = {
 			for (var i = 0; i < team.length; i++) {
 				var template = this.getTemplate(team[i].species);
 				if (speciesTable[template.num]) {
-					return ["You are limited to one of each Pokémon by Species Clause.", "(You have more than one " + template.name + ")"];
+					return ["You are limited to one of each Pokémon by Species Clause.", "(You have more than one " + template.baseSpecies + ")"];
 				}
 				speciesTable[template.num] = true;
 			}
@@ -629,10 +633,10 @@ exports.BattleFormats = {
 			}
 		}
 	},
-	megarayquazabanmod: {
+	megarayquazaclause: {
 		effectType: 'Rule',
 		onStart: function () {
-			this.add('rule', 'Mega Rayquaza Ban Mod: You cannot mega evolve Rayquaza');
+			this.add('rule', 'Mega Rayquaza Clause: You cannot mega evolve Rayquaza');
 			for (var i = 0; i < this.sides[0].pokemon.length; i++) {
 				if (this.sides[0].pokemon[i].speciesid === 'rayquaza') this.sides[0].pokemon[i].canMegaEvo = false;
 			}

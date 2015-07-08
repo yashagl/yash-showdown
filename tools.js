@@ -16,7 +16,7 @@ var fs = require('fs');
 module.exports = (function () {
 	var moddedTools = {};
 
-	var dataTypes = ['FormatsData', 'Learnsets', 'Pokedex', 'Movedex', 'Statuses', 'TypeChart', 'Scripts', 'Items', 'Abilities', 'Formats', 'Aliases'];
+	var dataTypes = ['FormatsData', 'Learnsets', 'Pokedex', 'Movedex', 'Statuses', 'TypeChart', 'Scripts', 'Items', 'Abilities', 'Natures', 'Formats', 'Aliases'];
 	var dataFiles = {
 		'Pokedex': 'pokedex.js',
 		'Movedex': 'moves.js',
@@ -30,6 +30,35 @@ module.exports = (function () {
 		'Learnsets': 'learnsets.js',
 		'Aliases': 'aliases.js'
 	};
+
+	var BattleNatures = dataFiles.Natures = {
+		adamant: {name:"Adamant", plus:'atk', minus:'spa'},
+		bashful: {name:"Bashful"},
+		bold: {name:"Bold", plus:'def', minus:'atk'},
+		brave: {name:"Brave", plus:'atk', minus:'spe'},
+		calm: {name:"Calm", plus:'spd', minus:'atk'},
+		careful: {name:"Careful", plus:'spd', minus:'spa'},
+		docile: {name:"Docile"},
+		gentle: {name:"Gentle", plus:'spd', minus:'def'},
+		hardy: {name:"Hardy"},
+		hasty: {name:"Hasty", plus:'spe', minus:'def'},
+		impish: {name:"Impish", plus:'def', minus:'spa'},
+		jolly: {name:"Jolly", plus:'spe', minus:'spa'},
+		lax: {name:"Lax", plus:'def', minus:'spd'},
+		lonely: {name:"Lonely", plus:'atk', minus:'def'},
+		mild: {name:"Mild", plus:'spa', minus:'def'},
+		modest: {name:"Modest", plus:'spa', minus:'atk'},
+		naive: {name:"Naive", plus:'spe', minus:'spd'},
+		naughty: {name:"Naughty", plus:'atk', minus:'spd'},
+		quiet: {name:"Quiet", plus:'spa', minus:'spe'},
+		quirky: {name:"Quirky"},
+		rash: {name:"Rash", plus:'spa', minus:'spd'},
+		relaxed: {name:"Relaxed", plus:'def', minus:'spe'},
+		sassy: {name:"Sassy", plus:'spd', minus:'spe'},
+		serious: {name:"Serious"},
+		timid: {name:"Timid", plus:'spe', minus:'atk'}
+	};
+
 	function Tools(mod, parentMod) {
 		if (!mod) {
 			mod = 'base';
@@ -44,6 +73,7 @@ module.exports = (function () {
 		};
 		if (mod === 'base') {
 			dataTypes.forEach(function (dataType) {
+				if (typeof dataFiles[dataType] !== 'string') return (data[dataType] = dataFiles[dataType]);
 				try {
 					var path = './data/' + dataFiles[dataType];
 					data[dataType] = require(path)['Battle' + dataType];
@@ -69,11 +99,13 @@ module.exports = (function () {
 		} else {
 			var parentData = moddedTools[parentMod].data;
 			dataTypes.forEach(function (dataType) {
-				try {
-					var path = './mods/' + mod + '/' + dataFiles[dataType];
-					data[dataType] = require(path)['Battle' + dataType];
-				} catch (e) {
-					if (e.code !== 'MODULE_NOT_FOUND') console.error('CRASH LOADING MOD DATA: ' + e.stack);
+				if (typeof dataFiles[dataType] === 'string') {
+					try {
+						var path = './mods/' + mod + '/' + dataFiles[dataType];
+						data[dataType] = require(path)['Battle' + dataType];
+					} catch (e) {
+						if (e.code !== 'MODULE_NOT_FOUND') console.error('CRASH LOADING MOD DATA: ' + e.stack);
+					}
 				}
 				if (!data[dataType]) data[dataType] = {};
 				for (var i in parentData[dataType]) {
@@ -97,33 +129,6 @@ module.exports = (function () {
 				}
 			});
 		}
-		data['Natures'] = {
-			adamant: {name:"Adamant", plus:'atk', minus:'spa'},
-			bashful: {name:"Bashful"},
-			bold: {name:"Bold", plus:'def', minus:'atk'},
-			brave: {name:"Brave", plus:'atk', minus:'spe'},
-			calm: {name:"Calm", plus:'spd', minus:'atk'},
-			careful: {name:"Careful", plus:'spd', minus:'spa'},
-			docile: {name:"Docile"},
-			gentle: {name:"Gentle", plus:'spd', minus:'def'},
-			hardy: {name:"Hardy"},
-			hasty: {name:"Hasty", plus:'spe', minus:'def'},
-			impish: {name:"Impish", plus:'def', minus:'spa'},
-			jolly: {name:"Jolly", plus:'spe', minus:'spa'},
-			lax: {name:"Lax", plus:'def', minus:'spd'},
-			lonely: {name:"Lonely", plus:'atk', minus:'def'},
-			mild: {name:"Mild", plus:'spa', minus:'def'},
-			modest: {name:"Modest", plus:'spa', minus:'atk'},
-			naive: {name:"Naive", plus:'spe', minus:'spd'},
-			naughty: {name:"Naughty", plus:'atk', minus:'spd'},
-			quiet: {name:"Quiet", plus:'spa', minus:'spe'},
-			quirky: {name:"Quirky"},
-			rash: {name:"Rash", plus:'spa', minus:'spd'},
-			relaxed: {name:"Relaxed", plus:'def', minus:'spe'},
-			sassy: {name:"Sassy", plus:'spd', minus:'spe'},
-			serious: {name:"Serious"},
-			timid: {name:"Timid", plus:'spe', minus:'atk'}
-		};
 	}
 	Tools.loadMods = function () {
 		if (Tools.modsLoaded) return;
@@ -214,13 +219,53 @@ module.exports = (function () {
 		var typeData = this.data.TypeChart[targetTyping];
 		if (!typeData) return 0;
 		switch (typeData.damageTaken[sourceType]) {
-			case 1: return 1; // super-effective
-			case 2: return -1; // resist
-			// in case of weird situations like Gravity, immunity is
-			// handled elsewhere
-			default: return 0;
+		case 1: return 1; // super-effective
+		case 2: return -1; // resist
+		// in case of weird situations like Gravity, immunity is
+		// handled elsewhere
+		default: return 0;
 		}
 	};
+
+	/**
+	 * Safely ensures the passed variable is a string
+	 * Simply doing '' + str can crash if str.toString crashes or isn't a function
+	 * If we're expecting a string and being given anything that isn't a string
+	 * or a number, it's safe to assume it's an error, and return ''
+	 */
+
+	Tools.prototype.getString = function (str) {
+		if (typeof str === 'string' || typeof str === 'number') return '' + str;
+		return '';
+	};
+
+	/**
+	 * Sanitizes a username or Pokemon nickname
+	 *
+	 * Returns the passed name, sanitized for safe use as a name in the PS
+	 * protocol.
+	 *
+	 * Such a string must uphold these guarantees:
+	 * - must not contain any ASCII whitespace character other than a space
+	 * - must not start or end with a space character
+	 * - must not contain any of: | , [ ]
+	 * - must not be the empty string
+	 *
+	 * If no such string can be found, returns the empty string. Calling
+	 * functions are expected to check for that condition and deal with it
+	 * accordingly.
+	 *
+	 * getName also enforces that there are not multiple space characters
+	 * in the name, although this is not strictly necessary for safety.
+	 */
+
+	Tools.prototype.getName = function (name) {
+		if (typeof name !== 'string' && typeof name !== 'number') return '';
+		name = ('' + name).replace(/[\|\s\[\]\,]+/g, ' ').trim();
+		if (name.length > 18) name = name.substr(0, 18).trim();
+		return name;
+	};
+
 	Tools.prototype.getTemplate = function (template) {
 		if (!template || typeof template === 'string') {
 			var name = (template || '').trim();
@@ -268,13 +313,21 @@ module.exports = (function () {
 				} else if (template.forme === 'Primal') {
 					template.gen = 6;
 					template.isPrimal = true;
-				} else if (template.num >= 650) template.gen = 6;
-				else if (template.num >= 494) template.gen = 5;
-				else if (template.num >= 387) template.gen = 4;
-				else if (template.num >= 252) template.gen = 3;
-				else if (template.num >= 152) template.gen = 2;
-				else if (template.num >= 1) template.gen = 1;
-				else template.gen = 0;
+				} else if (template.num >= 650) {
+					template.gen = 6;
+				} else if (template.num >= 494) {
+					template.gen = 5;
+				} else if (template.num >= 387) {
+					template.gen = 4;
+				} else if (template.num >= 252) {
+					template.gen = 3;
+				} else if (template.num >= 152) {
+					template.gen = 2;
+				} else if (template.num >= 1) {
+					template.gen = 1;
+				} else {
+					template.gen = 0;
+				}
 			}
 		}
 		return template;
@@ -307,13 +360,21 @@ module.exports = (function () {
 			if (!move.effectType) move.effectType = 'Move';
 			if (!move.secondaries && move.secondary) move.secondaries = [move.secondary];
 			if (!move.gen) {
-				if (move.num >= 560) move.gen = 6;
-				else if (move.num >= 468) move.gen = 5;
-				else if (move.num >= 355) move.gen = 4;
-				else if (move.num >= 252) move.gen = 3;
-				else if (move.num >= 166) move.gen = 2;
-				else if (move.num >= 1) move.gen = 1;
-				else move.gen = 0;
+				if (move.num >= 560) {
+					move.gen = 6;
+				} else if (move.num >= 468) {
+					move.gen = 5;
+				} else if (move.num >= 355) {
+					move.gen = 4;
+				} else if (move.num >= 252) {
+					move.gen = 3;
+				} else if (move.num >= 166) {
+					move.gen = 2;
+				} else if (move.num >= 1) {
+					move.gen = 1;
+				} else {
+					move.gen = 0;
+				}
 			}
 			if (!move.priority) move.priority = 0;
 			if (move.ignoreImmunity === undefined) move.ignoreImmunity = (move.category === 'Status');
@@ -360,7 +421,7 @@ module.exports = (function () {
 			} else if (id && this.data.Formats[id]) {
 				effect = this.data.Formats[id];
 				effect.name = effect.name || this.data.Formats[id].name;
-				if (!effect.mod) effect.mod = this.currentMod;
+				if (!effect.mod) effect.mod = 'base';
 				if (!effect.effectType) effect.effectType = 'Format';
 			} else if (id === 'recoil') {
 				effect = {
@@ -394,7 +455,7 @@ module.exports = (function () {
 				if (effect.cached) return effect;
 				effect.cached = true;
 				effect.name = effect.name || this.data.Formats[id].name;
-				if (!effect.mod) effect.mod = this.currentMod;
+				if (!effect.mod) effect.mod = 'base';
 				if (!effect.effectType) effect.effectType = 'Format';
 			}
 			if (!effect.id) effect.id = id;
@@ -432,11 +493,16 @@ module.exports = (function () {
 			if (item.onDrive) item.fling = {basePower: 70};
 			if (item.megaStone) item.fling = {basePower: 80};
 			if (!item.gen) {
-				if (item.num >= 577) item.gen = 6;
-				else if (item.num >= 537) item.gen = 5;
-				else if (item.num >= 377) item.gen = 4;
-				// Due to difference in storing items, gen 2 items must be specified specifically
-				else item.gen = 3;
+				if (item.num >= 577) {
+					item.gen = 6;
+				} else if (item.num >= 537) {
+					item.gen = 5;
+				} else if (item.num >= 377) {
+					item.gen = 4;
+				} else {
+					item.gen = 3;
+				}
+				// Due to difference in storing items, gen 2 items must be specified manually
 			}
 		}
 		return item;
@@ -459,11 +525,17 @@ module.exports = (function () {
 			if (!ability.category) ability.category = 'Effect';
 			if (!ability.effectType) ability.effectType = 'Ability';
 			if (!ability.gen) {
-				if (ability.num >= 165) ability.gen = 6;
-				else if (ability.num >= 124) ability.gen = 5;
-				else if (ability.num >= 77) ability.gen = 4;
-				else if (ability.num >= 1) ability.gen = 3;
-				else ability.gen = 0;
+				if (ability.num >= 165) {
+					ability.gen = 6;
+				} else if (ability.num >= 124) {
+					ability.gen = 5;
+				} else if (ability.num >= 77) {
+					ability.gen = 4;
+				} else if (ability.num >= 1) {
+					ability.gen = 3;
+				} else {
+					ability.gen = 0;
+				}
 			}
 		}
 		return ability;
