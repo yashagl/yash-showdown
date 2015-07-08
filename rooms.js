@@ -732,15 +732,14 @@ var GlobalRoom = (function () {
 				user.joinRoom(room.id, connection);
 			}
 		}
-		for (var i = 0; i < this.autojoin.length; i++) {
-			var room = Rooms.get(this.autojoin[i]);
-			if (!room) {
-				this.autojoin.splice(i, 1);
-				i--;
-				continue;
-			}
-			if (room.autojoin === true) {
-				user.joinRoom(room.id, connection);
+		for (var i = 0; i < user.connections.length; i++) {
+			connection = user.connections[i];
+			if (connection.autojoins) {
+				var autojoins = connection.autojoins.split(',');
+				for (var j = 0; j < autojoins.length; j++) {
+					user.tryJoinRoom(autojoins[j], connection);
+				}
+				connection.autojoins = '';
 			}
 		}
 	};
