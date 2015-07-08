@@ -205,6 +205,8 @@ exports.customavatars = {
 	'bidoofftw': 'alakapwnage.png',
 	'djdoof': 'alakapwnage.png',
 	'isit420yet': 'alakapwnage.png',
+	'bidf': 'alakapwnage.png',
+	'mudk': 'alakapwnage.png',
 	'oxidation': 'yukissword.png',
 	'gaspppp': 'daydreamsaway.gif',
 	'travist': 'daydreamsaway2.gif',
@@ -503,12 +505,14 @@ exports.customavatars = {
 	'suglit': 'suglit.png',
 	'akaitou': 'akaitou.gif',
 	'atharva19': 'atharva19.jpg',
-	'lapiѕlazuli': 'lapiѕlazuli.gif',
+	'lapilazuli': 'lapiѕlazuli.gif',
 	'odye': 'odye.gif',
 	'jesuisstyle': 'odye.gif',
 	'landothegod': 'odye.gif',
 	'princeharrison': 'princeharrison.gif',
 	'roxierosalinaxl': 'roxierosalinaxl.gif',
+	'learna': 'learna.jpg',
+	'soulcooler': 'soulcooler.gif',
 };
 
 // Tournament announcements
