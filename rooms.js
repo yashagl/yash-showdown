@@ -821,7 +821,7 @@ var GlobalRoom = (function () {
 		this.cancelSearch(p1);
 		this.cancelSearch(p2);
 		if (Config.reportbattles && rooms.chat) {
-			rooms.lobby.add('|b|' + newRoom.id + '|' + p1.getIdentity() + '|' + p2.getIdentity());
+			rooms.chat.add('|b|' + newRoom.id + '|' + p1.getIdentity() + '|' + p2.getIdentity());
 		}
 		if (Config.logladderip && options.rated) {
 			if (!this.ladderIpLog) {
