@@ -318,6 +318,8 @@ global.Rooms = require('./rooms.js');
 // Generate and cache the format list.
 Rooms.global.formatListText = Rooms.global.getFormatListText();
 
+global.Tells = require('./tells.js');
+
 
 delete process.send; // in case we're a child process
 global.Verifier = require('./verifier.js');
