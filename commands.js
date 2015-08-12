@@ -20,10 +20,6 @@ const MAX_REASON_LENGTH = 300;
 const MUTE_LENGTH = 7 * 60 * 1000;
 const HOURMUTE_LENGTH = 60 * 60 * 1000;
 
-if (typeof tells === 'undefined') {
-        tells = {};
-}
-
 if (!Users.User.prototype._getIdentity_away) Users.User.prototype._getIdentity_away = Users.User.prototype.getIdentity;
 Users.User.prototype.getIdentity = function (roomid) {
 	var name = this._getIdentity_away(roomid);
@@ -800,30 +796,6 @@ var commands = exports.commands = {
 			return this.sendReply("The room '" + target + "' does not exist.");
 		}
 		user.leaveRoom(targetRoom || room, connection);
-	},
-	
-	tell: function(target, room, user) {
-		if (user.locked) return this.sendReply('You cannot use this command while locked.');
-		if (user.forceRenamed) return this.sendReply('You cannot use this command while under a name that you have been forcerenamed to.');
-		if (!target) return this.parse('/help tell');
-
-		var commaIndex = target.indexOf(',');
-		if (commaIndex < 0) return this.sendReply('You forgot the comma.');
-		var targetUser = toId(target.slice(0, commaIndex));
-		var message = target.slice(commaIndex + 1).trim();
-
-		if (targetUser.length > 18) {
-			return this.sendReply('The name of user "' + targetUser + '" is too long.');
-		}
-
-		if (!tells[targetUser]) tells[targetUser] = [];
-		if (tells[targetUser].length === 5) return this.sendReply('User ' + targetUser + ' has too many tells queued.');
-
-		var date = Date();
-		var messageToSend = '|raw|' + date.slice(0, date.indexOf('GMT') - 1) + ' - <b>' + user.getIdentity() + '</b> said: ' + message;
-		tells[targetUser].add(messageToSend);
-
-		return this.sendReply('Message "' + message + '" sent to ' + targetUser + '.');
 	},
 
 	back: 'away',
