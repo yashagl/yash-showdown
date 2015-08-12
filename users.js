@@ -111,9 +111,11 @@ function ipSearch(ip, table) {
 	return false;
 }
 function checkBanned(ip) {
+	if (!ip) return false;
 	return ipSearch(ip, bannedIps);
 }
 function checkLocked(ip) {
+	if (!ip) return false;
 	return ipSearch(ip, lockedIps);
 }
 Users.checkBanned = checkBanned;
@@ -307,8 +309,8 @@ Users.socketConnect = function (worker, workerid, socketid, ip) {
 	Dnsbl.query(connection.ip, function (isBlocked) {
 		if (isBlocked) {
 			connection.popup("You are locked because someone using your IP (" + connection.ip + ") has spammed/hacked other websites. This usually means you're using a proxy, in a country where other people commonly hack, or have a virus on your computer that's spamming websites.");
-			if (connection.user && !connection.user.locked) {
-				connection.user.locked = '#dnsbl';
+			if (connection.user && !connection.user.locked && !connection.user.autoconfirmed) {
+				connection.user.semilocked = '#dnsbl';
 				connection.user.updateIdentity();
 			}
 		}
@@ -422,7 +424,7 @@ function cacheGroupData() {
 	var groups = Config.groups;
 	var cachedGroups = {};
 
-	function cacheGroup (sym, groupData) {
+	function cacheGroup(sym, groupData) {
 		if (cachedGroups[sym] === 'processing') return false; // cyclic inheritance.
 
 		if (cachedGroups[sym] !== true && groupData['inherit']) {
@@ -892,7 +894,7 @@ User = (function () {
 			} else if (userType === '4') {
 				this.autoconfirmed = userid;
 			} else if (userType === '5') {
-				this.lock(false, userid);
+				this.lock(false, userid + '#permalock');
 			} else if (userType === '6') {
 				this.ban(false, userid);
 			}
@@ -921,14 +923,14 @@ User = (function () {
 			if (this.named) user.prevNames[this.userid] = this.name;
 			this.destroy();
 			Rooms.global.checkAutojoin(user);
-			if (Config.loginfilter) Config.loginfilter(user, this);
+			if (Config.loginfilter) Config.loginfilter(user, this, userType);
 			return true;
 		}
 
 		// rename success
 		if (this.forceRename(name, registered)) {
 			Rooms.global.checkAutojoin(this);
-			if (Config.loginfilter) Config.loginfilter(this);
+			if (Config.loginfilter) Config.loginfilter(this, null, userType);
 			return true;
 		}
 		return false;
@@ -1007,13 +1009,14 @@ User = (function () {
 		if (this.locked === '#dnsbl' && !oldUser.locked) this.locked = false;
 		if (!this.locked && oldUser.locked === '#dnsbl') oldUser.locked = false;
 		if (oldUser.locked) this.locked = oldUser.locked;
+		if (oldUser.autoconfirmed) this.autoconfirmed = oldUser.autoconfirmed;
+
 		for (var i = 0; i < oldUser.connections.length; i++) {
 			this.mergeConnection(oldUser.connections[i]);
 		}
 		oldUser.roomCount = {};
 		oldUser.connections = [];
 
-		if (oldUser.autoconfirmed) this.autoconfirmed = oldUser.autoconfirmed;
 		this.s1 = oldUser.s1;
 		this.s2 = oldUser.s2;
 		this.s3 = oldUser.s3;
@@ -1048,7 +1051,7 @@ User = (function () {
 		for (var i in connection.rooms) {
 			var room = connection.rooms[i];
 			if (!this.roomCount[i]) {
-				if (room.bannedUsers && this.userid in room.bannedUsers) {
+				if (room.bannedUsers && (this.userid in room.bannedUsers || this.autoconfirmed in room.bannedUsers)) {
 					room.bannedIps[connection.ip] = room.bannedUsers[this.userid];
 					connection.sendTo(room.id, '|deinit');
 					connection.leaveRoom(room);
@@ -1060,6 +1063,9 @@ User = (function () {
 			this.roomCount[i]++;
 			if (room.battle) {
 				room.battle.resendRequest(connection);
+			}
+			if (global.Tournaments && Tournaments.get(room.id)) {
+				Tournaments.get(room.id).updateFor(this, connection);
 			}
 		}
 	};
@@ -1101,12 +1107,14 @@ User = (function () {
 		if (this.userid in usergroups) {
 			this.group = usergroups[this.userid].charAt(0);
 			this.confirmed = this.userid;
+			this.autoconfirmed = this.userid;
 		} else {
 			this.group = Config.groupsranking[0];
 			for (var i = 0; i < Rooms.global.chatRooms.length; i++) {
 				var room = Rooms.global.chatRooms[i];
 				if (!room.isPrivate && room.auth && this.userid in room.auth && room.auth[this.userid] !== '+') {
 					this.confirmed = this.userid;
+					this.autoconfirmed = this.userid;
 					break;
 				}
 			}
@@ -1120,6 +1128,14 @@ User = (function () {
 		var userid = this.name
 		userid = userid.replace(/[^\x00-\x7F]/g, "");
 		this.isClanLeader = (userid.toUpperCase() === 'ANTEMORTEM' || userid.toUpperCase() === 'BELLSSM' || userid.toUpperCase() === 'CHAFRM' || userid.toUpperCase() === 'CTFRM' || userid.toUpperCase() === 'CSE' || userid.toUpperCase() === 'LORD ANTE' || userid.toUpperCase() === 'MGIDO' || userid.toUpperCase() === 'NABOORU' || userid.toUpperCase() === 'OMICRONHUH' || userid.toUpperCase() === 'OMICRN' || userid.toUpperCase() === 'PAPA ANTI' || userid.toUpperCase() === 'PRINCESS BOOTY' || userid.toUpperCase() === 'RABINATOR' || userid.toUpperCase() === 'RABINOV' || userid.toUpperCase() === 'RALLYKNOB' || userid.toUpperCase() === 'WOLF' || userid.toUpperCase() === 'ZEKROM52');
+		if (!this.isStaff) {
+			var staffRoom = Rooms.get('staff');
+			this.isStaff = (staffRoom && staffRoom.auth && staffRoom.auth[this.userid]);
+		}
+		if (!this.isClanLeader) {
+			var clanLeaderRoom = Rooms.get('clanleaders');
+			this.isClanLeader = (clanLeaderRoom && clanLeaderRoom.auth && clanLeaderRoom.auth[this.userid]);
+		}
 		if (this.confirmed) {
 			this.autoconfirmed = this.confirmed;
 			this.locked = false;
@@ -1142,6 +1158,14 @@ User = (function () {
 			delete usergroups[this.userid];
 		}
 		exportUsergroups();
+		if (!this.isStaff) {
+			var staffRoom = Rooms.get('staff');
+			this.isStaff = (staffRoom && staffRoom.auth && staffRoom.auth[this.userid]);
+		}
+		if (!this.isClanLeader) {
+			var clanLeaderRoom = Rooms.get('clanleaders');
+			this.isClanLeader = (clanLeaderRoom && clanLeaderRoom.auth && clanLeaderRoom.auth[this.userid]);
+		}
 		Rooms.global.checkAutojoin(this);
 		if (this.registered) {
 			if (forceConfirmed || this.group !== Config.groupsranking[0]) {
@@ -1307,6 +1331,7 @@ User = (function () {
 					}
 				}
 			}
+			lockedUsers[userid] = userid;
 		}
 
 		for (var ip in this.ips) {
@@ -1315,9 +1340,10 @@ User = (function () {
 		if (this.autoconfirmed) bannedUsers[this.autoconfirmed] = userid;
 		if (this.registered) {
 			bannedUsers[this.userid] = userid;
-			this.locked = userid; // in case of merging into a recently banned account
 			this.autoconfirmed = '';
 		}
+		this.locked = userid; // in case of merging into a recently banned account
+		lockedUsers[this.userid] = userid;
 		this.disconnectAll();
 	};
 	User.prototype.lock = function (noRecurse, userid) {
@@ -1333,13 +1359,14 @@ User = (function () {
 					}
 				}
 			}
+			lockedUsers[userid] = userid;
 		}
 
 		for (var ip in this.ips) {
 			lockedIps[ip] = userid;
 		}
 		if (this.autoconfirmed) lockedUsers[this.autoconfirmed] = userid;
-		if (this.registered) lockedUsers[this.userid] = userid;
+		lockedUsers[this.userid] = userid;
 		this.locked = userid;
 		this.autoconfirmed = '';
 		this.updateIdentity();
@@ -1441,6 +1468,9 @@ User = (function () {
 							room.onLeave(this);
 							delete this.roomCount[room.id];
 						}
+					} else {
+						// should never happen
+						console.log('!! room miscount');
 					}
 					if (!this.connections[i]) {
 						// race condition? This should never happen, but it does.
@@ -1459,6 +1489,8 @@ User = (function () {
 			}
 		}
 		if (!connection && this.roomCount[room.id]) {
+			// should also never happen
+			console.log('!! room miscount: ' + room.id + ' not left for ' + this.userid);
 			room.onLeave(this);
 			delete this.roomCount[room.id];
 		}
