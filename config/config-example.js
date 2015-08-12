@@ -532,6 +532,16 @@ exports.appealurl = 'http://www.pokecommunity.com/showthread.php?t=289012#senior
 exports.replsocketprefix = './logs/repl/';
 exports.replsocketmode = 0600;
 
+// tellsexpiryage - how long an offline message remains in existence before being removed.
+// By default, 7 days
+exports.tellsexpiryage = 1000 * 60 * 60 * 24 * 7;
+
+// tellrank - the rank that offline messaging is available to. By default, available to voices
+// and above. Set to ' ' to allow all users to use offline messaging and `false` to disable
+// offline messaging completely. Set to `'autoconfirmed'` to allow only autoconfirmed users
+// to send offline messages.
+exports.tellrank = ' ';
+
 // permissions and groups:
 //   Each entry in `grouplist' is a seperate group. Some of the members are "special"
 //     while the rest is just a normal permission.
