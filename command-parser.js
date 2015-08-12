@@ -532,26 +532,6 @@ var parse = exports.parse = function (message, room, user, connection, levelsDee
 
 	message = canTalk.call(context, user, room, connection, message);
 
- 	//tells
-	var alts = user.getAlts();
-	for (var u in alts) {
-		var alt = toId(alts[u]);
-		if (alt in tells) {
-			if (!tells[user.userid]) tells[user.userid] = [];
-			for (var tell in tells[alt]) {
-				tells[user.userid].add(tells[alt][tell]);
-			}
-			delete tells[alt];
-		}
-	}
-
-	if (tells[user.userid] && user.registered) {
-		for (var tell in tells[user.userid]) {
-			connection.sendTo(room, tells[user.userid][tell]);
-		};
-		delete tells[user.userid];
-	}
-
 	if (!Core.processChatData(user, room, connection, message)) return false;
 
 	return message || false;
