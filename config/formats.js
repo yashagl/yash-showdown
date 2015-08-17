@@ -252,8 +252,8 @@ exports.Formats = [
 
 		team: 'randomNoPotD',
 		ruleset: ['Random (no PotD)'],
-		onModifyPokemon: function (pokemon) {
-			pokemon.negateImmunity['Type'] = true;
+		onNegateImmunity: function (pokemon, type) {
+			if (type in this.data.TypeChart && this.runEvent('Immunity', pokemon, null, null, type)) return false;
 		},
 		onEffectiveness: function (typeMod, target, type, move) {
 			// The effectiveness of Freeze Dry on Water isn't reverted
