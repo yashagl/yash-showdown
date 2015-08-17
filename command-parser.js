@@ -36,6 +36,7 @@ const BROADCAST_TOKEN = '!';
 
 var fs = require('fs');
 var path = require('path');
+var parseEmoticons = require('./chat-plugins/emoticons').parseEmoticons;
 
 /*********************************************************
  * Load command files
@@ -532,7 +533,7 @@ var parse = exports.parse = function (message, room, user, connection, levelsDee
 
 	message = canTalk.call(context, user, room, connection, message);
 
-	if (!Core.processChatData(user, room, connection, message)) return false;
+	if (parseEmoticons(message, room, user)) return;
 
 	return message || false;
 };
