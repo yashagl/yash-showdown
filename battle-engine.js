@@ -541,6 +541,18 @@ BattlePokemon = (function () {
 				target = this.battle.runEvent('RedirectTarget', this, this, move, target);
 			}
 			targets = [target];
+
+			// Resolve apparent targets for Pressure.
+			if (move.pressureTarget) {
+				// At the moment, this is the only supported target.
+				if (move.pressureTarget === 'foeSide') {
+					for (var i = 0; i < this.side.foe.active.length; i++) {
+						if (this.side.foe.active[i] && !this.side.foe.active[i].fainted) {
+							targets.push(this.side.foe.active[i]);
+						}
+					}
+				}
+			}
 		}
 		return targets;
 	};
@@ -3961,6 +3973,7 @@ Battle = (function () {
 		case 'shift':
 			if (!decision.pokemon.isActive) return false;
 			if (decision.pokemon.fainted) return false;
+			decision.pokemon.activeTurns--;
 			this.swapPosition(decision.pokemon, 1);
 			var foeActive = decision.pokemon.side.foe.active;
 			for (var i = 0; i < foeActive.length; i++) {
