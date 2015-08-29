@@ -576,7 +576,6 @@ User = (function () {
 		return this.group + this.name;
 	};
 	User.prototype.isStaff = false;
-	User.prototype.isClanLeader = false;
 	User.prototype.can = function (permission, target, room) {
 		if (this.hasSysopAccess()) return true;
 
@@ -709,7 +708,6 @@ User = (function () {
 		this.registered = false;
 		this.group = Config.groupsranking[0];
 		this.isStaff = false;
-		this.isClanLeader = false;
 		this.isSysop = false;
 
 		for (var i = 0; i < this.connections.length; i++) {
@@ -808,7 +806,6 @@ User = (function () {
 			this.send('|nametaken|' + name + "|Your authentication token was invalid.");
 		}
 
-		if (Tells.inbox[userid]) Tells.sendTell(userid, this);
 		return false;
 	};
 	User.prototype.validateRename = function (name, tokenData, newlyRegistered, challenge) {
@@ -1101,7 +1098,6 @@ User = (function () {
 			this.registered = false;
 			this.group = Config.groupsranking[0];
 			this.isStaff = false;
-			this.isClanLeader = false;
 			return;
 		}
 		this.registered = true;
@@ -1126,16 +1122,9 @@ User = (function () {
 		}
 
 		this.isStaff = (this.group in {'%':1, '@':1, '&':1, '~':1});
-		var userid = this.name
-		userid = userid.replace(/[^\x00-\x7F]/g, "");
-		this.isClanLeader = (userid.toUpperCase() === 'ANTEMORTEM' || userid.toUpperCase() === 'BELLSSM' || userid.toUpperCase() === 'CHAFRM' || userid.toUpperCase() === 'CTFRM' || userid.toUpperCase() === 'CSE' || userid.toUpperCase() === 'LORD ANTE' || userid.toUpperCase() === 'MGIDO' || userid.toUpperCase() === 'NABOORU' || userid.toUpperCase() === 'OMICRONHUH' || userid.toUpperCase() === 'OMICRN' || userid.toUpperCase() === 'PAPA ANTI' || userid.toUpperCase() === 'PRINCESS BOOTY' || userid.toUpperCase() === 'RABINATOR' || userid.toUpperCase() === 'RABINOV' || userid.toUpperCase() === 'RALLYKNOB' || userid.toUpperCase() === 'WOLF' || userid.toUpperCase() === 'ZEKROM52');
 		if (!this.isStaff) {
 			var staffRoom = Rooms.get('staff');
 			this.isStaff = (staffRoom && staffRoom.auth && staffRoom.auth[this.userid]);
-		}
-		if (!this.isClanLeader) {
-			var clanLeaderRoom = Rooms.get('clanleaders');
-			this.isClanLeader = (clanLeaderRoom && clanLeaderRoom.auth && clanLeaderRoom.auth[this.userid]);
 		}
 		if (this.confirmed) {
 			this.autoconfirmed = this.confirmed;
@@ -1150,22 +1139,9 @@ User = (function () {
 	User.prototype.setGroup = function (group, forceConfirmed) {
 		this.group = group.charAt(0);
 		this.isStaff = (this.group in {'%':1, '@':1, '&':1, '~':1});
-		var userid = this.name
-		userid = userid.replace(/[^\x00-\x7F]/g, "");
-		this.isClanLeader = (userid.toUpperCase() === 'ANTEMORTEM' || userid.toUpperCase() === 'BELLSSM' || userid.toUpperCase() === 'CHAFRM' || userid.toUpperCase() === 'CTFRM' || userid.toUpperCase() === 'CSE' || userid.toUpperCase() === 'LORD ANTE' || userid.toUpperCase() === 'MGIDO' || userid.toUpperCase() === 'NABOORU' || userid.toUpperCase() === 'OMICRONHUH' || userid.toUpperCase() === 'OMICRN' || userid.toUpperCase() === 'PAPA ANTI' || userid.toUpperCase() === 'PRINCESS BOOTY' || userid.toUpperCase() === 'RABINATOR' || userid.toUpperCase() === 'RABINOV' || userid.toUpperCase() === 'RALLYKNOB' || userid.toUpperCase() === 'WOLF' || userid.toUpperCase() === 'ZEKROM52');
-		if (forceConfirmed || this.group !== Config.groupsranking[0]) {
-			usergroups[this.userid] = this.group + this.name;
-		} else {
-			delete usergroups[this.userid];
-		}
-		exportUsergroups();
 		if (!this.isStaff) {
 			var staffRoom = Rooms.get('staff');
 			this.isStaff = (staffRoom && staffRoom.auth && staffRoom.auth[this.userid]);
-		}
-		if (!this.isClanLeader) {
-			var clanLeaderRoom = Rooms.get('clanleaders');
-			this.isClanLeader = (clanLeaderRoom && clanLeaderRoom.auth && clanLeaderRoom.auth[this.userid]);
 		}
 		Rooms.global.checkAutojoin(this);
 		if (this.registered) {
@@ -1207,7 +1183,6 @@ User = (function () {
 			this.group = Config.groupsranking[0];
 			this.isSysop = false; // should never happen
 			this.isStaff = false;
-			this.isClanLeader = false;
 			this.autoconfirmed = '';
 			this.confirmed = '';
 		}
@@ -1393,7 +1368,6 @@ User = (function () {
 		if (!this.can('bypassall')) {
 			// check if user has permission to join
 			if (room.staffRoom && !this.isStaff) return false;
-			if (room.clanLeaderRoom && !this.isClanLeader) return false;
 			if (room.checkBanned && !room.checkBanned(this)) {
 				return null;
 			}
@@ -1691,7 +1665,7 @@ Connection = (function () {
 
 	Connection.prototype.sendTo = function (roomid, data) {
 		if (roomid && roomid.id) roomid = roomid.id;
-		if (roomid && roomid !== 'pcleague') data = '>' + roomid + '\n' + data;
+		if (roomid && roomid !== 'lobby') data = '>' + roomid + '\n' + data;
 		Sockets.socketSend(this.worker, this.socketid, data);
 		ResourceMonitor.countNetworkUse(data.length);
 	};

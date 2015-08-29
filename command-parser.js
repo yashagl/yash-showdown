@@ -36,7 +36,6 @@ const BROADCAST_TOKEN = '!';
 
 var fs = require('fs');
 var path = require('path');
-var parseEmoticons = require('./chat-plugins/emoticons').parseEmoticons;
 
 /*********************************************************
  * Load command files
@@ -138,13 +137,11 @@ function canTalk(user, room, connection, message, targetUser) {
 		message = message.replace(/[\u0300-\u036f\u0483-\u0489\u064b-\u065f\u0670\u0E31\u0E34-\u0E3A\u0E47-\u0E4E]{3,}/g, '');
 
 		if (room && room.id === 'lobby') {
-			if (user.group === ' ') {
-				var normalized = message.trim();
-				if ((normalized === user.lastMessage) &&
-						((Date.now() - user.lastMessageTime) < MESSAGE_COOLDOWN)) {
-					connection.popup("You can't send the same message again so soon.");
-					return false;
-				}
+			var normalized = message.trim();
+			if ((normalized === user.lastMessage) &&
+					((Date.now() - user.lastMessageTime) < MESSAGE_COOLDOWN)) {
+				connection.popup("You can't send the same message again so soon.");
+				return false;
 			}
 			user.lastMessage = message;
 			user.lastMessageTime = Date.now();
@@ -443,10 +440,6 @@ var parse = exports.parse = function (message, room, user, connection, levelsDee
 		message = '/evalbattle ' + message.substr(4);
 	}
 
-	if (message.charAt(0) === '!') {
-		if (message === '!emoticons' || message === '!emoticon' || message === '!emotes') return connection.sendTo(room, "Please use /emoticons instead of !emoticons.");
-	}
-
 	if (VALID_COMMAND_TOKENS.includes(message.charAt(0)) && message.charAt(1) !== message.charAt(0)) {
 		cmdToken = message.charAt(0);
 		var spaceIndex = message.indexOf(' ');
@@ -532,8 +525,6 @@ var parse = exports.parse = function (message, room, user, connection, levelsDee
 	}
 
 	message = canTalk.call(context, user, room, connection, message);
-
-	if (parseEmoticons(message, room, user)) return;
 
 	return message || false;
 };

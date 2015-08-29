@@ -320,8 +320,6 @@ global.Rooms = require('./rooms.js');
 // Generate and cache the format list.
 Rooms.global.formatListText = Rooms.global.getFormatListText();
 
-global.Tells = require('./tells.js');
-
 
 delete process.send; // in case we're a child process
 global.Verifier = require('./verifier.js');
@@ -393,19 +391,3 @@ fs.readFile(path.resolve(__dirname, 'config/ipbans.txt'), function (err, data) {
  *********************************************************/
 
 require('./repl.js').start('app', function (cmd) { return eval(cmd); });
-
-/*********************************************************
- * Load custom files
- *********************************************************/
-
-global.Core = require('./core.js').core;
-
-global.Components = require('./components.js');
-
-global.Poll = require('./core.js').core.poll();
-
-try {
-	global.hangman = require('./hangman.js').hangman();
-} catch (e) {
-	console.log('Error loading hangman.js');
-}
