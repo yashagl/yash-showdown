@@ -97,7 +97,6 @@ exports.commands = {
 		Poll[room.id].topOption = topOption;
 	},
 
-	easytour: 'etour',
 	elimtour: 'etour',
 	etour: function (target, room, user) {
 		if (!this.can('broadcast', null, room)) return;
@@ -105,13 +104,12 @@ exports.commands = {
 	},
 
 	roundrobintour: 'rtour',
-	cancertour: 'rtour',
 	rtour: function (target, room, user) {
 		if (!this.can('broadcast', null, room)) return;
 		this.parse('/tour new ' + target + ', roundrobin');
 	},
 
-	pr: 'pollremind',
+	pollr: 'pollremind',
 	pollremind: function (target, room, user) {
 		if (!Poll[room.id]) Poll.reset(room.id);
 		if (!Poll[room.id].question) return this.sendReply("There is no poll currently going on in this room.");
@@ -119,12 +117,24 @@ exports.commands = {
 		this.sendReplyBox(Poll[room.id].display);
 	},
 
-	formatpoll: 'tierpoll',
-	tpoll: 'tierpoll',
-	tierspoll: 'tierpoll',
-	tierpoll: function (target, room, user) {
-		if (!this.can('broadcast', null, room)) return false;
-		this.parse("/poll Tournament tier?," + "Random Battle, OU, Ubers, UU, RU, NU, LC, Anything Goes, Battle Spot Singles, Custom Game, Random Doubles Battle, Doubles OU, Battle Spot Doubles (VGC 2015), Doubles Custom Game, Random Triples Battle, Smogon Triples, Triples Custom Game, CAP, Battle Factory, Challenge Cup 1v1, Balanced Hackmons, 1v1, Monotype, Tier Shift, PU, Inverse Battle, Monotype Random Battle");
+	tournamentpoll: 'tourpoll',
+	tourneypoll: 'tourpoll',
+	tourpoll: function (target, room, user) {
+		if (!this.can('poll', null, room)) return false;
+		this.parse("/poll Tournament format?," + "OU, Ubers, UU, RU, NU, LC, VGC, Monotype, [Gen 4] OU, Random, 1v1 Random, Uber Random, High Tier Random, Low Tier Random, LC Random, Monotype Random, Generational Random, Inverse Random, Community Random, Spring Random, Orb Random, Hoenn Random, Hoenn Weather Random, Super Smash Bros. Random, Winter Wonderland, Furry Random, Metronome 3v3 Random, Metronome 6v6 Random, Doubles Random, Triples Random, Battle Factory, Hackmons Cup, [Seasonal] Random, [Gen 2] Random, [Gen 1] Random");
+	},
+
+	teampoll: function (target, room, user) {
+		if (!this.can('poll', null, room)) return false;
+		this.parse("/poll Tournament format?," + "OU, Ubers, UU, RU, NU, LC, VGC, Monotype, [Gen 4] OU");
+	},
+
+	randbatpoll: 'randompoll',
+	randbatspoll: 'randompoll',
+	randpoll: 'randompoll',
+	randompoll: function (target, room, user) {
+		if (!this.can('poll', null, room)) return false;
+		this.parse("/poll Tournament format?," + "Random, 1v1 Random, Uber Random, High Tier Random, Low Tier Random, LC Random, Monotype Random, Generational Random, Inverse Random, Community Random, Spring Random, Orb Random, Hoenn Random, Hoenn Weather Random, Super Smash Bros. Random, Winter Wonderland, Furry Random, Metronome 3v3 Random, Metronome 6v6 Random, Doubles Random, Triples Random, Battle Factory, Hackmons Cup, [Seasonal] Random, [Gen 2] Random, [Gen 1] Random");
 	},
 
 	vote: function (target, room, user) {
