@@ -114,7 +114,7 @@ Profile.prototype.group = function () {
 };
 
 Profile.prototype.bp = function (amount) {
-	return label('bp') + amount + currencyName(amount);
+	return label('BP') + amount + currencyName(amount);
 };
 
 Profile.prototype.name = function () {
