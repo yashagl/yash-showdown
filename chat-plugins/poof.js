@@ -280,6 +280,7 @@ exports.commands = {
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
 			user.disconnectAll();
+		}
 	},
 
 	poofoff: 'nopoof',
