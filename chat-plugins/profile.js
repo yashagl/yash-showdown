@@ -117,10 +117,6 @@ Profile.prototype.bp = function (amount) {
 	return label('BP') + amount + currencyName(amount);
 };
 
-Profile.prototype.title = function () {
-	return font('#2ECC40');
-};
-
 Profile.prototype.name = function () {
 	return label('Name') + bold(font(color(toId(this.username)), this.username));
 };
@@ -132,22 +128,18 @@ Profile.prototype.seen = function (timeAgo) {
 };
 
 Profile.prototype.show = function (callback) {
-	var _this = this;
 	var userid = toId(this.username);
 
 	Database.read('bp', userid, function (err, bp) {
 		if (err) throw err;
 		if (!bp) bp = 0;
-		Database.read('title', userid, function (err, title) {
-			callback(_this.avatar() +
-				SPACE + _this.title(title) + BR +
-				SPACE + _this.name() + BR +
-				SPACE + _this.group() + BR +
-				SPACE + _this.bp(bp) + BR +
-				SPACE + _this.seen(Seen[userid]) +
-				'<br clear="all">');
-		});
-	});
+		return callback(this.avatar() +
+										SPACE + this.name() + BR +
+										SPACE + this.group() + BR +
+										SPACE + this.bp(bp) + BR +
+										SPACE + this.seen(Seen[userid]) +
+										'<br clear="all">');
+	}.bind(this));
 };
 
 exports.commands = {
