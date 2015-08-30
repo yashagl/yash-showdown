@@ -138,7 +138,7 @@ Profile.prototype.show = function (callback) {
 		if (!bp) bp = 0;
 		Database.read('title', userid, function (err, title) {
 			if (err) throw err;
-			if (!title) title = 0;
+			if (!title) title = ' ';
 			return callback(this.avatar() +
 											this.title(title) +
 											SPACE + this.name() + BR +
