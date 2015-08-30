@@ -164,7 +164,6 @@ exports.inactiveuserthreshold = 1000 * 60 * 60;
 exports.customavatars = {
 	'ppn':'charizard_ppn.gif',
 	'wolf': 'wolf.gif',
-	'smusrn': 'wolf.gif',
 	'peanutbutterjelli': 'jelli.jpg',
 	'jelli': 'jelli.jpg',
 	'michonne': 'jelli.jpg',
