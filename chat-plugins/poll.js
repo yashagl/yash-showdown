@@ -62,8 +62,8 @@ exports.commands = {
 		var votes = Object.keys(Poll[room.id].options).length;
 
 		if (votes === 0) {
-			Poll.reset(room.id);
 			return room.add('|raw|<h3>The poll was canceled because of lack of voters.</h3>');
+			Poll.reset(room.id);
 		}
 
 		var options = {};
