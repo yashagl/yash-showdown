@@ -1731,11 +1731,12 @@ var commands = exports.commands = {
 	groups: function (target, room, user) {
 		if (!this.canBroadcast()) return;
 		this.sendReplyBox(
-			"+ <b>Voices</b> - Respected regulars. They can create and moderate tournaments; start and end polls; use /html, /declare, /showimage, /announce; and talk during moderated chat.<br />" +
-			"\u2605 <b>Players</b> - Members who have won a notable competition (temporary).<br />" +
-			"@ <b>Moderators</b> - Moderate the battle server and provide feedback on staff decisions. They can use most commands.<br />" +
-			"~ <b>Administrators</b> - Manage the battle server. They can use all commands.<br />" +
-			"# <b>Room Owners</b> - Manage rooms and can almost totally control them."
+			"+ <b>Voice</b> - They can use ! commands like !groups, and talk during moderated chat<br />" +
+			"% <b>Driver</b> - The above, and they can mute. Global % can also lock users and check for alts<br />" +
+			"@ <b>Moderator</b> - The above, and they can ban users<br />" +
+			"&amp; <b>Leader</b> - The above, and they can promote to moderator and force ties<br />" +
+			"# <b>Room Owner</b> - They are leaders of the room and can almost totally control it<br />" +
+			"~ <b>Administrator</b> - They can do anything, like change what this message says"
 		);
 	},
 	groupshelp: ["/groups - Explains what the + % @ # & next to people's names mean.",
@@ -1754,44 +1755,12 @@ var commands = exports.commands = {
 			"- <a href=\"https://github.com/Zarel/Pokemon-Showdown-Client\">Client source code</a>"
 		);
 	},
-
 	opensourcehelp: ["/opensource - Links to PS's source code repository.",
 		"!opensource - Show everyone that information. Requires: + % @ # & ~"],
 
-	stafflist: 'staff',
-	staffalts: 'staff',
-	staffalt: 'staff',
 	staff: function (target, room, user) {
 		if (!this.canBroadcast()) return;
-		this.sendReplyBox(
-			"<b>~ Administrators</b><br />" +
-			"- Anti (Papa Anti)<br />" +
-			"- Ausaudriel (Audy)<br />" +
-			"- Castform (Chase, Chaseform, orb castform, Powalen)<br />" +
-			"- Hiroshi Sotomura (Sotomura, Sotomura606)<br />" +
-			"- Lilith (TitanBlade, TwilightBlade)<br />" +
-			"- Livewire<br />" +
-			"- Nolafus<br />" +
-			"- Rukario (PPN)<br />" +
-			"- Sheep (Cirnysheep)<br />" +
-			"- shenanigans (razor leaf, unkempt harold)<br />" +
-			"- Sylphiel<br />" +
-			"- wolf (wofl)<br />" +
-			"- Zeffy<br /><br />" +
-			"<b>@ Moderators</b><br />" +
-			"- Altairis (Winry)<br />" +
-			"- apocalypseArisen (Megido, omicron, omicronhuh)<br />" +
-			"- Aslan<br />" +
-			"- Christos<br />" +
-			"- Dragon (Aura Blackquill, bellossom, Captain Syrup, Dragii, Erika Senpai, Iris, Kjelle, Miss Fortune, Mitsuruu, Nabooru, Tharja)<br />" +
-			"- Peitharchia (Adrastia, nymph)<br />" +
-			"- Sanguine (Natalya)<br />" +
-			"- Sector (Milena Kunis)<br />" +
-			"- Sweep<br />" +
-			"- Synerjee (Alto Mare, Autumn Reverie)<br />" +
-			"- Yoshikko (air tangela, gloom)<br /><br />" +
-			"<a href=\"http://www.pokecommunity.com/showthread.php?t=289012#staff\">Click here for more details.</a>"
-		);
+		this.sendReplyBox("<a href=\"https://www.smogon.com/sim/staff_list\">Pok&eacute;mon Showdown Staff List</a>");
 	},
 
 	forums: function (target, room, user) {
@@ -1829,8 +1798,7 @@ var commands = exports.commands = {
 	intro: function (target, room, user) {
 		if (!this.canBroadcast()) return;
 		this.sendReplyBox(
-			"New to competitive pokemon?<br />" +
-			"- <a href=\"http://www.pokecommunity.com/showthread.php?t=332177#resources\">PC's Battling & Team Building Resources</a><br />" +
+			"New to competitive Pok&eacute;mon?<br />" +
 			"- <a href=\"https://www.smogon.com/sim/ps_guide\">Beginner's Guide to Pok&eacute;mon Showdown</a><br />" +
 			"- <a href=\"https://www.smogon.com/dp/articles/intro_comp_pokemon\">An introduction to competitive Pok&eacute;mon</a><br />" +
 			"- <a href=\"https://www.smogon.com/bw/articles/bw_tiers\">What do 'OU', 'UU', etc mean?</a><br />" +
@@ -2047,7 +2015,7 @@ var commands = exports.commands = {
 			if (!this.canBroadcast()) return;
 			this.sendReplyBox("Please follow the rules:<br />" +
 				(room.rulesLink ? "- <a href=\"" + Tools.escapeHTML(room.rulesLink) + "\">" + Tools.escapeHTML(room.title) + " room rules</a><br />" : "") +
-				"- <a href=\"http://www.pokecommunity.com/showthread.php?t=289012#rules\">" + (room.rulesLink ? "Global rules" : "PC Battle Server Rules") + "</a>");
+				"- <a href=\"https://pokemonshowdown.com/rules\">" + (room.rulesLink ? "Global rules" : "Rules") + "</a>");
 			return;
 		}
 		if (!this.can('roommod', null, room)) return;
@@ -2323,10 +2291,10 @@ var commands = exports.commands = {
 		Config.potd = target;
 		Simulator.SimulatorProcess.eval('Config.potd = \'' + toId(target) + '\'');
 		if (target) {
-			if (Rooms.rooms.chat) Rooms.rooms.chat.addRaw("<div class=\"broadcast-blue\"><b>The Pokemon of the Day is now " + target + "!</b><br />This Pokemon will be guaranteed to show up in random battles.</div>");
+			if (Rooms.lobby) Rooms.lobby.addRaw("<div class=\"broadcast-blue\"><b>The Pokemon of the Day is now " + target + "!</b><br />This Pokemon will be guaranteed to show up in random battles.</div>");
 			this.logModCommand("The Pokemon of the Day was changed to " + target + " by " + user.name + ".");
 		} else {
-			if (Rooms.rooms.chat) Rooms.rooms.chat.addRaw("<div class=\"broadcast-blue\"><b>The Pokemon of the Day was removed!</b><br />No pokemon will be guaranteed in random battles.</div>");
+			if (Rooms.lobby) Rooms.lobby.addRaw("<div class=\"broadcast-blue\"><b>The Pokemon of the Day was removed!</b><br />No pokemon will be guaranteed in random battles.</div>");
 			this.logModCommand("The Pokemon of the Day was removed by " + user.name + ".");
 		}
 	},
@@ -2460,57 +2428,7 @@ var commands = exports.commands = {
 
 		this.sendReplyBox(target);
 	},
-	htmlboxhelp: ["/htmlbox [message] - Displays a message, parsing HTML code contained. Requires: ~ # with global authority"],
-
-	eng: 'en',
-	en: function (target, room, user) {
-		if (!this.canBroadcast()) return;
-		this.sendReplyBox(
-			"Official chat rooms are English only. Other languages are allowed in battle rooms, private messages, and unofficial chat rooms.<br />" +
-			"- <a href=\"https://translate.google.com/#en/en/Official%20chat%20rooms%20are%20English%20only.%20Other%20languages%20are%20allowed%20in%20battle%20rooms%2C%20private%20messages%2C%20and%20unofficial%20chat%20rooms.\">TRANSLATION</a><br />" +
-			"- <a href=\"http://www.pokecommunity.com/showthread.php?t=289012#rules\">PC Battle Server Rules</a>"
-		);
-	},
-
-	tell: function (target, room, user, connection) {
-		if (!target) return this.parse('/help tell');
-		target = this.splitTarget(target);
-		var targetUser = this.targetUser;
-		if (!target) {
-			this.sendReply("You forgot the comma.");
-			return this.parse('/help tell');
-		}
-
-		if (targetUser && targetUser.connected) {
-			return this.parse('/pm ' + this.targetUsername + ', ' + target);
-		}
-
-		if (user.locked) return this.popupReply("You may not send offline messages when locked.");
-		if (target.length > 255) return this.popupReply("Your message is too long to be sent as an offline message (>255 characters).");
-
-		if (Config.tellrank === 'autoconfirmed' && !user.autoconfirmed) {
-			return this.popupReply("You must be autoconfirmed to send an offline message.");
-		} else if (!Config.tellrank || Config.groupsranking.indexOf(user.group) < Config.groupsranking.indexOf(Config.tellrank)) {
-			return this.popupReply("You cannot send an offline message because offline messaging is " +
-				(!Config.tellrank ? "disabled" : "only available to users of rank " + Config.tellrank + " and above") + ".");
-		}
-
-		var userid = toId(this.targetUsername);
-		if (userid.length > 18) return this.popupReply("\"" + this.targetUsername + "\" is not a legal username.");
-
-		var sendSuccess = Tells.addTell(user, userid, target);
-		if (!sendSuccess) {
-			if (sendSuccess === false) {
-				return this.popupReply("User " + this.targetUsername + " has too many offline messages queued.");
-			} else {
-				return this.popupReply("You have too many outgoing offline messages queued. Please wait until some have been received or have expired.");
-			}
-		}
-		return connection.send('|pm|' + user.getIdentity() + '|' +
-			(targetUser ? targetUser.getIdentity() : ' ' + this.targetUsername) +
-			"|/text This user is currently offline. Your message will be delivered when they are next online.");
-	},
-	tellhelp: ["/tell [username], [message] - Send a message to an offline user that will be received when they log in."]
+	htmlboxhelp: ["/htmlbox [message] - Displays a message, parsing HTML code contained. Requires: ~ # with global authority"]
 };
 
 process.nextTick(function () {
