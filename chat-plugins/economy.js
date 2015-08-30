@@ -165,9 +165,6 @@ exports.commands = {
 	},
 	wallethelp: ["/wallet [user] - Shows the amount of Battle Points a user has."],
 
-	givebp: 'givebp',
-	givebuck: 'givebp',
-	givebucks: 'givebp',
 	givebp: function (target, room, user) {
 		if (!this.can('forcewin')) return false;
 		if (!target || target.indexOf(',') < 0) return this.parse('/help givebp');
@@ -194,9 +191,6 @@ exports.commands = {
 	},
 	givebphelp: ["/givebp [user], [amount] - Give a user a certain amount of Battle Points."],
 
-	takebp: 'takebp',
-	takebuck: 'takebp',
-	takebucks: 'takebp',
 	takebp: function (target, room, user) {
 		if (!this.can('forcewin')) return false;
 		if (!target || target.indexOf(',') < 0) return this.parse('/help takebp');
@@ -223,9 +217,6 @@ exports.commands = {
 	},
 	takebphelp: ["/takebp [user], [amount] - Take a certain amount of Battle Points from a user."],
 
-	resetbp: 'resetbp',
-	resetbuck: 'resetbp',
-	resetbucks: 'resetbp',
 	resetbp: function (target, room, user) {
 		if (!this.can('forcewin')) return false;
 		Database.write('bp', 0, toId(target), function (err, total) {
@@ -236,10 +227,7 @@ exports.commands = {
 	},
 	resetbphelp: ["/resetbp [user] - Reset user's Battle Points to zero."],
 
-	transferbp: 'transferbp',
 	transfer: 'transferbp',
-	transferbuck: 'transferbp',
-	transferbucks: 'transferbp',
 	transferbp: function (target, room, user) {
 		if (!target || target.indexOf(',') < 0) return this.parse('/help transferbp');
 
@@ -331,7 +319,6 @@ exports.commands = {
 	},
 	resetsymbolhelp: ["/resetsymbol - Resets your custom symbol."],
 
-	bplog: 'bplog',
 	bplog: function (target, room, user, connection) {
 		if (!this.can('modlog')) return;
 		var numLines = 15;
@@ -356,7 +343,6 @@ exports.commands = {
 		});
 	},
 
-	bpladder: 'richestuser',
 	bpladder: 'richestuser',
 	richladder: 'richestuser',
 	richestusers: 'richestuser',
@@ -546,7 +532,6 @@ exports.commands = {
 	},
 
 	bpstats: 'economystats',
-	bucks: 'economystats',
 	economystats: function (target, room, user) {
 		if (!this.canBroadcast()) return;
 		var _this = this;
