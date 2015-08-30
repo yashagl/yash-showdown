@@ -443,10 +443,6 @@ var parse = exports.parse = function (message, room, user, connection, levelsDee
 		message = '/evalbattle ' + message.substr(4);
 	}
 
-	if (message.charAt(0) === '!') {
-		if (message === '!emoticons' || message === '!emotes') return connection.sendTo(room, "Please use /emoticons instead of !emoticons.");
-	}
-
 	if (VALID_COMMAND_TOKENS.includes(message.charAt(0)) && message.charAt(1) !== message.charAt(0)) {
 		cmdToken = message.charAt(0);
 		var spaceIndex = message.indexOf(' ');
