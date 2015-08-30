@@ -83,9 +83,8 @@ function label(text) {
 	return bold(font(profileColor, text + ':')) + SPACE;
 }
 
-function currencyName(amount) {
-	var name = " Battle Point";
-	return amount === 1 ? name : name + "s";
+function titleCSS(text) {
+	return '<div class="profile-title">' + text + '</div>';
 }
 
 Profile.prototype.avatar = function () {
@@ -114,7 +113,7 @@ Profile.prototype.group = function () {
 };
 
 Profile.prototype.bp = function (amount) {
-	return label('BP') + amount + currencyName(amount);
+	return label('Battle Points') + amount;
 };
 
 Profile.prototype.name = function () {
@@ -127,18 +126,27 @@ Profile.prototype.seen = function (timeAgo) {
 	return label('Last Seen') + moment(timeAgo).fromNow();
 };
 
+Profile.prototype.title = function (amount) {
+	return titleCSS(amount);
+};
+
 Profile.prototype.show = function (callback) {
 	var userid = toId(this.username);
 
 	Database.read('bp', userid, function (err, bp) {
 		if (err) throw err;
 		if (!bp) bp = 0;
-		return callback(this.avatar() +
-										SPACE + this.name() + BR +
-										SPACE + this.group() + BR +
-										SPACE + this.bp(bp) + BR +
-										SPACE + this.seen(Seen[userid]) +
-										'<br clear="all">');
+		Database.read('title', userid, function (err, title) {
+			if (err) throw err;
+			if (!title) title = 0;
+			return callback(this.avatar() +
+											this.title(title) +
+											SPACE + this.name() + BR +
+											SPACE + this.group() + BR +
+											SPACE + this.bp(bp) + BR +
+											SPACE + this.seen(Seen[userid]) +
+											'<br clear="all">');
+		}.bind(this));
 	}.bind(this));
 };
 
