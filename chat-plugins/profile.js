@@ -84,7 +84,7 @@ function label(text) {
 }
 
 function currencyName(amount) {
-	var name = " Battle Points";
+	var name = " Battle Point";
 	return amount === 1 ? name : name + "s";
 }
 
