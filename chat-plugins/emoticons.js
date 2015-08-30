@@ -203,7 +203,7 @@ exports.commands = {
 	emotes: 'emoticons',
 	emoticons: function (target, room, user) {
 		if (!this.canBroadcast()) return;
-		this.sendReply("|raw|" + emotes_table);
+		this.sendReplyBox("- <a href=\"http://www.pokecommunity.com/showthread.php?t=289012#emoticons\">List of Emoticons</a>");
 	},
 	emoticonshelp: ["/emoticons - Get a list of emoticons."],
 
