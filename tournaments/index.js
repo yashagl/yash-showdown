@@ -735,12 +735,21 @@ Tournament = (function () {
 			generator: this.generator.name,
 			bracketData: this.getBracketData()
 		}));
+		this.isEnded = true;
+		delete exports.tournaments[toId(this.room.id)];
 
-		var data = {
-			results: this.generator.getResults().map(usersToNames),
-			bracketData: this.getBracketData()
-		}, runnerUp = false, winner;
-		data = data['results'].toString();
+		//
+		// Tournament Winnings
+		//
+
+		var color = '#cc4929';
+		var sizeRequiredToEarn = 3;
+		var currencyName = function (amount) {
+			var name = " Battle Point";
+			return amount === 1 ? name : name + "s";
+		};
+		var data = this.generator.getResults().map(usersToNames).toString();
+		var winner, runnerUp;
 
 		if (data.indexOf(',') >= 0) {
 			data = data.split(',');
@@ -750,52 +759,34 @@ Tournament = (function () {
 			winner = data;
 		}
 
+		var wid = toId(winner);
+		var rid = toId(runnerUp);
 		var tourSize = this.generator.users.size;
-		if (tourSize >= Core.tournaments.tourSize) {
-			var firstBP = Math.round(tourSize / Core.tournaments.amountEarn),
-			secondBP = Math.round(firstBP / 2),
-			firstBattlePoint = 'Battle Point',
-			secondBattlePoint = 'Battle Point';
-			if (firstBP > 1) firstBattlePoint = 'Battle Points';
-			if (secondBP > 1) secondBattlePoint = 'Battle Points';
 
-			// annouces the winner/runnerUp
-			this.room.add('|raw|<strong><font color=' + Core.profile.color + '>' + Tools.escapeHTML(winner) + '</font> has also won <font color=' + Core.profile.color + '>' + firstBP + '</font> ' + firstBattlePoint + ' for winning the tournament!</strong>');
-			if (runnerUp) this.room.add('|raw|<strong><font color=' + Core.profile.color + '>' + Tools.escapeHTML(runnerUp) + '</font> has also won <font color=' + Core.profile.color + '>' + secondBP + '</font> ' + secondBattlePoint + ' for winning the tournament!</strong>');
+		if (tourSize >= sizeRequiredToEarn) {
+			var firstMoney = Math.round(tourSize / 4);
+			var secondMoney = Math.round(firstMoney / 2);
 
-			var wid = toId(winner), // winner's userid
-				rid = toId(runnerUp); // runnerUp's userid
-
-			// file i/o
-			var winnerBP = Number(Core.stdin('bp', wid));
-			var pclWin = Number(Core.stdin('pclWins', wid));
-			var tourWin = Number(Core.stdin('tourWins', wid));
-			if (this.room.pcl) {
-				Core.stdout('bp', wid, (winnerBP + firstBP), function () {
-					if (runnerUp) {
-						var runnerUpBP = Number(Core.stdin('bp', rid));
-						Core.stdout('bp', rid, (runnerUpBP + secondBP), function () {
-							Core.stdout('pclWins', wid, (pclWin + 1));
-						});
-					} else {
-						Core.stdout('pclWins', wid, (pclWin + 1));
-					}
+			Database.read('money', wid, function (err, amount) {
+				if (err) throw err;
+				if (!amount) amount = 0;
+				Database.write('money', amount + firstMoney, wid, function (err) {
+					if (err) throw err;
 				});
-			} else {
-				Core.stdout('bp', wid, (winnerBP + firstBP), function () {
-					if (runnerUp) {
-						var runnerUpBP = Number(Core.stdin('bp', rid));
-						Core.stdout('bp', rid, (runnerUpBP + secondBP), function () {
-							Core.stdout('tourWins', wid, (tourWin + 1));
-						});
-					} else {
-						Core.stdout('tourWins', wid, (tourWin + 1));
-					}
+			});
+			this.room.addRaw("<b><font color='" + color + "'>" + Tools.escapeHTML(winner) + "</font> has won " + "<font color='" + color + "'>" + firstMoney + "</font>" + currencyName(firstMoney) + " for winning the tournament!</b>");
+
+			if (runnerUp) {
+				Database.read('money', rid, function (err, amount) {
+					if (err) throw err;
+					if (!amount) amount = 0;
+					Database.write('money', amount + secondMoney, rid, function (err) {
+						if (err) throw err;
+					});
 				});
+				this.room.addRaw("<b><font color='" + color + "'>" + Tools.escapeHTML(runnerUp) + "</font> has won " +  "<font color='" + color + "'>" + secondMoney + "</font>" + currencyName(secondMoney) + " for winning the tournament!</b>");
 			}
 		}
-		this.isEnded = true;
-		delete exports.tournaments[toId(this.room.id)];
 	};
 
 	return Tournament;
