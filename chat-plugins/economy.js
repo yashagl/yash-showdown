@@ -325,10 +325,15 @@ exports.commands = {
 	resetcustomsymbol: 'resetsymbol',
 	resetsymbol: function (target, room, user) {
 		if (!user.hasCustomSymbol) return this.sendReply("You don't have a custom symbol.");
-		user.customSymbol = false;
-		user.updateIdentity();
+		user.getIdentity = function() {
+			if (this.muted) return '!' + this.name;
+			if (this.locked) return '‽' + this.name;
+			return this.group + this.name;
+		};
 		user.hasCustomSymbol = false;
-		this.sendReply("Your symbol has been reset.");
+		delete user.getIdentity;
+		user.updateIdentity();
+		this.sendReply('Your symbol has been reset.');
 	},
 	resetsymbolhelp: ["/resetsymbol - Resets your custom symbol."],
 
