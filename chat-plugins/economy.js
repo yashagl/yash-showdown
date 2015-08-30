@@ -325,7 +325,7 @@ exports.commands = {
 	resetcustomsymbol: 'resetsymbol',
 	resetsymbol: function (target, room, user) {
 		if (!user.hasCustomSymbol) return this.sendReply("You don't have a custom symbol.");
-		user.customSymbol = null;
+		user.customSymbol = false;
 		user.updateIdentity();
 		user.hasCustomSymbol = false;
 		this.sendReply("Your symbol has been reset.");
