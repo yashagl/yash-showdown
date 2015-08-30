@@ -24,7 +24,7 @@ var shopDisplay = getShopDisplay(shop);
  * @returns {String}
  */
 function currencyName(amount) {
-	var name = " buck";
+	var name = " Battle Point";
 	return amount === 1 ? name : name + "s";
 }
 
@@ -169,13 +169,14 @@ exports.commands = {
 			room.update();
 		}.bind(this));
 	},
-	wallethelp: ["/wallet [user] - Shows the amount of money a user has."],
+	wallethelp: ["/wallet [user] - Shows the amount of Battle Points a user has."],
 
+	givebp: 'givemoney',
 	givebuck: 'givemoney',
 	givebucks: 'givemoney',
 	givemoney: function (target, room, user) {
 		if (!this.can('forcewin')) return false;
-		if (!target || target.indexOf(',') < 0) return this.parse('/help givemoney');
+		if (!target || target.indexOf(',') < 0) return this.parse('/help givebp');
 
 		var parts = target.split(',');
 		var username = parts[0];
@@ -197,13 +198,14 @@ exports.commands = {
 			});
 		});
 	},
-	givemoneyhelp: ["/givemoney [user], [amount] - Give a user a certain amount of money."],
+	givemoneyhelp: ["/givebp [user], [amount] - Give a user a certain amount of Battle Points."],
 
+	takebp: 'takemoney',
 	takebuck: 'takemoney',
 	takebucks: 'takemoney',
 	takemoney: function (target, room, user) {
 		if (!this.can('forcewin')) return false;
-		if (!target || target.indexOf(',') < 0) return this.parse('/help takemoney');
+		if (!target || target.indexOf(',') < 0) return this.parse('/help takebp');
 
 		var parts = target.split(',');
 		var username = parts[0];
@@ -225,8 +227,9 @@ exports.commands = {
 			});
 		});
 	},
-	takemoneyhelp: ["/takemoney [user], [amount] - Take a certain amount of money from a user."],
+	takemoneyhelp: ["/takebp [user], [amount] - Take a certain amount of Battle Points from a user."],
 
+	resetbp: 'resetmoney',
 	resetbuck: 'resetmoney',
 	resetbucks: 'resetmoney',
 	resetmoney: function (target, room, user) {
@@ -237,13 +240,14 @@ exports.commands = {
 			logMoney(user.name + " reset the money of " + target + ".");
 		}.bind(this));
 	},
-	resetmoneyhelp: ["/resetmoney [user] - Reset user's money to zero."],
+	resetmoneyhelp: ["/resetbp [user] - Reset user's Battle Points to zero."],
 
+	transferbp: 'transfermoney',
 	transfer: 'transfermoney',
 	transferbuck: 'transfermoney',
 	transferbucks: 'transfermoney',
 	transfermoney: function (target, room, user) {
-		if (!target || target.indexOf(',') < 0) return this.parse('/help transfermoney');
+		if (!target || target.indexOf(',') < 0) return this.parse('/help transferbp');
 
 		var parts = target.split(',');
 		var username = parts[0];
@@ -274,14 +278,14 @@ exports.commands = {
 			});
 		});
 	},
-	transfermoneyhelp: ["/transfer [user], [amount] - Transfer a certain amount of money to a user."],
+	transfermoneyhelp: ["/transfer [user], [amount] - Transfer a certain amount of Battle Points to a user."],
 
 	store: 'shop',
 	shop: function (target, room, user) {
 		if (!this.canBroadcast()) return;
 		return this.sendReply("|raw|" + shopDisplay);
 	},
-	shophelp: ["/shop - Display items you can buy with money."],
+	shophelp: ["/shop - Display items you can buy with Battle Points."],
 
 	buy: function (target, room, user) {
 		if (!target) return this.parse('/help buy');
@@ -322,6 +326,7 @@ exports.commands = {
 	},
 	resetsymbolhelp: ["/resetsymbol - Resets your custom symbol."],
 
+	bplog: 'moneylog',
 	moneylog: function (target, room, user, connection) {
 		if (!this.can('modlog')) return;
 		var numLines = 15;
@@ -346,6 +351,7 @@ exports.commands = {
 		});
 	},
 
+	bpladder: 'richestuser',
 	moneyladder: 'richestuser',
 	richladder: 'richestuser',
 	richestusers: 'richestuser',
@@ -388,7 +394,7 @@ exports.commands = {
 
 		room.addRaw("<div class='infobox'><h2><center><font color=#24678d>" + user.name + " has started a dice game for </font><font color=red>" + amount + "</font><font color=#24678d>" + currencyName(amount) + ".</font><br><button name='send' value='/joindice'>Click to join.</button></center></h2></div>");
 	},
-	startdicehelp: ["/startdice [bet] - Start a dice game to gamble for money."],
+	startdicehelp: ["/startdice [bet] - Start a dice game to gamble for Battle Points."],
 
 	joindice: function (target, room, user) {
 		if (!room.dice || (room.dice.p1 && room.dice.p2)) return this.errorReply("There is no dice game in it's signup phase in this room.");
@@ -398,7 +404,7 @@ exports.commands = {
 		Database.read('money', user.userid, function (err, userMoney) {
 			if (err) throw err;
 			if (!userMoney) userMoney = 0;
-			if (userMoney < room.dice.bet) return _this.errorReply("You don't have enough bucks to join this game.");
+			if (userMoney < room.dice.bet) return _this.errorReply("You don't have enough Battle Points to join this game.");
 			Database.write('money', userMoney - room.dice.bet, user.userid, function (err) {
 				if (err) throw err;
 				if (!room.dice.p1) {
@@ -534,6 +540,7 @@ exports.commands = {
 		}.bind(this));
 	},
 
+	bpstats: 'economystats',
 	bucks: 'economystats',
 	economystats: function (target, room, user) {
 		if (!this.canBroadcast()) return;
