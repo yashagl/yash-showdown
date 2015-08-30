@@ -681,15 +681,13 @@ Tournament = (function () {
 		// Tournament Battle Winnings
 		//
 
-		var wid = toId(winner);
-		var rid = toId(runnerUp);
 		var tourSize = this.generator.users.size;
 		if (from === winner) {
 			result = 'win';
 			if (tourSize >= sizeRequiredToEarn && this.format !== '1v1random' && this.format !== '1v1challengecup' && this.format !== '1v1') {
-				Database.read('money', wid, function (err, amount) {
+				Database.read('money', toId(from), function (err, amount) {
 					if (err) throw err;
-					Database.write('money', 1, wid, function (err) {
+					Database.write('money', 1, toId(from), function (err) {
 						if (err) throw err;
 					});
 				});
@@ -697,9 +695,9 @@ Tournament = (function () {
 		} else if (to === winner) {
 			result = 'loss';
 			if (tourSize >= sizeRequiredToEarn && this.format !== '1v1random' && this.format !== '1v1challengecup' && this.format !== '1v1') {
-				Database.read('money', wid, function (err, amount) {
+				Database.read('money', toId(to), function (err, amount) {
 					if (err) throw err;
-					Database.write('money', 1, wid, function (err) {
+					Database.write('money', 1, toId(to), function (err) {
 						if (err) throw err;
 					});
 				});
