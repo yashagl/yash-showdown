@@ -676,17 +676,29 @@ Tournament = (function () {
 		var to = Users.get(room.p2);
 
 		var result = 'draw';
+
+		var wid = toId(winner);
+		var rid = toId(runnerUp);
+		var tourSize = this.generator.users.size;
 		if (from === winner) {
 			result = 'win';
-			if (this.generator.users.size >= Core.tournaments.tourSize && this.format !== '1v1random' && this.format !== '1v1challengecup' && this.format !== '1v1') {
-				var winnerBP = Number(Core.stdin('bp', toId(from)));
-				Core.stdout('bp', toId(from), (winnerBP + 1));
+			if (tourSize >= sizeRequiredToEarn && this.format !== '1v1random' && this.format !== '1v1challengecup' && this.format !== '1v1') {
+				Database.read('money', wid, function (err, amount) {
+					if (err) throw err;
+					Database.write('money', 1, wid, function (err) {
+						if (err) throw err;
+					});
+				});
 			}
 		} else if (to === winner) {
 			result = 'loss';
-			if (this.generator.users.size >= Core.tournaments.tourSize && this.format !== '1v1random' && this.format !== '1v1challengecup' && this.format !== '1v1') {
-				var winnerBP = Number(Core.stdin('bp', toId(to)));
-				Core.stdout('bp', toId(to), (winnerBP + 1));
+			if (tourSize >= sizeRequiredToEarn && this.format !== '1v1random' && this.format !== '1v1challengecup' && this.format !== '1v1') {
+				Database.read('money', wid, function (err, amount) {
+					if (err) throw err;
+					Database.write('money', 1, wid, function (err) {
+						if (err) throw err;
+					});
+				});
 			}
 		}
 
