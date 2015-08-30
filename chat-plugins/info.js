@@ -1768,7 +1768,6 @@ var commands = exports.commands = {
 			"- Ausaudriel (Audy)<br />" +
 			"- Castform (Chase, Chaseform, orb castform, Powalen)<br />" +
 			"- Hiroshi Sotomura (Sotomura, Sotomura606)<br />" +
-			"- Lilith (TitanBlade, TwilightBlade)<br />" +
 			"- Livewire<br />" +
 			"- Nolafus<br />" +
 			"- Rukario (PPN)<br />" +
@@ -1778,14 +1777,12 @@ var commands = exports.commands = {
 			"- wolf (wofl)<br />" +
 			"- Zeffy<br /><br />" +
 			"<b>@ Moderators</b><br />" +
-			"- Altairis (Winry)<br />" +
 			"- apocalypseArisen (Megido, omicron, omicronhuh)<br />" +
 			"- Aslan<br />" +
 			"- Christos<br />" +
 			"- Dragon (Aura Blackquill, bellossom, Captain Syrup, Dragii, Erika Senpai, Iris, Kjelle, Miss Fortune, Mitsuruu, Nabooru, Tharja)<br />" +
 			"- Peitharchia (Adrastia, nymph)<br />" +
 			"- Sanguine (Natalya)<br />" +
-			"- Sector (Milena Kunis)<br />" +
 			"- Sweep<br />" +
 			"- Synerjee (Alto Mare, Autumn Reverie)<br />" +
 			"- Yoshikko (air tangela, gloom)<br /><br />" +
