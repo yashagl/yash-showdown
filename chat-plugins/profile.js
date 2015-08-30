@@ -84,7 +84,7 @@ function label(text) {
 }
 
 function currencyName(amount) {
-	var name = " buck";
+	var name = " Battle Points";
 	return amount === 1 ? name : name + "s";
 }
 
@@ -158,5 +158,5 @@ exports.commands = {
 			room.update();
 		}.bind(this));
 	},
-	profilehelp: ["/profile -	Shows information regarding user's name, group, money, and when they were last seen."]
+	profilehelp: ["/profile -	Shows information regarding user's name, group, Battle Points, and when they were last seen."]
 };
