@@ -35,7 +35,7 @@ exports.commands = {
 		case 'new':
 		case 'start':
 		case 'create':
-			if (!user.can('broadcast', null, room)) return this.sendReply("/hangman create - Access denied.");
+			if (!user.can('declare', null, room)) return this.sendReply("/hangman create - Access denied.");
 			if (!room.hangmanEnabled) return this.sendReply("Hangman is disabled in this room.");
 			if (!targetSplit || !targetSplit[2]) return this.sendReply("Usage: /hangman [create], [word], [topic]");
 			var word = toId(targetSplit[1]);
@@ -188,7 +188,7 @@ exports.commands = {
 			this.sendReply("Hangman has been disabled.");
 			break;
 		case 'end':
-			if (!user.can('broadcast', null, room)) return this.sendReply("/hangman end - Access denied.");
+			if (!user.can('declare', null, room)) return this.sendReply("/hangman end - Access denied.");
 			if (!room.hangman) return this.sendReply("There is no hangman game in this room.");
 			room.add("|raw|<b>Hangman has been ended by " + Tools.escapeHTML(user.name) + "</b>.");
 			room.update();
