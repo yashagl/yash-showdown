@@ -2,14 +2,12 @@ var fs = require('fs');
 var path = require('path');
 
 var shop = [
+	['Star', 'Buy a \u2606 to go in front of your name and puts you at the top of the user list. (Goes away if you leave for more than one hour or the server restarts.)', 3],
 	['Ticket', 'Buys a lottery ticket for a chance to win big money.', 5],
-	['Symbol', 'Buys a custom symbol to go infront of name and puts you at top of userlist. (Temporary until restart, certain symbols are blocked)', 5],
-	['Fix', 'Buys the ability to alter your current custom avatar or trainer card. (don\'t buy if you have neither)', 10],
-	['Avatar', 'Buys an custom avatar to be applied to your name (You supply. Images larger than 80x80 may not show correctly)', 20],
-	['League Room', 'Purchases a room at a reduced rate for use with a league.  A roster must be supplied with at least 10 members for this room.', 25],
-	['Trainer', 'Buys a trainer card which shows information through a command. (You supply, can be refused)', 40],
-	['Staff Help', 'Staff member will help set up roomintros and anything else needed in a room. Response may not be immediate.', 50],
-	['Room', 'Buys a chatroom for you to own. (within reason, can be refused)', 100]
+	['Poof', 'Buy a poof message to be added into your pool of possible poofs. Poofs are custom leave messages.', 20],
+	['Fix', 'Buy the ability to alter your current custom avatar. (Don\'t buy this if you don\'t have a custom avatar. If you have a custom avatar and would like to apply it to other usernames, contact the admin "wolf" and don\'t buy this.)', 25],
+	['BlackStar', 'Buy a \u2605 to go in front of your name and puts you at the top of the user list. (Lasts for three weeks.)', 40],
+	['Avatar', 'Buy a custom avatar to be applied to your name. (You supply. Images larger than 80x80 may not show correctly.)', 50]
 ];
 
 var shopDisplay = getShopDisplay(shop);
@@ -112,11 +110,11 @@ function findItem(item, money) {
  * @param {Number} cost - for lottery
  */
 function handleBoughtItem(item, user, cost) {
-	if (item === 'symbol') {
+	if (item === 'star') {
 		user.canCustomSymbol = true;
-		this.sendReply("You have purchased a custom symbol. You can use /customsymbol to get your custom symbol.");
+		this.sendReply("You have purchased a \u2606. You can use /star to get your \u2606.");
 		this.sendReply("You will have this until you log off for more than an hour.");
-		this.sendReply("If you do not want your custom symbol anymore, you may use /resetsymbol to go back to your old symbol.");
+		this.sendReply("If you do not want your \u2606 anymore, you may use /resetsymbol to go back to your old symbol.");
 	} else if (item === 'ticket') {
 		var _this = this;
 		Database.get('pot', function (err, pot) {
@@ -305,18 +303,14 @@ exports.commands = {
 	},
 	buyhelp: ["/buy [command] - Buys an item from the shop."],
 
-	customsymbol: function (target, room, user) {
+	star: function (target, room, user) {
 		if (!user.canCustomSymbol && user.id !== user.userid) return this.sendReply("You need to buy this item from the shop.");
-		if (!target || target.length > 1) return this.parse('/help customsymbol');
-		if (target.match(/[A-Za-z\d]+/g) || '|?!+$%@\u2605=&~#\u03c4\u00a3\u03dd\u03b2\u039e\u03a9\u0398\u03a3\u00a9'.indexOf(target) >= 0) {
-			return this.sendReply("Sorry, but you cannot change your symbol to this for safety/stability reasons.");
-		}
-		user.customSymbol = target;
+		user.customSymbol = '\u2606';
 		user.updateIdentity();
 		user.canCustomSymbol = false;
 		user.hasCustomSymbol = true;
 	},
-	customsymbolhelp: ["/customsymbol [symbol] - Get a custom symbol."],
+	starhelp: ["/star - Get a \u2606."],
 
 	resetcustomsymbol: 'resetsymbol',
 	resetsymbol: function (target, room, user) {
