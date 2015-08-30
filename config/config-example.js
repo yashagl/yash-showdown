@@ -153,6 +153,27 @@ exports.simulatorprocesses = 1;
 // from the `users` array. The default is 1 hour.
 exports.inactiveuserthreshold = 1000 * 60 * 60;
 
+// tellsexpiryage - how long an offline message remains in existence before being removed.
+// By default, 7 days
+exports.tellsexpiryage = 1000 * 60 * 60 * 24 * 7;
+
+// tellrank - the rank that offline messaging is available to. By default, available to voices
+// and above. Set to ' ' to allow all users to use offline messaging and `false` to disable
+// offline messaging completely. Set to `'autoconfirmed'` to allow only autoconfirmed users
+// to send offline messages.
+exports.tellrank = ' ';
+
+// database use to store user's money, tickets, etc.
+exports.database = 'lowdb';
+
+// mysql configuration to create the connection to the database.
+exports.mysql = {
+	host: 'localhost',
+	user: 'me',
+	password: 'secret',
+	database: 'my_db'
+};
+
 // Custom avatars.
 // This allows you to specify custom avatar images for users on your server.
 // Place custom avatar files under the /config/avatars/ directory.
@@ -514,6 +535,9 @@ exports.customavatars = {
 	'soulcooler': 'soulcooler.gif',
 };
 
+// custom avatars appear in profile by specifiying server url.
+exports.avatarurl = 'http://cbc.pokecommunity.com/config';
+
 // Tournament announcements
 // When tournaments are created in rooms listed below, they will be announced in
 // the server's main tournament room (either the specified tourroom or by default
@@ -530,16 +554,6 @@ exports.appealurl = 'http://www.pokecommunity.com/showthread.php?t=289012#senior
 // replsocketmode - the file mode bits to use for the repl sockets
 exports.replsocketprefix = './logs/repl/';
 exports.replsocketmode = 0600;
-
-// tellsexpiryage - how long an offline message remains in existence before being removed.
-// By default, 7 days
-exports.tellsexpiryage = 1000 * 60 * 60 * 24 * 7;
-
-// tellrank - the rank that offline messaging is available to. By default, available to voices
-// and above. Set to ' ' to allow all users to use offline messaging and `false` to disable
-// offline messaging completely. Set to `'autoconfirmed'` to allow only autoconfirmed users
-// to send offline messages.
-exports.tellrank = ' ';
 
 // permissions and groups:
 //   Each entry in `grouplist' is a seperate group. Some of the members are "special"
