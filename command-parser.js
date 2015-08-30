@@ -444,7 +444,7 @@ var parse = exports.parse = function (message, room, user, connection, levelsDee
 	}
 
 	if (message.charAt(0) === '!') {
-		if (message === '!emoticons' || message === '!emoticon' || message === '!emotes') return connection.sendTo(room, "Please use /emoticons instead of !emoticons.");
+		if (message === '!emoticons' || message === '!emotes') return connection.sendTo(room, "Please use /emoticons instead of !emoticons.");
 	}
 
 	if (VALID_COMMAND_TOKENS.includes(message.charAt(0)) && message.charAt(1) !== message.charAt(0)) {
