@@ -113,8 +113,8 @@ Profile.prototype.group = function () {
 	return label('Group') + 'Regular User';
 };
 
-Profile.prototype.money = function (amount) {
-	return label('Money') + amount + currencyName(amount);
+Profile.prototype.bp = function (amount) {
+	return label('bp') + amount + currencyName(amount);
 };
 
 Profile.prototype.name = function () {
@@ -130,13 +130,13 @@ Profile.prototype.seen = function (timeAgo) {
 Profile.prototype.show = function (callback) {
 	var userid = toId(this.username);
 
-	Database.read('money', userid, function (err, money) {
+	Database.read('bp', userid, function (err, bp) {
 		if (err) throw err;
-		if (!money) money = 0;
+		if (!bp) bp = 0;
 		return callback(this.avatar() +
 										SPACE + this.name() + BR +
 										SPACE + this.group() + BR +
-										SPACE + this.money(money) + BR +
+										SPACE + this.bp(bp) + BR +
 										SPACE + this.seen(Seen[userid]) +
 										'<br clear="all">');
 	}.bind(this));
