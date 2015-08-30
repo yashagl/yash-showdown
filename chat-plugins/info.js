@@ -1731,12 +1731,11 @@ var commands = exports.commands = {
 	groups: function (target, room, user) {
 		if (!this.canBroadcast()) return;
 		this.sendReplyBox(
-			"+ <b>Voice</b> - They can use ! commands like !groups, and talk during moderated chat<br />" +
-			"% <b>Driver</b> - The above, and they can mute. Global % can also lock users and check for alts<br />" +
-			"@ <b>Moderator</b> - The above, and they can ban users<br />" +
-			"&amp; <b>Leader</b> - The above, and they can promote to moderator and force ties<br />" +
-			"# <b>Room Owner</b> - They are leaders of the room and can almost totally control it<br />" +
-			"~ <b>Administrator</b> - They can do anything, like change what this message says"
+			"+ <b>Voices</b> - Respected regulars. They can create and moderate tournaments; start and end polls; use /html, /declare, /showimage, /announce; and talk during moderated chat.<br />" +
+			"\u2605 <b>Players</b> - Members who have won a notable competition (temporary).<br />" +
+			"@ <b>Moderators</b> - Moderate the battle server and provide feedback on staff decisions. They can use most commands.<br />" +
+			"~ <b>Administrators</b> - Manage the battle server. They can use all commands.<br />" +
+			"# <b>Room Owners</b> - Manage rooms and can almost totally control them."
 		);
 	},
 	groupshelp: ["/groups - Explains what the + % @ # & next to people's names mean.",
@@ -1758,9 +1757,40 @@ var commands = exports.commands = {
 	opensourcehelp: ["/opensource - Links to PS's source code repository.",
 		"!opensource - Show everyone that information. Requires: + % @ # & ~"],
 
+	stafflist: 'staff',
+	staffalts: 'staff',
+	staffalt: 'staff',
 	staff: function (target, room, user) {
 		if (!this.canBroadcast()) return;
-		this.sendReplyBox("<a href=\"https://www.smogon.com/sim/staff_list\">Pok&eacute;mon Showdown Staff List</a>");
+		this.sendReplyBox(
+			"<b>~ Administrators</b><br />" +
+			"- Anti (Papa Anti)<br />" +
+			"- Ausaudriel (Audy)<br />" +
+			"- Castform (Chase, Chaseform, orb castform, Powalen)<br />" +
+			"- Hiroshi Sotomura (Sotomura, Sotomura606)<br />" +
+			"- Lilith (TitanBlade, TwilightBlade)<br />" +
+			"- Livewire<br />" +
+			"- Nolafus<br />" +
+			"- Rukario (PPN)<br />" +
+			"- Sheep (Cirnysheep)<br />" +
+			"- shenanigans (razor leaf, unkempt harold)<br />" +
+			"- Sylphiel<br />" +
+			"- wolf (wofl)<br />" +
+			"- Zeffy<br /><br />" +
+			"<b>@ Moderators</b><br />" +
+			"- Altairis (Winry)<br />" +
+			"- apocalypseArisen (Megido, omicron, omicronhuh)<br />" +
+			"- Aslan<br />" +
+			"- Christos<br />" +
+			"- Dragon (Aura Blackquill, bellossom, Captain Syrup, Dragii, Erika Senpai, Iris, Kjelle, Miss Fortune, Mitsuruu, Nabooru, Tharja)<br />" +
+			"- Peitharchia (Adrastia, nymph)<br />" +
+			"- Sanguine (Natalya)<br />" +
+			"- Sector (Milena Kunis)<br />" +
+			"- Sweep<br />" +
+			"- Synerjee (Alto Mare, Autumn Reverie)<br />" +
+			"- Yoshikko (air tangela, gloom)<br /><br />" +
+			"<a href=\"http://www.pokecommunity.com/showthread.php?t=289012#staff\">Click here for more details.</a>"
+		);
 	},
 
 	forums: function (target, room, user) {
@@ -1799,6 +1829,7 @@ var commands = exports.commands = {
 		if (!this.canBroadcast()) return;
 		this.sendReplyBox(
 			"New to competitive Pok&eacute;mon?<br />" +
+			"- <a href=\"http://www.pokecommunity.com/showthread.php?t=332177#resources\">PC's Battling & Team Building Resources</a><br />" +
 			"- <a href=\"https://www.smogon.com/sim/ps_guide\">Beginner's Guide to Pok&eacute;mon Showdown</a><br />" +
 			"- <a href=\"https://www.smogon.com/dp/articles/intro_comp_pokemon\">An introduction to competitive Pok&eacute;mon</a><br />" +
 			"- <a href=\"https://www.smogon.com/bw/articles/bw_tiers\">What do 'OU', 'UU', etc mean?</a><br />" +
@@ -2015,7 +2046,7 @@ var commands = exports.commands = {
 			if (!this.canBroadcast()) return;
 			this.sendReplyBox("Please follow the rules:<br />" +
 				(room.rulesLink ? "- <a href=\"" + Tools.escapeHTML(room.rulesLink) + "\">" + Tools.escapeHTML(room.title) + " room rules</a><br />" : "") +
-				"- <a href=\"https://pokemonshowdown.com/rules\">" + (room.rulesLink ? "Global rules" : "Rules") + "</a>");
+				"- <a href=\"http://www.pokecommunity.com/showthread.php?t=289012#rules\">" + (room.rulesLink ? "Global rules" : "PC Battle Server Rules") + "</a>");
 			return;
 		}
 		if (!this.can('roommod', null, room)) return;
