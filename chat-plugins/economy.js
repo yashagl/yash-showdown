@@ -171,7 +171,7 @@ exports.commands = {
 
 		var parts = target.split(',');
 		var username = parts[0];
-		var amount = isbp(parts[1]);
+		var amount = isBP(parts[1]);
 
 		if (typeof amount === 'string') return this.sendReply(amount);
 
