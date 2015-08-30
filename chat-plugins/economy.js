@@ -136,7 +136,7 @@ function handleBoughtItem(item, user, cost) {
 		});
 	} else {
 		var msg = '**' + user.name + " has bought " + item + ".**";
-		this.sendReply('Please contact the admin "wolf" to get ' + item + '. Use "/tell wolf, message here" without the "".');
+		this.sendReply('Please contact the admin "wolf" to get ' + item + '. Use "/tell wolf, message here".');
 	}
 }
 
