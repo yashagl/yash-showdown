@@ -11,7 +11,7 @@ describe('lowdb', function () {
 	});
 
 	it('should create a user when writing', function (done) {
-		DB.write('money', 1, 'testuser2', function (err, value) {
+		DB.write('bp', 1, 'testuser2', function (err, value) {
 			assert.deepEqual(typeof err, 'object');
 
 			setTimeout(function () {
