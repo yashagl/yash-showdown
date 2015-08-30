@@ -91,10 +91,10 @@ databases.lowdb = function () {
 
 	methods.total = function (key, callback) {
 		var total = db('users').reduce(function (acc, user) {
-			if (!acc[key] || !user[key]) return {money: acc[key]};
-			return {money: acc[key] + user[key]};
+			if (!acc[key] || !user[key]) return {bp: acc[key]};
+			return {bp: acc[key] + user[key]};
 		});
-		callback(null, total.money);
+		callback(null, total.bp);
 	};
 
 	methods.countUsers = function (callback) {
