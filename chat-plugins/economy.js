@@ -136,13 +136,7 @@ function handleBoughtItem(item, user, cost) {
 		});
 	} else {
 		var msg = '**' + user.name + " has bought " + item + ".**";
-		Rooms.rooms.staff.add('|c|~Shop Alert|' + msg);
-		Rooms.rooms.staff.update();
-		for (var i in Users.users) {
-			if (Users.users[i].group === '~' || Users.users[i].group === '&') {
-				Users.users[i].send('|pm|~Shop Alert|' + Users.users[i].getIdentity() + '|' + msg);
-			}
-		}
+		this.sendReply('Please contact the admin "wolf" to get ' + item + '. Use "/tell wolf, message here" without the "".');
 	}
 }
 
