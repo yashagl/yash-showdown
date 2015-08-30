@@ -3,7 +3,7 @@ var path = require('path');
 
 var shop = [
 	['Star', 'Buy a \u2606 to go in front of your name and puts you at the top of the user list. (Goes away if you leave for more than one hour or the server restarts.)', 3],
-	['Ticket', 'Buys a lottery ticket for a chance to win big money.', 5],
+	['Ticket', 'Buys a lottery ticket for a chance to win big bp.', 5],
 	['Poof', 'Buy a poof message to be added into your pool of possible poofs. Poofs are custom leave messages.', 20],
 	['Fix', 'Buy the ability to alter your current custom avatar. (Don\'t buy this if you don\'t have a custom avatar. If you have a custom avatar and would like to apply it to other usernames, contact the admin "wolf" and don\'t buy this.)', 25],
 	['BlackStar', 'Buy a \u2605 to go in front of your name and puts you at the top of the user list. (Lasts for three weeks.)', 40],
@@ -29,27 +29,27 @@ function currencyName(amount) {
 }
 
 /**
- * Checks if the money input is actually money.
+ * Checks if the bp input is actually bp.
  *
- * @param {String} money
+ * @param {String} bp
  * @return {String|Number}
  */
-function isMoney(money) {
-	var numMoney = Number(money);
-	if (isNaN(money)) return "Must be a number.";
-	if (String(money).includes('.')) return "Cannot contain a decimal.";
-	if (numMoney < 1) return "Cannot be less than one buck.";
-	return numMoney;
+function isbp(bp) {
+	var numbp = Number(bp);
+	if (isNaN(bp)) return "Must be a number.";
+	if (String(bp).includes('.')) return "Cannot contain a decimal.";
+	if (numbp < 1) return "Cannot be less than one buck.";
+	return numbp;
 }
 
 /**
- * Log money to logs/money.txt file.
+ * Log bp to logs/bp.txt file.
  *
  * @param {String} message
  */
-function logMoney(message) {
+function logbp(message) {
 	if (!message) return;
-	var file = path.join(__dirname, '../logs/money.txt');
+	var file = path.join(__dirname, '../logs/bp.txt');
 	var date = "[" + new Date().toUTCString() + "] ";
 	var msg = message + "\n";
 	fs.appendFile(file, date + msg);
@@ -82,19 +82,19 @@ function getShopDisplay(shop) {
  * Find the item in the shop.
  *
  * @param {String} item
- * @param {Number} money
+ * @param {Number} bp
  * @return {Object}
  */
-function findItem(item, money) {
+function findItem(item, bp) {
 	var len = shop.length;
 	var price = 0;
 	var amount = 0;
 	while (len--) {
 		if (item.toLowerCase() !== shop[len][0].toLowerCase()) continue;
 		price = shop[len][2];
-		if (price > money) {
-			amount = price - money;
-			this.sendReply("You don't have you enough money for this. You need " + amount + currencyName(amount) + " more to buy " + item + ".");
+		if (price > bp) {
+			amount = price - bp;
+			this.sendReply("You don't have you enough bp for this. You need " + amount + currencyName(amount) + " more to buy " + item + ".");
 			return false;
 		}
 		return price;
@@ -165,16 +165,16 @@ exports.commands = {
 	},
 	wallethelp: ["/wallet [user] - Shows the amount of Battle Points a user has."],
 
-	givebp: 'givemoney',
-	givebuck: 'givemoney',
-	givebucks: 'givemoney',
-	givemoney: function (target, room, user) {
+	givebp: 'givebp',
+	givebuck: 'givebp',
+	givebucks: 'givebp',
+	givebp: function (target, room, user) {
 		if (!this.can('forcewin')) return false;
 		if (!target || target.indexOf(',') < 0) return this.parse('/help givebp');
 
 		var parts = target.split(',');
 		var username = parts[0];
-		var amount = isMoney(parts[1]);
+		var amount = isbp(parts[1]);
 
 		if (typeof amount === 'string') return this.sendReply(amount);
 
@@ -188,22 +188,22 @@ exports.commands = {
 				total = total + currencyName(total);
 				_this.sendReply(username + " was given " + amount + ". " + username + " now has " + total + ".");
 				if (Users.get(username)) Users.get(username).popup(user.name + " has given you " + amount + ". You now have " + total + ".");
-				logMoney(username + " was given " + amount + " by " + user.name + ".");
+				logbp(username + " was given " + amount + " by " + user.name + ".");
 			});
 		});
 	},
-	givemoneyhelp: ["/givebp [user], [amount] - Give a user a certain amount of Battle Points."],
+	givebphelp: ["/givebp [user], [amount] - Give a user a certain amount of Battle Points."],
 
-	takebp: 'takemoney',
-	takebuck: 'takemoney',
-	takebucks: 'takemoney',
-	takemoney: function (target, room, user) {
+	takebp: 'takebp',
+	takebuck: 'takebp',
+	takebucks: 'takebp',
+	takebp: function (target, room, user) {
 		if (!this.can('forcewin')) return false;
 		if (!target || target.indexOf(',') < 0) return this.parse('/help takebp');
 
 		var parts = target.split(',');
 		var username = parts[0];
-		var amount = isMoney(parts[1]);
+		var amount = isbp(parts[1]);
 
 		if (typeof amount === 'string') return this.sendReply(amount);
 
@@ -217,35 +217,35 @@ exports.commands = {
 				total = total + currencyName(total);
 				_this.sendReply(username + " losted " + amount + ". " + username + " now has " + total + ".");
 				if (Users.get(username)) Users.get(username).popup(user.name + " has taken " + amount + " from you. You now have " + total + ".");
-				logMoney(username + " had " + amount + " taken away by " + user.name + ".");
+				logbp(username + " had " + amount + " taken away by " + user.name + ".");
 			});
 		});
 	},
-	takemoneyhelp: ["/takebp [user], [amount] - Take a certain amount of Battle Points from a user."],
+	takebphelp: ["/takebp [user], [amount] - Take a certain amount of Battle Points from a user."],
 
-	resetbp: 'resetmoney',
-	resetbuck: 'resetmoney',
-	resetbucks: 'resetmoney',
-	resetmoney: function (target, room, user) {
+	resetbp: 'resetbp',
+	resetbuck: 'resetbp',
+	resetbucks: 'resetbp',
+	resetbp: function (target, room, user) {
 		if (!this.can('forcewin')) return false;
 		Database.write('bp', 0, toId(target), function (err, total) {
 			if (err) throw err;
 			this.sendReply(target + " now has " + total + currencyName(total) + ".");
-			logMoney(user.name + " reset the money of " + target + ".");
+			logbp(user.name + " reset the bp of " + target + ".");
 		}.bind(this));
 	},
-	resetmoneyhelp: ["/resetbp [user] - Reset user's Battle Points to zero."],
+	resetbphelp: ["/resetbp [user] - Reset user's Battle Points to zero."],
 
-	transferbp: 'transfermoney',
-	transfer: 'transfermoney',
-	transferbuck: 'transfermoney',
-	transferbucks: 'transfermoney',
-	transfermoney: function (target, room, user) {
+	transferbp: 'transferbp',
+	transfer: 'transferbp',
+	transferbuck: 'transferbp',
+	transferbucks: 'transferbp',
+	transferbp: function (target, room, user) {
 		if (!target || target.indexOf(',') < 0) return this.parse('/help transferbp');
 
 		var parts = target.split(',');
 		var username = parts[0];
-		var amount = isMoney(parts[1]);
+		var amount = isbp(parts[1]);
 
 		if (toId(username) === user.userid) return this.sendReply("You cannot transfer to yourself.");
 		if (username.length > 19) return this.sendReply("Username cannot be longer than 19 characters.");
@@ -255,7 +255,7 @@ exports.commands = {
 		Database.read('bp', user.userid, function (err, userTotal) {
 			if (err) throw err;
 			if (!userTotal) userTotal = 0;
-			if (amount > userTotal) return _this.sendReply("You cannot transfer more money than what you have.");
+			if (amount > userTotal) return _this.sendReply("You cannot transfer more bp than what you have.");
 			Database.read('bp', toId(username), function (err, targetTotal) {
 				if (err) throw err;
 				if (!targetTotal) targetTotal = 0;
@@ -266,13 +266,13 @@ exports.commands = {
 						targetTotal = targetTotal + currencyName(targetTotal);
 						_this.sendReply("You have successfully transferred " + amount + ". You now have " + userTotal + ".");
 						if (Users.get(username)) Users.get(username).popup(user.name + " has transferred " + amount + ". You now have " + targetTotal + ".");
-						logMoney(user.name + " transferred " + amount + " to " + username + ". " + user.name + " now has " + userTotal + " and " + username + " now has " + targetTotal + ".");
+						logbp(user.name + " transferred " + amount + " to " + username + ". " + user.name + " now has " + userTotal + " and " + username + " now has " + targetTotal + ".");
 					});
 				});
 			});
 		});
 	},
-	transfermoneyhelp: ["/transfer [user], [amount] - Transfer a certain amount of Battle Points to a user."],
+	transferbphelp: ["/transfer [user], [amount] - Transfer a certain amount of Battle Points to a user."],
 
 	store: 'shop',
 	shop: function (target, room, user) {
@@ -293,7 +293,7 @@ exports.commands = {
 				if (err) throw err;
 				_this.sendReply("You have bought " + target + " for " + cost +  currencyName(cost) + ". You now have " + total + currencyName(total) + " left.");
 				room.addRaw(user.name + " has bought <b>" + target + "</b> from the shop.");
-				logMoney(user.name + " has bought " + target + " from the shop. This user now has " + total + currencyName(total) + ".");
+				logbp(user.name + " has bought " + target + " from the shop. This user now has " + total + currencyName(total) + ".");
 				handleBoughtItem.call(_this, target.toLowerCase(), user, cost);
 				room.update();
 			});
@@ -331,8 +331,8 @@ exports.commands = {
 	},
 	resetsymbolhelp: ["/resetsymbol - Resets your custom symbol."],
 
-	bplog: 'moneylog',
-	moneylog: function (target, room, user, connection) {
+	bplog: 'bplog',
+	bplog: function (target, room, user, connection) {
 		if (!this.can('modlog')) return;
 		var numLines = 15;
 		var matching = true;
@@ -341,7 +341,7 @@ exports.commands = {
 			matching = false;
 		}
 		var topMsg = "Displaying the last " + numLines + " lines of transactions:\n";
-		var file = path.join(__dirname, '../logs/money.txt');
+		var file = path.join(__dirname, '../logs/bp.txt');
 		fs.exists(file, function (exists) {
 			if (!exists) return connection.popup("No transactions.");
 			fs.readFile(file, 'utf8', function (err, data) {
@@ -357,20 +357,20 @@ exports.commands = {
 	},
 
 	bpladder: 'richestuser',
-	moneyladder: 'richestuser',
+	bpladder: 'richestuser',
 	richladder: 'richestuser',
 	richestusers: 'richestuser',
 	richestuser: function (target, room, user) {
 		if (!this.canBroadcast()) return;
 		var _this = this;
-		var display = '<center><u><b>Richest Users</b></u></center><br><table border="1" cellspacing="0" cellpadding="5" width="100%"><tbody><tr><th>Rank</th><th>Username</th><th>Money</th></tr>';
+		var display = '<center><u><b>Richest Users</b></u></center><br><table border="1" cellspacing="0" cellpadding="5" width="100%"><tbody><tr><th>Rank</th><th>Username</th><th>bp</th></tr>';
 		Database.sortDesc('bp', 10, function (err, users) {
 			if (err) throw err;
 			if (!users.length) {
-				_this.sendReplyBox("Money ladder is empty.");
+				_this.sendReplyBox("bp ladder is empty.");
 			} else {
 				users.forEach(function (user, index) {
-					display += "<tr><td>" + (index + 1) + "</td><td>" + user.username + "</td><td>" + user.money + "</td></tr>";
+					display += "<tr><td>" + (index + 1) + "</td><td>" + user.username + "</td><td>" + user.bp + "</td></tr>";
 				});
 				display += "</tbody></table>";
 				_this.sendReply("|raw|" + display);
@@ -386,7 +386,7 @@ exports.commands = {
 		if (!target) return this.parse('/help startdice');
 		if (!this.canTalk()) return this.errorReply("You can not start dice games while unable to speak.");
 
-		var amount = isMoney(target);
+		var amount = isbp(target);
 
 		if (typeof amount === 'string') return this.sendReply(amount);
 		if (!room.dice) room.dice = {};
@@ -406,11 +406,11 @@ exports.commands = {
 		if (!this.canTalk()) return this.errorReply("You may not join dice games while unable to speak.");
 		if (room.dice.p1 === user.userid) return this.errorReply("You already entered this dice game.");
 		var _this = this;
-		Database.read('bp', user.userid, function (err, userMoney) {
+		Database.read('bp', user.userid, function (err, userbp) {
 			if (err) throw err;
-			if (!userMoney) userMoney = 0;
-			if (userMoney < room.dice.bet) return _this.errorReply("You don't have enough Battle Points to join this game.");
-			Database.write('bp', userMoney - room.dice.bet, user.userid, function (err) {
+			if (!userbp) userbp = 0;
+			if (userbp < room.dice.bet) return _this.errorReply("You don't have enough Battle Points to join this game.");
+			Database.write('bp', userbp - room.dice.bet, user.userid, function (err) {
 				if (err) throw err;
 				if (!room.dice.p1) {
 					room.dice.p1 = user.userid;
