@@ -3,7 +3,7 @@ var path = require('path');
 
 var shop = [
 	['Star', 'Buy a \u2606 to go in front of your name and puts you at the top of the user list. (Goes away if you leave for more than one hour or the server restarts.)', 3],
-	['Ticket', 'Buys a lottery ticket for a chance to win big bp.', 5],
+	['Ticket', 'Buys a lottery ticket for a chance to win big BP.', 5],
 	['Poof', 'Buy a poof message to be added into your pool of possible poofs. Poofs are custom leave messages.', 20],
 	['Fix', 'Buy the ability to alter your current custom avatar. (Don\'t buy this if you don\'t have a custom avatar. If you have a custom avatar and would like to apply it to other usernames, contact the admin "wolf" and don\'t buy this.)', 25],
 	['BlackStar', 'Buy a \u2605 to go in front of your name and puts you at the top of the user list. (Lasts for three weeks.)', 40],
@@ -29,25 +29,25 @@ function currencyName(amount) {
 }
 
 /**
- * Checks if the bp input is actually bp.
+ * Checks if the money input is actually money.
  *
- * @param {String} bp
+ * @param {String} money
  * @return {String|Number}
  */
-function isbp(bp) {
-	var numbp = Number(bp);
+function isBP(bp) {
+	var numBP = Number(bp);
 	if (isNaN(bp)) return "Must be a number.";
 	if (String(bp).includes('.')) return "Cannot contain a decimal.";
-	if (numbp < 1) return "Cannot be less than one buck.";
-	return numbp;
+	if (numBP < 1) return "Cannot be less than one Battle Point.";
+	return numBP;
 }
 
 /**
- * Log bp to logs/bp.txt file.
+ * Log money to logs/money.txt file.
  *
  * @param {String} message
  */
-function logbp(message) {
+function logBP(message) {
 	if (!message) return;
 	var file = path.join(__dirname, '../logs/bp.txt');
 	var date = "[" + new Date().toUTCString() + "] ";
@@ -82,7 +82,7 @@ function getShopDisplay(shop) {
  * Find the item in the shop.
  *
  * @param {String} item
- * @param {Number} bp
+ * @param {Number} money
  * @return {Object}
  */
 function findItem(item, bp) {
@@ -94,7 +94,7 @@ function findItem(item, bp) {
 		price = shop[len][2];
 		if (price > bp) {
 			amount = price - bp;
-			this.sendReply("You don't have you enough bp for this. You need " + amount + currencyName(amount) + " more to buy " + item + ".");
+			this.sendReply("You don't have enough Battle Points for this. You need " + amount + currencyName(amount) + " more to buy " + item + ".");
 			return false;
 		}
 		return price;
@@ -203,7 +203,7 @@ exports.commands = {
 
 		var parts = target.split(',');
 		var username = parts[0];
-		var amount = isbp(parts[1]);
+		var amount = isBP(parts[1]);
 
 		if (typeof amount === 'string') return this.sendReply(amount);
 
@@ -217,7 +217,7 @@ exports.commands = {
 				total = total + currencyName(total);
 				_this.sendReply(username + " losted " + amount + ". " + username + " now has " + total + ".");
 				if (Users.get(username)) Users.get(username).popup(user.name + " has taken " + amount + " from you. You now have " + total + ".");
-				logbp(username + " had " + amount + " taken away by " + user.name + ".");
+				logBP(username + " had " + amount + " taken away by " + user.name + ".");
 			});
 		});
 	},
@@ -231,7 +231,7 @@ exports.commands = {
 		Database.write('bp', 0, toId(target), function (err, total) {
 			if (err) throw err;
 			this.sendReply(target + " now has " + total + currencyName(total) + ".");
-			logbp(user.name + " reset the bp of " + target + ".");
+			logBP(user.name + " reset the bp of " + target + ".");
 		}.bind(this));
 	},
 	resetbphelp: ["/resetbp [user] - Reset user's Battle Points to zero."],
@@ -245,7 +245,7 @@ exports.commands = {
 
 		var parts = target.split(',');
 		var username = parts[0];
-		var amount = isbp(parts[1]);
+		var amount = isBP(parts[1]);
 
 		if (toId(username) === user.userid) return this.sendReply("You cannot transfer to yourself.");
 		if (username.length > 19) return this.sendReply("Username cannot be longer than 19 characters.");
@@ -255,7 +255,7 @@ exports.commands = {
 		Database.read('bp', user.userid, function (err, userTotal) {
 			if (err) throw err;
 			if (!userTotal) userTotal = 0;
-			if (amount > userTotal) return _this.sendReply("You cannot transfer more bp than what you have.");
+			if (amount > userTotal) return _this.sendReply("You cannot transfer more Battle Points than what you have.");
 			Database.read('bp', toId(username), function (err, targetTotal) {
 				if (err) throw err;
 				if (!targetTotal) targetTotal = 0;
@@ -266,7 +266,7 @@ exports.commands = {
 						targetTotal = targetTotal + currencyName(targetTotal);
 						_this.sendReply("You have successfully transferred " + amount + ". You now have " + userTotal + ".");
 						if (Users.get(username)) Users.get(username).popup(user.name + " has transferred " + amount + ". You now have " + targetTotal + ".");
-						logbp(user.name + " transferred " + amount + " to " + username + ". " + user.name + " now has " + userTotal + " and " + username + " now has " + targetTotal + ".");
+						logBP(user.name + " transferred " + amount + " to " + username + ". " + user.name + " now has " + userTotal + " and " + username + " now has " + targetTotal + ".");
 					});
 				});
 			});
@@ -293,7 +293,7 @@ exports.commands = {
 				if (err) throw err;
 				_this.sendReply("You have bought " + target + " for " + cost +  currencyName(cost) + ". You now have " + total + currencyName(total) + " left.");
 				room.addRaw(user.name + " has bought <b>" + target + "</b> from the shop.");
-				logbp(user.name + " has bought " + target + " from the shop. This user now has " + total + currencyName(total) + ".");
+				logBP(user.name + " has bought " + target + " from the shop. This user now has " + total + currencyName(total) + ".");
 				handleBoughtItem.call(_this, target.toLowerCase(), user, cost);
 				room.update();
 			});
@@ -367,7 +367,7 @@ exports.commands = {
 		Database.sortDesc('bp', 10, function (err, users) {
 			if (err) throw err;
 			if (!users.length) {
-				_this.sendReplyBox("bp ladder is empty.");
+				_this.sendReplyBox("Battle Points ladder is empty.");
 			} else {
 				users.forEach(function (user, index) {
 					display += "<tr><td>" + (index + 1) + "</td><td>" + user.username + "</td><td>" + user.bp + "</td></tr>";
@@ -386,7 +386,7 @@ exports.commands = {
 		if (!target) return this.parse('/help startdice');
 		if (!this.canTalk()) return this.errorReply("You can not start dice games while unable to speak.");
 
-		var amount = isbp(target);
+		var amount = isBP(target);
 
 		if (typeof amount === 'string') return this.sendReply(amount);
 		if (!room.dice) room.dice = {};
@@ -406,11 +406,11 @@ exports.commands = {
 		if (!this.canTalk()) return this.errorReply("You may not join dice games while unable to speak.");
 		if (room.dice.p1 === user.userid) return this.errorReply("You already entered this dice game.");
 		var _this = this;
-		Database.read('bp', user.userid, function (err, userbp) {
+		Database.read('bp', user.userid, function (err, userBP) {
 			if (err) throw err;
-			if (!userbp) userbp = 0;
-			if (userbp < room.dice.bet) return _this.errorReply("You don't have enough Battle Points to join this game.");
-			Database.write('bp', userbp - room.dice.bet, user.userid, function (err) {
+			if (!userBP) userBP = 0;
+			if (userBP < room.dice.bet) return _this.errorReply("You don't have enough Battle Points to join this game.");
+			Database.write('bp', userBP - room.dice.bet, user.userid, function (err) {
 				if (err) throw err;
 				if (!room.dice.p1) {
 					room.dice.p1 = user.userid;
