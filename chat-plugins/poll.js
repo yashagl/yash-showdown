@@ -28,7 +28,7 @@ for (var id in Rooms.rooms) {
 
 exports.commands = {
 	poll: function (target, room, user) {
-		if (!this.can('broadcast', null, room)) return false;
+		if (!this.can('poll', null, room)) return false;
 		if (!Poll[room.id]) Poll.reset(room.id);
 		if (Poll[room.id].question) return this.sendReply("There is currently a poll going on already.");
 		if (!this.canTalk()) return;
@@ -52,10 +52,10 @@ exports.commands = {
 		Poll[room.id].display = '<h2>' + Tools.escapeHTML(Poll[room.id].question) + '&nbsp;&nbsp;<font size="1" color="#AAAAAA">/vote OPTION</font><br><font size="1" color="#AAAAAA">Poll started by <em>' + user.name + '</em></font><br><hr>&nbsp;&nbsp;&nbsp;&nbsp;' + pollOptions;
 		room.add('|raw|<div class="infobox">' + Poll[room.id].display + '</div>');
 	},
-
 	pollhelp: ["/poll [question], [option 1], [option 2]... - Create a poll where users can vote on an option."],
+
 	endpoll: function (target, room, user) {
-		if (!this.can('broadcast', null, room)) return false;
+		if (!this.can('poll', null, room)) return false;
 		if (!Poll[room.id]) Poll.reset(room.id);
 		if (!Poll[room.id].question) return this.sendReply("There is no poll to end in this room.");
 
@@ -99,13 +99,13 @@ exports.commands = {
 
 	elimtour: 'etour',
 	etour: function (target, room, user) {
-		if (!this.can('broadcast', null, room)) return;
+		if (!this.can('voicetourmoderation')) return;
 		this.parse('/tour new ' + target + ', elimination');
 	},
 
 	roundrobintour: 'rtour',
 	rtour: function (target, room, user) {
-		if (!this.can('broadcast', null, room)) return;
+		if (!this.can('voicetourmoderation')) return;
 		this.parse('/tour new ' + target + ', roundrobin');
 	},
 
