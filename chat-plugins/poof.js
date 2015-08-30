@@ -85,7 +85,7 @@ exports.commands = {
 			}).join('');
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
-			user.disconnectAll();
+			user.leaveRoom(room);
 		} else if (userid.toUpperCase() === 'ABSOL98SK') {
 			var message = target || absol98sk[Math.floor(Math.random() * absol98sk.length)];
 
@@ -95,7 +95,7 @@ exports.commands = {
 			}).join('');
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
-			user.disconnectAll();
+			user.leaveRoom(room);
 		} else if (userid.toUpperCase() === 'AMIY' || userid.toUpperCase() === 'KIMISUMI') {
 			var message = target || amiy[Math.floor(Math.random() * amiy.length)];
 			if (message.indexOf('{{user}}') < 0) {
@@ -109,7 +109,7 @@ exports.commands = {
 			}).join('');
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
-			user.disconnectAll();
+			user.leaveRoom(room);
 		} else if (userid.toUpperCase() === 'ANRIN DAS' || userid.toUpperCase() === 'ANRIN N') {
 			var message = target || anrindas[Math.floor(Math.random() * anrindas.length)];
 			if (message.indexOf('{{user}}') < 0) {
@@ -123,7 +123,7 @@ exports.commands = {
 			}).join('');
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
-			user.disconnectAll();
+			user.leaveRoom(room);
 		} else if (userid.toUpperCase() === 'AXTHEEFROST' || userid.toUpperCase() === 'ANDY VENUS') {
 			var message = target || axtheefrost[Math.floor(Math.random() * axtheefrost.length)];
 			if (message.indexOf('{{user}}') < 0) {
@@ -137,7 +137,7 @@ exports.commands = {
 			}).join('');
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
-			user.disconnectAll();
+			user.leaveRoom(room);
 		} else if (userid.toUpperCase() === 'BIDOOF FTW') {
 			var message = target || bidoofftw[Math.floor(Math.random() * bidoofftw.length)];
 			if (message.indexOf('{{user}}') < 0) {
@@ -151,7 +151,7 @@ exports.commands = {
 			}).join('');
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
-			user.disconnectAll();
+			user.leaveRoom(room);
 		} else if (userid.toUpperCase() === 'CTFRM') {
 			var message = target || ctfrm[Math.floor(Math.random() * ctfrm.length)];
 			if (message.indexOf('{{user}}') < 0) {
@@ -165,7 +165,7 @@ exports.commands = {
 			}).join('');
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
-			user.disconnectAll();
+			user.leaveRoom(room);
 		} else if (userid.toUpperCase() === 'CHRISTS') {
 			var message = target || christs[Math.floor(Math.random() * christs.length)];
 			if (message.indexOf('{{user}}') < 0) {
@@ -179,7 +179,7 @@ exports.commands = {
 			}).join('');
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
-			user.disconnectAll();
+			user.leaveRoom(room);
 		} else if (userid.toUpperCase() === 'DARK LIGHT1999') {
 			var message = target || darklight1999[Math.floor(Math.random() * darklight1999.length)];
 			if (message.indexOf('{{user}}') < 0) {
@@ -193,7 +193,7 @@ exports.commands = {
 			}).join('');
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
-			user.disconnectAll();
+			user.leaveRoom(room);
 		} else if (userid.toUpperCase() === 'DARK SHADOW 6') {
 			var message = target || darkshadow6[Math.floor(Math.random() * darkshadow6.length)];
 
@@ -203,7 +203,7 @@ exports.commands = {
 			}).join('');
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
-			user.disconnectAll();
+			user.leaveRoom(room);
 		} else if (userid.toUpperCase() === 'F4N') {
 			var message = target || f4n[Math.floor(Math.random() * f4n.length)];
 			if (message.indexOf('{{user}}') < 0) {
@@ -217,7 +217,7 @@ exports.commands = {
 			}).join('');
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
-			user.disconnectAll();
+			user.leaveRoom(room);
 		} else if (userid.toUpperCase() === 'HANNU MIKKOLA') {
 			var message = target || hannumikkola[Math.floor(Math.random() * hannumikkola.length)];
 			if (message.indexOf('{{user}}') < 0) {
@@ -231,7 +231,7 @@ exports.commands = {
 			}).join('');
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
-			user.disconnectAll();
+			user.leaveRoom(room);
 		} else if (userid.toUpperCase() === 'INDIANCHARIZARD#' || userid.toUpperCase() === 'ASTRAEA') {
 			var message = target || indiancharizard[Math.floor(Math.random() * indiancharizard.length)];
 			if (message.indexOf('{{user}}') < 0) {
@@ -245,7 +245,7 @@ exports.commands = {
 			}).join('');
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
-			user.disconnectAll();
+			user.leaveRoom(room);
 		} else if (userid.toUpperCase() === 'KINGDOM OF TEA') {
 			var message = target || kingdomoftea[Math.floor(Math.random() * kingdomoftea.length)];
 			if (message.indexOf('{{user}}') < 0) {
@@ -259,7 +259,7 @@ exports.commands = {
 			}).join('');
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
-			user.disconnectAll();
+			user.leaveRoom(room);
 		} else if (userid.toUpperCase() === 'SRINATOR') {
 			var message = target || srinator[Math.floor(Math.random() * srinator.length)];
 
@@ -269,7 +269,7 @@ exports.commands = {
 			}).join('');
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
-			user.disconnectAll();
+			user.leaveRoom(room);
 		} else if (userid.toUpperCase() === 'ZINC OXIDE') {
 			var message = target || zincoxide[Math.floor(Math.random() * zincoxide.length)];
 
@@ -279,7 +279,7 @@ exports.commands = {
 			}).join('');
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
-			user.disconnectAll();
+			user.leaveRoom(room);
 		}
 	},
 
