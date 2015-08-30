@@ -65,135 +65,221 @@ const zincoxide = [
 ];
 
 exports.commands = {
-	dc: 'poof',
-	disconnect: 'poof',
-	disconnected: 'poof',
+	d: 'poof',
 	cpoof: 'poof',
 	poof: function (target, room, user) {
 		if (Config.poofOff) return this.sendReply("Poof is currently disabled.");
-		if (target && !this.can('broadcast')) return false;
 		if (!this.canTalk(message)) return false;
 		var userid = user.name
 		userid = userid.replace(/[^\x00-\x7F]/g, "");
 		if (userid.toUpperCase() === 'WOLF') {
 			var message = target || wolf[Math.floor(Math.random() * wolf.length)];
-			if (message.indexOf('{{user}}') < 0)
+			if (message.indexOf('{{user}}') < 0) {
 				message = '{{user}} ' + message;
+			}
 			message = message.replace(/{{user}}/g, user.name);
 
-			room.addRaw(Tools.escapeHTML(message));
-			user.leaveRoom(room);
+			var colour = '#' + [1, 1, 1].map(function () {
+				var part = Math.floor(Math.random() * 0xaa);
+				return (part < 0x10 ? '0' : '') + part.toString(16);
+			}).join('');
+
+			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
+			user.disconnectAll();
 		} else if (userid.toUpperCase() === 'ABSOL98SK') {
 			var message = target || absol98sk[Math.floor(Math.random() * absol98sk.length)];
 
-			room.addRaw(Tools.escapeHTML(message));
-			user.leaveRoom(room);
+			var colour = '#' + [1, 1, 1].map(function () {
+				var part = Math.floor(Math.random() * 0xaa);
+				return (part < 0x10 ? '0' : '') + part.toString(16);
+			}).join('');
+
+			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
+			user.disconnectAll();
 		} else if (userid.toUpperCase() === 'AMIY' || userid.toUpperCase() === 'KIMISUMI') {
 			var message = target || amiy[Math.floor(Math.random() * amiy.length)];
-			if (message.indexOf('{{user}}') < 0)
+			if (message.indexOf('{{user}}') < 0) {
 				message = '{{user}} ' + message;
+			}
 			message = message.replace(/{{user}}/g, user.name);
 
-			room.addRaw(Tools.escapeHTML(message));
-			user.leaveRoom(room);
+			var colour = '#' + [1, 1, 1].map(function () {
+				var part = Math.floor(Math.random() * 0xaa);
+				return (part < 0x10 ? '0' : '') + part.toString(16);
+			}).join('');
+
+			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
+			user.disconnectAll();
 		} else if (userid.toUpperCase() === 'ANRIN DAS' || userid.toUpperCase() === 'ANRIN N') {
 			var message = target || anrindas[Math.floor(Math.random() * anrindas.length)];
-			if (message.indexOf('{{user}}') < 0)
+			if (message.indexOf('{{user}}') < 0) {
 				message = '{{user}} ' + message;
+			}
 			message = message.replace(/{{user}}/g, user.name);
 
-			room.addRaw(Tools.escapeHTML(message));
-			user.leaveRoom(room);
+			var colour = '#' + [1, 1, 1].map(function () {
+				var part = Math.floor(Math.random() * 0xaa);
+				return (part < 0x10 ? '0' : '') + part.toString(16);
+			}).join('');
+
+			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
+			user.disconnectAll();
 		} else if (userid.toUpperCase() === 'AXTHEEFROST' || userid.toUpperCase() === 'ANDY VENUS') {
 			var message = target || axtheefrost[Math.floor(Math.random() * axtheefrost.length)];
-			if (message.indexOf('{{user}}') < 0)
+			if (message.indexOf('{{user}}') < 0) {
 				message = '{{user}} ' + message;
+			}
 			message = message.replace(/{{user}}/g, user.name);
 
-			room.addRaw(Tools.escapeHTML(message));
-			user.leaveRoom(room);
+			var colour = '#' + [1, 1, 1].map(function () {
+				var part = Math.floor(Math.random() * 0xaa);
+				return (part < 0x10 ? '0' : '') + part.toString(16);
+			}).join('');
+
+			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
+			user.disconnectAll();
 		} else if (userid.toUpperCase() === 'BIDOOF FTW') {
 			var message = target || bidoofftw[Math.floor(Math.random() * bidoofftw.length)];
-			if (message.indexOf('{{user}}') < 0)
+			if (message.indexOf('{{user}}') < 0) {
 				message = '{{user}} ' + message;
+			}
 			message = message.replace(/{{user}}/g, user.name);
 
-			room.addRaw(Tools.escapeHTML(message));
-			user.leaveRoom(room);
+			var colour = '#' + [1, 1, 1].map(function () {
+				var part = Math.floor(Math.random() * 0xaa);
+				return (part < 0x10 ? '0' : '') + part.toString(16);
+			}).join('');
+
+			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
+			user.disconnectAll();
 		} else if (userid.toUpperCase() === 'CTFRM') {
 			var message = target || ctfrm[Math.floor(Math.random() * ctfrm.length)];
-			if (message.indexOf('{{user}}') < 0)
+			if (message.indexOf('{{user}}') < 0) {
 				message = '{{user}} ' + message;
+			}
 			message = message.replace(/{{user}}/g, user.name);
 
-			room.addRaw(Tools.escapeHTML(message));
-			user.leaveRoom(room);
+			var colour = '#' + [1, 1, 1].map(function () {
+				var part = Math.floor(Math.random() * 0xaa);
+				return (part < 0x10 ? '0' : '') + part.toString(16);
+			}).join('');
+
+			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
+			user.disconnectAll();
 		} else if (userid.toUpperCase() === 'CHRISTS') {
 			var message = target || christs[Math.floor(Math.random() * christs.length)];
-			if (message.indexOf('{{user}}') < 0)
+			if (message.indexOf('{{user}}') < 0) {
 				message = '{{user}} ' + message;
+			}
 			message = message.replace(/{{user}}/g, user.name);
 
-			room.addRaw(Tools.escapeHTML(message));
-			user.leaveRoom(room);
+			var colour = '#' + [1, 1, 1].map(function () {
+				var part = Math.floor(Math.random() * 0xaa);
+				return (part < 0x10 ? '0' : '') + part.toString(16);
+			}).join('');
+
+			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
+			user.disconnectAll();
 		} else if (userid.toUpperCase() === 'DARK LIGHT1999') {
 			var message = target || darklight1999[Math.floor(Math.random() * darklight1999.length)];
-			if (message.indexOf('{{user}}') < 0)
+			if (message.indexOf('{{user}}') < 0) {
 				message = '{{user}} ' + message;
+			}
 			message = message.replace(/{{user}}/g, user.name);
 
-			room.addRaw(Tools.escapeHTML(message));
-			user.leaveRoom(room);
+			var colour = '#' + [1, 1, 1].map(function () {
+				var part = Math.floor(Math.random() * 0xaa);
+				return (part < 0x10 ? '0' : '') + part.toString(16);
+			}).join('');
+
+			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
+			user.disconnectAll();
 		} else if (userid.toUpperCase() === 'DARK SHADOW 6') {
 			var message = target || darkshadow6[Math.floor(Math.random() * darkshadow6.length)];
 
-			room.addRaw(Tools.escapeHTML(message));
-			user.leaveRoom(room);
+			var colour = '#' + [1, 1, 1].map(function () {
+				var part = Math.floor(Math.random() * 0xaa);
+				return (part < 0x10 ? '0' : '') + part.toString(16);
+			}).join('');
+
+			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
+			user.disconnectAll();
 		} else if (userid.toUpperCase() === 'F4N') {
 			var message = target || f4n[Math.floor(Math.random() * f4n.length)];
-			if (message.indexOf('{{user}}') < 0)
+			if (message.indexOf('{{user}}') < 0) {
 				message = '{{user}} ' + message;
+			}
 			message = message.replace(/{{user}}/g, user.name);
 
-			room.addRaw(Tools.escapeHTML(message));
-			user.leaveRoom(room);
+			var colour = '#' + [1, 1, 1].map(function () {
+				var part = Math.floor(Math.random() * 0xaa);
+				return (part < 0x10 ? '0' : '') + part.toString(16);
+			}).join('');
+
+			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
+			user.disconnectAll();
 		} else if (userid.toUpperCase() === 'HANNU MIKKOLA') {
 			var message = target || hannumikkola[Math.floor(Math.random() * hannumikkola.length)];
-			if (message.indexOf('{{user}}') < 0)
+			if (message.indexOf('{{user}}') < 0) {
 				message = '{{user}} ' + message;
+			}
 			message = message.replace(/{{user}}/g, user.name);
 
-			room.addRaw(Tools.escapeHTML(message));
-			user.leaveRoom(room);
+			var colour = '#' + [1, 1, 1].map(function () {
+				var part = Math.floor(Math.random() * 0xaa);
+				return (part < 0x10 ? '0' : '') + part.toString(16);
+			}).join('');
+
+			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
+			user.disconnectAll();
 		} else if (userid.toUpperCase() === 'INDIANCHARIZARD#' || userid.toUpperCase() === 'ASTRAEA') {
 			var message = target || indiancharizard[Math.floor(Math.random() * indiancharizard.length)];
-			if (message.indexOf('{{user}}') < 0)
+			if (message.indexOf('{{user}}') < 0) {
 				message = '{{user}} ' + message;
+			}
 			message = message.replace(/{{user}}/g, user.name);
 
-			room.addRaw(Tools.escapeHTML(message));
-			user.leaveRoom(room);
+			var colour = '#' + [1, 1, 1].map(function () {
+				var part = Math.floor(Math.random() * 0xaa);
+				return (part < 0x10 ? '0' : '') + part.toString(16);
+			}).join('');
+
+			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
+			user.disconnectAll();
 		} else if (userid.toUpperCase() === 'KINGDOM OF TEA') {
 			var message = target || kingdomoftea[Math.floor(Math.random() * kingdomoftea.length)];
-			if (message.indexOf('{{user}}') < 0)
+			if (message.indexOf('{{user}}') < 0) {
 				message = '{{user}} ' + message;
+			}
 			message = message.replace(/{{user}}/g, user.name);
 
-			room.addRaw(Tools.escapeHTML(message));
-			user.leaveRoom(room);
+			var colour = '#' + [1, 1, 1].map(function () {
+				var part = Math.floor(Math.random() * 0xaa);
+				return (part < 0x10 ? '0' : '') + part.toString(16);
+			}).join('');
+
+			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
+			user.disconnectAll();
 		} else if (userid.toUpperCase() === 'SRINATOR') {
 			var message = target || srinator[Math.floor(Math.random() * srinator.length)];
 
-			room.addRaw(Tools.escapeHTML(message));
-			user.leaveRoom(room);
+			var colour = '#' + [1, 1, 1].map(function () {
+				var part = Math.floor(Math.random() * 0xaa);
+				return (part < 0x10 ? '0' : '') + part.toString(16);
+			}).join('');
+
+			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
+			user.disconnectAll();
 		} else if (userid.toUpperCase() === 'ZINC OXIDE') {
 			var message = target || zincoxide[Math.floor(Math.random() * zincoxide.length)];
 
-			room.addRaw(Tools.escapeHTML(message));
-			user.leaveRoom(room);
-		} else {
-			user.leaveRoom(room);
-		}
+			var colour = '#' + [1, 1, 1].map(function () {
+				var part = Math.floor(Math.random() * 0xaa);
+				return (part < 0x10 ? '0' : '') + part.toString(16);
+			}).join('');
+
+			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
+			user.disconnectAll();
 	},
 
 	poofoff: 'nopoof',
