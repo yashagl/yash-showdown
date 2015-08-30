@@ -309,28 +309,16 @@ exports.commands = {
 
 	star: function (target, room, user) {
 		if (!user.canCustomSymbol && user.id !== user.userid) return this.sendReply("You need to buy this item from the shop.");
-		var star = '\u2606';
-		user.getIdentity = function (roomid) {
-			if (!roomid) roomid = 'lobby';
-			var name = this.name + (this.isAway ? " - \u0410\u051d\u0430\u0443" : "");
-			if (this.locked) {
-				return '‽' + name;
-			}
-			if (this.mutedRooms[roomid]) {
-				return '!' + name;
-			}
-			var room = Rooms.rooms[roomid];
-			if (room.auth) {
-				if (room.auth[this.userid]) {
-					return room.auth[this.userid] + name;
-				}
-				if (room.isPrivate) return ' ' + name;
-			}
-			return star + name;
+		var symbol = '\u2606';
+		user.getIdentity = function() {
+			if (this.muted) return '!' + this.name;
+			if (this.locked) return '‽' + this.name;
+			return symbol + this.name;
 		};
 		user.updateIdentity();
 		user.canCustomSymbol = false;
 		user.hasCustomSymbol = true;
+		return this.sendReply("Your \u2606 has been set.");
 	},
 	starhelp: ["/star - Get a \u2606."],
 
