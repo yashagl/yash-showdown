@@ -677,6 +677,10 @@ Tournament = (function () {
 
 		var result = 'draw';
 
+		//
+		// Tournament Battle Winnings
+		//
+
 		var wid = toId(winner);
 		var rid = toId(runnerUp);
 		var tourSize = this.generator.users.size;
