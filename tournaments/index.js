@@ -682,6 +682,7 @@ Tournament = (function () {
 		//
 
 		var tourSize = this.generator.users.size;
+		var sizeRequiredToEarn = 3;
 		if (from === winner) {
 			result = 'win';
 			if (tourSize >= sizeRequiredToEarn && this.format !== '1v1random' && this.format !== '1v1challengecup' && this.format !== '1v1') {
