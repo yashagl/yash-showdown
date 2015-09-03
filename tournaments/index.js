@@ -779,7 +779,7 @@ Tournament = (function () {
 		var tourSize = this.generator.users.size;
 
 		if (tourSize >= sizeRequiredToEarn) {
-			var firstBP = Math.round(tourSize / 4);
+			var firstBP = Math.round(tourSize / 2);
 			var secondBP = Math.round(firstBP / 2);
 
 			Database.read('bp', wid, function (err, amount) {
