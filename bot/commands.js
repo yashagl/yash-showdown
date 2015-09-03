@@ -243,7 +243,7 @@ exports.commands = {
 				illegalNick.push(tarUser);
 				continue;
 			}
-			if (!this.blacklistUser(tarUser, 'chat')) {
+			if (!this.blacklistUser(tarUser, 'lobby')) {
 				alreadyAdded.push(tarUser);
 				continue;
 			}
@@ -280,7 +280,7 @@ exports.commands = {
 				notRemoved.push(tarUser);
 				continue;
 			}
-			if (!this.unblacklistUser(tarUser, 'chat')) {
+			if (!this.unblacklistUser(tarUser, 'lobby')) {
 				notRemoved.push(tarUser);
 				continue;
 			}
