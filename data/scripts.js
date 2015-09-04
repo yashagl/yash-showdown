@@ -5012,6 +5012,66 @@ exports.BattleScripts = {
 		}
 		return pokemon;
 	},
+	randomSummerSendoffSets: require('./summer-send-off-sets.json'),
+	randomSummerSendoffSet: function (template, slot, teamOwner) {
+		var speciesId = toId(template.species);
+		var setList = this.randomSummerSendoffSets[teamOwner][speciesId].sets;
+		var effectivePool = [];
+
+		for (var i = 0, l = setList.length; i < l; i++) {
+			var curSet = setList[i];
+			var curSetVariants = [];
+			for (var j = 0, m = curSet.moves.length; j < m; j++) {
+				var variantIndex = this.random(curSet.moves[j].length);
+				curSetVariants.push(variantIndex);
+			}
+			effectivePool.push({set: curSet, moveVariants: curSetVariants});
+		}
+
+		var setData = effectivePool[this.random(effectivePool.length)];
+		var moves = [];
+		for (var i = 0; i < setData.set.moves.length; i++) {
+			var moveSlot = setData.set.moves[i];
+			moves.push(setData.moveVariants ? moveSlot[setData.moveVariants[i]] : moveSlot[this.random(moveSlot.length)]);
+		}
+
+		return {
+			name: setData.set.name || setData.set.species,
+			species: setData.set.species,
+			gender: setData.set.gender || template.gender || (this.random() ? 'M' : 'F'),
+			item: setData.set.item || '',
+			ability: setData.set.ability || template.abilities['0'],
+			shiny: typeof setData.set.shiny === 'undefined' ? !this.random(1024) : setData.set.shiny,
+			level: 100,
+			happiness: typeof setData.set.happiness === 'undefined' ? 255 : setData.set.happiness,
+			evs: setData.set.evs || {hp: 84, atk: 84, def: 84, spa: 84, spd: 84, spe: 84},
+			ivs: setData.set.ivs || {hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31},
+			nature: setData.set.nature || 'Serious',
+			moves: moves
+		};
+	},
+	randomSummerSendoffTeam: function () {
+		var availableTeams = ['Chase', 'AmourPearlShipper', 'Nah', 'static', 'gio7sm', 'LegendaryGaming', 'Archy', 'punkysaur'];
+		var chosenTeam;
+		chosenTeam = availableTeams[this.random(availableTeams.length)];
+
+		var pokemonLeft = 0;
+		var pokemon = [];
+
+		var pokemonPool = Object.keys(this.randomSummerSendoffSets[chosenTeam]);
+
+		while (pokemonPool.length && pokemonLeft < 6) {
+			var template = this.getTemplate(this.sampleNoReplace(pokemonPool));
+			if (!template.exists) continue;
+
+			var set = this.randomSummerSendoffSet(template, pokemon.length, chosenTeam);
+			if (!set) continue;
+
+			pokemon.push(set);
+			pokemonLeft++;
+		}
+		return pokemon;
+	},
 	randomSpringTeam: function (side) {
 		var pokemonLeft = 0;
 		var pokemon = [this.randomSet(this.getTemplate('castform'), 0)];
