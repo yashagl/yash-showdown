@@ -281,6 +281,13 @@ exports.Formats = [
 		}
 	},
 	{
+		name: "Summer Send-Off Random",
+		section: "Random Battles (aka Randbats)",
+
+		team: 'randomSummerSendoff',
+		ruleset: ['Random (no PotD)']
+	},
+	{
 		name: "Spring Random",
 		section: "Random Battles (aka Randbats)",
 
