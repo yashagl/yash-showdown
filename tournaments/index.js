@@ -690,7 +690,8 @@ Tournament = (function () {
 			if (tourSize >= sizeRequiredToEarn && this.format !== '1v1random' && this.format !== '1v1challengecup' && this.format !== '1v1') {
 				Database.read('bp', toId(from), function (err, amount) {
 					if (err) throw err;
-					Database.write('bp', 1, toId(from), function (err) {
+					if (!amount) amount = 0;
+					Database.write('bp', amount + 1, toId(from), function (err) {
 						if (err) throw err;
 					});
 				});
@@ -700,7 +701,8 @@ Tournament = (function () {
 			if (tourSize >= sizeRequiredToEarn && this.format !== '1v1random' && this.format !== '1v1challengecup' && this.format !== '1v1') {
 				Database.read('bp', toId(to), function (err, amount) {
 					if (err) throw err;
-					Database.write('bp', 1, toId(to), function (err) {
+					if (!amount) amount = 0;
+					Database.write('bp', amount + 1, toId(to), function (err) {
 						if (err) throw err;
 					});
 				});
