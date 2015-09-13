@@ -186,7 +186,7 @@ exports.commands = {
 				total = total + currencyName(total);
 				_this.sendReply(username + " was given " + amount + ". " + username + " now has " + total + ".");
 				if (Users.get(username)) Users.get(username).popup(user.name + " has given you " + amount + ". You now have " + total + ".");
-				logbp(username + " was given " + amount + " by " + user.name + ".");
+				logBP(username + " was given " + amount + " by " + user.name + ".");
 			});
 		});
 	},
