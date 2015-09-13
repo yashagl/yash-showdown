@@ -786,21 +786,25 @@ Tournament = (function () {
 			var firstBP = Math.round(tourSize / 2);
 			var secondBP = Math.round(firstBP / 2);
 
-			Database.read('bp', wid, function (err, amount) {
+			Database.read('bp', wid, function (err, initial) {
 				if (err) throw err;
-				if (!amount) amount = 0;
-				Database.write('bp', amount + firstBP, wid, function (err) {
+				if (!initial) initial = 0;
+				Database.write('bp', initial + firstBP, wid, function (err, total) {
 					if (err) throw err;
+					amount = amount + currencyName(amount);
+					total = total + currencyName(total);
 				});
 			});
 			this.room.addRaw("<b><font color='" + color + "'>" + Tools.escapeHTML(winner) + "</font> has won " + "<font color='" + color + "'>" + firstBP + "</font>" + currencyName(firstBP) + " for winning the tournament!</b>");
 
 			if (runnerUp) {
-				Database.read('bp', rid, function (err, amount) {
+				Database.read('bp', rid, function (err, initial) {
 					if (err) throw err;
-					if (!amount) amount = 0;
-					Database.write('bp', amount + secondBP, rid, function (err) {
+					if (!initial) initial = 0;
+					Database.write('bp', initial + secondBP, rid, function (err, total) {
 						if (err) throw err;
+						amount = amount + currencyName(amount);
+						total = total + currencyName(total);
 					});
 				});
 				this.room.addRaw("<b><font color='" + color + "'>" + Tools.escapeHTML(runnerUp) + "</font> has won " +  "<font color='" + color + "'>" + secondBP + "</font>" + currencyName(secondBP) + " for winning the tournament!</b>");
