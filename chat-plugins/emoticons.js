@@ -8,6 +8,7 @@ var emotes = {
 	':armycat:': 'http://cbc.pokecommunity.com/config/emoticons/armycat.png',
 	':azelf:': 'http://cbc.pokecommunity.com/config/emoticons/azelf.png',
 	':bidoof:': 'http://cbc.pokecommunity.com/config/emoticons/bidoof.png',
+	':bowie:': 'http://cbc.pokecommunity.com/config/emoticons/bowie.png',
 	':bye:': 'http://cbc.pokecommunity.com/config/emoticons/bye.gif',
 	':castform:': 'http://cbc.pokecommunity.com/config/emoticons/castform.png',
 	':catflip:': 'http://cbc.pokecommunity.com/config/emoticons/catflip.png',
@@ -112,7 +113,7 @@ function parseEmoticons(message, room, user, pm) {
 	// add emotes
 	message = message.replace(patternRegex, function (match) {
 		var emote = emotes[match];
-		if (match === ':gav:' || match === ':kermit:' || match === ':nw:' || match === ':superman:' || match === ':sweep:' || match === ':yoshi:') return typeof emote != 'undefined' ?
+		if (match === ':bowie:' || match === ':gav:' || match === ':kermit:' || match === ':nw:' || match === ':superman:' || match === ':sweep:' || match === ':yoshi:') return typeof emote != 'undefined' ?
 			'<img src="' + emote + '" title="' + match + '" width="30" height="30"/>' :
 			match;
 		if (match === ':catflip:') return typeof emote != 'undefined' ?
