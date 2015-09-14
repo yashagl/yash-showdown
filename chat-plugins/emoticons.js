@@ -205,6 +205,7 @@ exports.commands = {
 	unblockemoticonshelp: ["/unblockemoticons - Unblocks emoticons in private messages. Block them with /blockemoticons."],
 
 	emotes: 'emoticons',
+	emoticon: 'emoticons',
 	emoticons: function (target, room, user) {
 		if (!this.canBroadcast()) return;
 		this.sendReplyBox("- <a href=\"http://www.pokecommunity.com/showthread.php?t=289012#emoticons\">List of Emoticons</a>");
