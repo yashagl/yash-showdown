@@ -688,10 +688,10 @@ Tournament = (function () {
 		if (from === winner) {
 			result = 'win';
 			if (tourSize >= sizeRequiredToEarn && this.format !== '1v1random' && this.format !== '1v1challengecup' && this.format !== '1v1') {
-				Database.read('bp', toId(from), function (err, amount) {
+				Database.read('bp', toId(from), function (err, initial) {
 					if (err) throw err;
-					if (!amount) amount = 0;
-					Database.write('bp', amount + 1, toId(from), function (err) {
+					if (!initial) initial = 0;
+					Database.write('bp', initial + 1, toId(from), function (err) {
 						if (err) throw err;
 					});
 				});
@@ -699,10 +699,10 @@ Tournament = (function () {
 		} else if (to === winner) {
 			result = 'loss';
 			if (tourSize >= sizeRequiredToEarn && this.format !== '1v1random' && this.format !== '1v1challengecup' && this.format !== '1v1') {
-				Database.read('bp', toId(to), function (err, amount) {
+				Database.read('bp', toId(to), function (err, initial) {
 					if (err) throw err;
-					if (!amount) amount = 0;
-					Database.write('bp', amount + 1, toId(to), function (err) {
+					if (!initial) initial = 0;
+					Database.write('bp', initial + 1, toId(to), function (err) {
 						if (err) throw err;
 					});
 				});
@@ -789,10 +789,8 @@ Tournament = (function () {
 			Database.read('bp', wid, function (err, initial) {
 				if (err) throw err;
 				if (!initial) initial = 0;
-				Database.write('bp', initial + firstBP, wid, function (err, total) {
+				Database.write('bp', initial + firstBP, wid, function (err) {
 					if (err) throw err;
-					amount = amount + currencyName(amount);
-					total = total + currencyName(total);
 				});
 			});
 			this.room.addRaw("<b><font color='" + color + "'>" + Tools.escapeHTML(winner) + "</font> has won " + "<font color='" + color + "'>" + firstBP + "</font>" + currencyName(firstBP) + " for winning the tournament!</b>");
@@ -801,10 +799,8 @@ Tournament = (function () {
 				Database.read('bp', rid, function (err, initial) {
 					if (err) throw err;
 					if (!initial) initial = 0;
-					Database.write('bp', initial + secondBP, rid, function (err, total) {
+					Database.write('bp', initial + secondBP, rid, function (err) {
 						if (err) throw err;
-						amount = amount + currencyName(amount);
-						total = total + currencyName(total);
 					});
 				});
 				this.room.addRaw("<b><font color='" + color + "'>" + Tools.escapeHTML(runnerUp) + "</font> has won " +  "<font color='" + color + "'>" + secondBP + "</font>" + currencyName(secondBP) + " for winning the tournament!</b>");
