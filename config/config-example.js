@@ -591,6 +591,8 @@ exports.replsocketmode = 0600;
 //     - promote: Promoting and demoting. Will only work if the target user's current
 //                  group and target group are both in jurisdiction.
 //     - room<rank>: /roompromote to <rank> (eg. roomvoice)
+//     - makeroom: Create/delete chatrooms, and set modjoin/roomdesc/privacy
+//     - editroom: Set modjoin/privacy only for battles/groupchats
 //     - ban: Banning and unbanning.
 //     - mute: Muting and unmuting.
 //     - lock: locking (ipmute) and unlocking.
@@ -632,11 +634,18 @@ exports.grouplist = [
 		id: "leader",
 		name: "Leader",
 		inherit: '@',
-		jurisdiction: 'u',
+		jurisdiction: '@u',
+		promote: 'u',
+		roomowner: true,
 		roommod: true,
 		roomdriver: true,
 		roomsubdriver: true,
-		roomonly: true,
+		forcewin: true,
+		makeroom: true,
+		editroom: true,
+		potd: true,
+		disableladder: true,
+		globalonly: true,
 		tournamentsmanagement: true,
 		rmall: true
 	},
@@ -645,12 +654,13 @@ exports.grouplist = [
 		id: "battleplayer",
 		name: "Battle Player",
 		inherit: ' ',
+		alts: 's',
 		broadcast: true,
-		joinbattle: true,
 		roomvoice: true,
 		modchat: true,
 		roomonly: true,
-		privateroom: true,
+		editroom: true,
+		joinbattle: true,
 		modchatall: true
 	},
 	{
