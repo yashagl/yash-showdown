@@ -210,7 +210,7 @@ exports.commands = {
 				if (err) throw err;
 				amount = amount + currencyName(amount);
 				total = total + currencyName(total);
-				_this.sendReply(username + " losted " + amount + ". " + username + " now has " + total + ".");
+				_this.sendReply(username + " lost " + amount + ". " + username + " now has " + total + ".");
 				if (Users.get(username)) Users.get(username).popup(user.name + " has taken " + amount + " from you. You now have " + total + ".");
 				logBP(username + " had " + amount + " taken away by " + user.name + ".");
 			});
@@ -498,8 +498,7 @@ exports.commands = {
 			});
 			if (!chance) {
 				var msg = "<center><h2>Lottery!</h2>Nobody has won the lottery. Good luck to everyone next time!</center>";
-				_this.parse('/gdeclare ' + msg);
-				_this.parse('/pmall /html ' + msg);
+				_this.parse('/declare ' + msg);
 				room.update();
 				return users.forEach(function (user) {
 					Database.write('tickets', null, user.username, function (err) {
@@ -526,8 +525,7 @@ exports.commands = {
 					Database.write('bp', amount + winnings, winner.username, function (err, total) {
 						if (err) throw err;
 						var msg = "<center><h2>Lottery!</h2><h4><font color='red'><b>" + winner.username + "</b></font> has won the lottery with the ticket id of " + winner.ticket + "! This user has gained " + winnings + currencyName(winnings) + " and now has a total of " + total + currencyName(total) + ".</h4></center>";
-						_this.parse('/gdeclare ' + msg);
-						_this.parse('/pmall /html ' + msg);
+						_this.parse('/declare ' + msg);
 						room.update();
 						Database.set('pot', 0, function (err) {
 							if (err) throw err;
