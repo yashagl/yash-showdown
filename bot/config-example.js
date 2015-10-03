@@ -22,7 +22,7 @@ exports.pass = 'filler';
 
 // The rooms that should be joined.
 // Joining Smogon's Showdown's Lobby is not allowed.
-exports.rooms = ['lobby', 'worldofpc', darkalley', 'spanish', 'french', 'portuguese', 'hindi'];
+exports.rooms = ['lobby', 'worldofpc', 'darkalley', 'spanish', 'french', 'portuguese', 'hindi'];
 
 // Any private rooms that should be joined.
 // Private rooms will be moderated differently (since /warn doesn't work in them).
