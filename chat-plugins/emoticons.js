@@ -162,7 +162,7 @@ function create_table() {
 
 	for (var i = 0; i < len; i++) {
 		emotes_list.push("<td>" +
-			"<img src='" + emotes[emotes_name[i]] + "'' title='" + emotes_name[i] + "'>" +
+			"<img src='" + emotes[emotes_name[i]] + "'' title='" + emotes_name[i] + "' height='40' width='40' />" +
 			emotes_name[i] + "</td>");
 	}
 
@@ -178,7 +178,7 @@ function create_table() {
 		}
 	}
 
-	return "<center><b><u>List of Emoticons</u></b></center>" + "<table border='1' cellspacing='0' cellpadding='5' width='100%'>" + "<tbody>" + emotes_group_list.join("") + "</tbody>" + "</table>";
+	return "<div class='infobox'><center><b><u>List of Emoticons</u></b></center>" + "<div class='infobox-limited'><table border='1' cellspacing='0' cellpadding='5' width='100%'>" + "<tbody>" + emotes_group_list.join("") + "</tbody>" + "</table></div></div>";
 }
 
 var emotes_table = create_table();
@@ -209,7 +209,7 @@ exports.commands = {
 	emoticon: 'emoticons',
 	emoticons: function (target, room, user) {
 		if (!this.canBroadcast()) return;
-		this.sendReplyBox("- <a href=\"http://www.pokecommunity.com/showthread.php?t=289012#emoticons\">List of Emoticons</a>");
+		this.sendReply("|raw|" + emotes_table);
 	},
 	emoticonshelp: ["/emoticons - Get a list of emoticons."],
 
