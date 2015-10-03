@@ -1071,7 +1071,7 @@ CommandParser.commands.tournamenthelp = function (target, room, user) {
 		"- runautodq: Manually run the automatic disqualifier.<br />" +
 		"- getusers: Lists the users in the current tournament.<br />" +
 		"- on/off: Enables/disables allowing mods to start tournaments.<br />" +
-		"- allowalts/disallowalts: Allows users with shared IPs to join.<br />" +
+		"- allowalts/disallowalts: Allows/disallows users with shared IPs to join.<br />" +
 		"More detailed help can be found <a href=\"https://gist.github.com/verbiage/0846a552595349032fbe\">here</a>"
 	);
 };
