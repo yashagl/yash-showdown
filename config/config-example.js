@@ -706,7 +706,7 @@ exports.grouplist = [
 		ignorelimits: true,
 		poll: true,
 		joinbattle: true,
-		picklottery: true,
+		picklottery: true
 	},
 	{
 		symbol: '\u2605',
