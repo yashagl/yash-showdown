@@ -253,7 +253,7 @@ Tournament = (function () {
 			return;
 		}
 
-		if (!isAllowAlts) {
+		if (!this.isAllowAlts === true) {
 			for (var i = 0; i < users.length; i++) {
 				if (users[i].latestIp === user.latestIp) {
 					output.sendReply('|tournament|error|AltUserAlreadyAdded');
@@ -273,6 +273,15 @@ Tournament = (function () {
 		this.isBracketInvalidated = true;
 		this.update();
 		if (this.playerCap === (users.length + 1)) this.room.add("The tournament is now full.");
+	};
+	Tournament.prototype.allowAlts = function () {
+		this.isAllowAlts = true;
+		this.update();
+	};
+
+	Tournament.prototype.disallowAlts = function () {
+		this.isAllowAlts = false;
+		this.update();
 	};
 	Tournament.prototype.removeUser = function (user, output) {
 		var error = this.generator.removeUser(user);
@@ -928,6 +937,16 @@ var commands = {
 				this.privateModCommand("(" + user.name + " forcibly ended a tournament.)");
 			}
 		}
+	},
+	globalmoderation: {
+		allowalts: function (tournament, user) {
+			tournament.allowAlts(this);
+			this.sendModCommand("(" + user.name + " allowed alts in the tournament.)");
+		},
+		disallowalts: function (tournament, user) {
+			tournament.disallowAlts(this);
+			this.sendModCommand("(" + user.name + " disallowed alts in the tournament.)");
+		}
 	}
 };
 
@@ -1025,6 +1044,14 @@ CommandParser.commands.tournament = function (paramString, room, user) {
 			}
 		}
 
+		if (commands.globalmoderation[cmd]) {
+			if (user.can('tournamentsmoderation')) {
+				commandHandler = typeof commands.globalmoderation[cmd] === 'string' ? commands.globalmoderation[commands.globalmoderation[cmd]] : commands.globalmoderation[cmd];
+			} else {
+				return this.sendReply(cmd + " -  Access denied.");
+			}
+		}
+
 		if (!commandHandler) {
 			this.sendReply(cmd + " is not a tournament command.");
 		} else {
@@ -1044,6 +1071,7 @@ CommandParser.commands.tournamenthelp = function (target, room, user) {
 		"- runautodq: Manually run the automatic disqualifier.<br />" +
 		"- getusers: Lists the users in the current tournament.<br />" +
 		"- on/off: Enables/disables allowing mods to start tournaments.<br />" +
+		"- allowalts/disallowalts: Allows users with shared IPs to join.<br />" +
 		"More detailed help can be found <a href=\"https://gist.github.com/verbiage/0846a552595349032fbe\">here</a>"
 	);
 };
