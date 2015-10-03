@@ -99,13 +99,13 @@ exports.commands = {
 
 	elimtour: 'etour',
 	etour: function (target, room, user) {
-		if (!this.can('voicetourmoderation')) return;
+		if (!this.can('tournamentsmoderation', null, room)) return;
 		this.parse('/tour new ' + target + ', elimination');
 	},
 
 	roundrobintour: 'rtour',
 	rtour: function (target, room, user) {
-		if (!this.can('voicetourmoderation')) return;
+		if (!this.can('tournamentsmoderation', null, room)) return;
 		this.parse('/tour new ' + target + ', roundrobin');
 	},
 
