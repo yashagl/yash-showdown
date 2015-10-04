@@ -3586,11 +3586,11 @@ exports.Formats = [
 		}
 	},
 	{
-		name: "Furry Random",
+		name: "SwagPlay Random",
 		section: "Random Battles (aka Randbats)",
 
-		mod: 'furryrandom',
-		team: 'randomFurry',
+		mod: 'swagplayrandom',
+		team: 'randomSwagPlay',
 		ruleset: ['Random (no PotD)']
 	},
 	{
