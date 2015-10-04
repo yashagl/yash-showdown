@@ -6487,30 +6487,6 @@ exports.BattleScripts = {
 
 			var set = this.randomSet(template, pokemon.length, megaCount);
 
-			if (template.id === 'banette') {
-				set.moves = ['Foul Play', 'Swagger', 'Substitute', 'Thunder Wave'];
-			} else if (template.id === 'klefki') {
-				set.item = 'Leftovers';
-				set.moves = ['Foul Play', 'Swagger', 'Substitute', 'Thunder Wave'];
-			} else if (template.id === 'liepard') {
-				set.item = 'Leftovers';
-				set.moves = ['Foul Play', 'Swagger', 'Substitute', 'Thunder Wave'];
-			} else if (template.id === 'murkrow') {
-				set.moves = ['Foul Play', 'Swagger', 'Substitute', 'Roost'];
-			} else if (template.id === 'purrloin') {
-				set.item = 'Leftovers';
-				set.moves = ['Foul Play', 'Swagger', 'Substitute', 'Thunder Wave'];
-			} else if (template.id === 'sableye') {
-				set.item = 'Leftovers';
-				set.moves = ['Foul Play', 'Swagger', 'Substitute', 'Recover'];
-			} else if (template.id === 'thundurus') {
-				set.item = 'Leftovers';
-				set.moves = ['Foul Play', 'Swagger', 'Substitute', 'Thunder Wave'];
-			} else if (template.id === 'tornadus') {
-				set.item = 'Leftovers';
-				set.moves = ['Foul Play', 'Swagger', 'Substitute', 'Protect'];
-			}
-
 			// Illusion shouldn't be on the last pokemon of the team
 			if (set.ability === 'Illusion' && pokemonLeft > 4) continue;
 
