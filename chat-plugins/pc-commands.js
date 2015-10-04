@@ -24,6 +24,20 @@ exports.commands = {
 		}
 	},
 
+	toggleladdermessage: 'toggleladdermsg',
+	toggleladdermessages: 'toggleladdermsg',
+	toggleladdermsg: function (target, room, user) {
+		if (!this.can('warn', null, room)) return false;
+		room.enableLadderMessages = !room.enableLadderMessages;
+		this.sendReply("Allowing ladder messages is set to " + room.enableLadderMessages + " in this room.");
+		if (room.enableLadderMessages) {
+			this.add("|raw|<div class=\"broadcast-red\"><b>Ladder messages are enabled!</b><br>Messages will be sent via the "Look for a battle" button.</div>");
+		} else {
+			this.add("|raw|<div class=\"broadcast-blue\"><b>Ladder messages are disabled!</b><br>Messages will no longer be sent via the "Look for a battle" button.</div>");
+		}
+	},
+	toggleladdermsghelp: ["/toggleladdermsg - Toggle ladder messages on or off."],
+
 	ascii: function (target, room, user) {
 		if (!target) return;
 		if (!this.canBroadcast()) return;

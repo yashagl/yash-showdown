@@ -524,6 +524,12 @@ var GlobalRoom = (function () {
 		formatid = Tools.getFormat(formatid).id;
 
 		user.prepBattle(formatid, 'search', null, this.finishSearchBattle.bind(this, user, formatid));
+
+		if (!user.locked) {
+			var searcher = toId(user)
+			if (!Rooms.lobby.enableLadderMessages) return false;
+			if (Rooms.lobby) Rooms.lobby.addRaw(searcher + ' is searching for a battle: ' + formatid + '!');
+		}
 	};
 	GlobalRoom.prototype.finishSearchBattle = function (user, formatid, result) {
 		if (!result) return;
