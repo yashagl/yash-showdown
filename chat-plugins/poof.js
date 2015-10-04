@@ -51,6 +51,10 @@ const kingdomoftea = [
 	"retreats to get more tea."
 ];
 
+const nidokingdra44 = [
+	"is gone, everybody party! \o/"
+];
+
 const srinator = [
 	"elfs smells too much, ima leave"
 ];
@@ -248,6 +252,20 @@ exports.commands = {
 			user.leaveRoom(room);
 		} else if (userid.toUpperCase() === 'KINGDOM OF TEA') {
 			var message = target || kingdomoftea[Math.floor(Math.random() * kingdomoftea.length)];
+			if (message.indexOf('{{user}}') < 0) {
+				message = '{{user}} ' + message;
+			}
+			message = message.replace(/{{user}}/g, user.name);
+
+			var colour = '#' + [1, 1, 1].map(function () {
+				var part = Math.floor(Math.random() * 0xaa);
+				return (part < 0x10 ? '0' : '') + part.toString(16);
+			}).join('');
+
+			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
+			user.leaveRoom(room);
+		} else if (userid.toUpperCase() === 'NIDOKINGDRA44') {
+			var message = target || nidokingdra44[Math.floor(Math.random() * nidokingdra44.length)];
 			if (message.indexOf('{{user}}') < 0) {
 				message = '{{user}} ' + message;
 			}
