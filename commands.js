@@ -19,6 +19,7 @@ var fs = require('fs');
 const MAX_REASON_LENGTH = 300;
 const MUTE_LENGTH = 7 * 60 * 1000;
 const HOURMUTE_LENGTH = 60 * 60 * 1000;
+const PERMAMUTE_LENGTH = 527040 * 60 * 1000;
 
 var commands = exports.commands = {
 
@@ -1044,7 +1045,7 @@ var commands = exports.commands = {
 			return this.errorReply("The reason is too long. It cannot exceed " + MAX_REASON_LENGTH + " characters.");
 		}
 
-		var muteDuration = ((cmd === 'hm' || cmd === 'hourmute') ? HOURMUTE_LENGTH : MUTE_LENGTH);
+		var muteDuration = ((cmd === 'hm' || cmd === 'hourmute') ? HOURMUTE_LENGTH : MUTE_LENGTH || (cmd === 'permamute' || cmd === 'permanentmute') ? PERMAMUTE_LENGTH : MUTE_LENGTH);
 		if (!this.can('mute', targetUser, room)) return false;
 		var canBeMutedFurther = ((room.getMuteTime(targetUser) || 0) <= (muteDuration * 5 / 6));
 		if ((room.isMuted(targetUser) && !canBeMutedFurther) || targetUser.locked || !targetUser.connected) {
@@ -1070,6 +1071,13 @@ var commands = exports.commands = {
 		this.run('mute');
 	},
 	hourmutehelp: ["/hourmute OR /hm [username], [reason] - Mutes a user with reason for an hour. Requires: % @ # & ~"],
+
+	permanentmute: 'permamute',
+	permamute: function (target) {
+		if (!target) return this.parse('/help permamute');
+		this.run('mute');
+	},
+	permamutehelp: ["/permamute OR /permanentmute [username], [reason] - Mutes a user with reason for a year. Requires: % @ # & ~"],
 
 	um: 'unmute',
 	unmute: function (target, room, user) {
