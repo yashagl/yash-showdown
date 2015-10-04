@@ -908,6 +908,7 @@ var BattleRoom = (function () {
 		// Declare variables here in case we need them for non-rated battles logging.
 		var p1score = 0.5;
 		var winnerid = toId(winner);
+		var color = '#cc4929';
 
 		// Check if the battle was rated to update the ladder, return its response, and log the battle.
 		if (this.rated) {
@@ -936,6 +937,20 @@ var BattleRoom = (function () {
 				}
 				// update rankings
 				Ladders(rated.format).updateRating(p1name, p2name, p1score, this);
+
+				//
+				// Battle Point Winnings
+				//
+
+				var wid = toId(winner);
+				Database.read('bp', wid, function (err, initial) {
+					if (err) throw err;
+					if (!initial) initial = 0;
+					Database.write('bp', initial + 1, wid, function (err) {
+						if (err) throw err;
+					});
+				});
+				this.push("|raw|<b><font color='" + color + "'>" + Tools.escapeHTML(winner) + "</font> has won " + "<font color='" + color + "'>1</font> Battle Point for winning the rated battle!</b>");
 			}
 		} else if (Config.logchallenges) {
 			// Log challenges if the challenge logging config is enabled.
@@ -958,6 +973,7 @@ var BattleRoom = (function () {
 			winner = Users.get(winner);
 			var tour = this.tour.tour;
 			tour.onBattleWin(this, winner);
+			this.push("|raw|<b><font color='" + color + "'>" + Tools.escapeHTML(winner) + "</font> has won " + "<font color='" + color + "'>1</font> Battle Point for winning the tournament battle!</b>");
 		}
 		rooms.global.battleCount += 0 - (this.active ? 1 : 0);
 		this.active = false;
