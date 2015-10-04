@@ -343,7 +343,7 @@ var commands = exports.commands = {
 		// registered chatrooms
 		title = title;
 
-		if (ResourceMonitor.countGroupChat(connection.ip)) {
+		if (Monitor.countGroupChat(connection.ip)) {
 			this.errorReply("Due to high load, you are limited to creating 4 group chats every hour.");
 			return;
 		}
@@ -1122,7 +1122,7 @@ var commands = exports.commands = {
 
 		if (targetUser.confirmed) {
 			var from = targetUser.deconfirm();
-			ResourceMonitor.log("[CrisisMonitor] " + targetUser.name + " was locked by " + user.name + " and demoted from " + from.join(", ") + ".");
+			Monitor.log("[CrisisMonitor] " + targetUser.name + " was locked by " + user.name + " and demoted from " + from.join(", ") + ".");
 		}
 
 		// Destroy personal rooms of the locked user.
@@ -1198,7 +1198,7 @@ var commands = exports.commands = {
 
 		if (targetUser.confirmed) {
 			var from = targetUser.deconfirm();
-			ResourceMonitor.log("[CrisisMonitor] " + targetUser.name + " was banned by " + user.name + " and demoted from " + from.join(", ") + ".");
+			Monitor.log("[CrisisMonitor] " + targetUser.name + " was banned by " + user.name + " and demoted from " + from.join(", ") + ".");
 		}
 
 		// Destroy personal rooms of the banned user.
@@ -2437,7 +2437,7 @@ var commands = exports.commands = {
 	},
 
 	vtm: function (target, room, user, connection) {
-		if (ResourceMonitor.countPrepBattle(connection.ip, user.name)) {
+		if (Monitor.countPrepBattle(connection.ip, user.name)) {
 			connection.popup("Due to high load, you are limited to 6 team validations every 3 minutes.");
 			return;
 		}
@@ -2464,7 +2464,7 @@ var commands = exports.commands = {
 	query: function (target, room, user, connection) {
 		// Avoid guest users to use the cmd errors to ease the app-layer attacks in emergency mode
 		var trustable = (!Config.emergency || (user.named && user.registered));
-		if (Config.emergency && ResourceMonitor.countCmd(connection.ip, user.name)) return false;
+		if (Config.emergency && Monitor.countCmd(connection.ip, user.name)) return false;
 		var spaceIndex = target.indexOf(' ');
 		var cmd = target;
 		if (spaceIndex > 0) {
