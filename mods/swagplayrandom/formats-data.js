@@ -1,17 +1,47 @@
 exports.BattleFormatsData = {
+	murkrow: {
+		randomBattleMoves: ["swagger","foulplay","substitute","roost"],
+		requiredItem: "Eviolite",
+		tier: "LC Uber"
+	},
+	sableye: {
+		randomBattleMoves: ["swagger","foulplay","substitute","recover"],
+		requiredItem: "Leftovers",
+		tier: "(OU)"
+	},
 	sableyemega: {
 		randomBattleMoves: ["recover","willowisp","darkpulse","calmmind","shadowball"],
 		randomDoubleBattleMoves: ["fakeout","knockoff","darkpulse","shadowball","willowisp","protect"],
 		tier: "OU"
 	},
 	banette: {
-		randomBattleMoves: ["destinybond","taunt","shadowclaw","suckerpunch","willowisp","shadowsneak","knockoff"],
-		randomDoubleBattleMoves: ["shadowclaw","suckerpunch","willowisp","shadowsneak","knockoff","protect"],
-		eventPokemon: [
-			{"generation":3,"level":37,"abilities":["insomnia"],"moves":["helpinghand","feintattack","shadowball","curse"]},
-			{"generation":5,"level":37,"gender":"F","isHidden":true,"moves":["feintattack","hex","shadowball","cottonguard"]}
-		],
+		randomBattleMoves: ["swagger","foulplay","substitute","thunderwave"],
 		requiredItem: "Banettite",
 		tier: "(RU)"
+	},
+	purrloin: {
+		randomBattleMoves: ["swagger","foulplay","substitute","thunderwave"],
+		requiredItem: "Leftovers",
+		tier: "LC"
+	},
+	liepard: {
+		randomBattleMoves: ["swagger","foulplay","substitute","thunderwave"],
+		requiredItem: "Leftovers",
+		tier: "NU"
+	},
+	tornadus: {
+		randomBattleMoves: ["swagger","foulplay","substitute","protect"],
+		requiredItem: "Leftovers",
+		tier: "BL2"
+	},
+	thundurus: {
+		randomBattleMoves: ["swagger","foulplay","substitute","thunderwave"],
+		requiredItem: "Leftovers",
+		tier: "OU"
+	},
+	klefki: {
+		randomBattleMoves: ["swagger","foulplay","substitute","thunderwave"],
+		requiredItem: "Leftovers",
+		tier: "OU"
 	}
 };
