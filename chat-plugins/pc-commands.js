@@ -31,9 +31,9 @@ exports.commands = {
 		room.enableLadderMessages = !room.enableLadderMessages;
 		this.sendReply("Allowing ladder messages is set to " + room.enableLadderMessages + " in this room.");
 		if (room.enableLadderMessages) {
-			this.add("|raw|<div class=\"broadcast-red\"><b>Ladder messages are enabled!</b><br>Messages will be sent via the "Look for a battle" button.</div>");
+			this.add('|raw|<div class=\"broadcast-red\"><b>Ladder messages are enabled!</b><br>The "Look for a battle" button will send messages in the Lobby.</div>');
 		} else {
-			this.add("|raw|<div class=\"broadcast-blue\"><b>Ladder messages are disabled!</b><br>Messages will no longer be sent via the "Look for a battle" button.</div>");
+			this.add('|raw|<div class=\"broadcast-blue\"><b>Ladder messages are disabled!</b><br>The "Look for a battle" button will no longer send messages in the Lobby.</div>');
 		}
 	},
 	toggleladdermsghelp: ["/toggleladdermsg - Toggle ladder messages on or off."],
