@@ -528,7 +528,7 @@ var GlobalRoom = (function () {
 		if (!user.locked) {
 			var searcher = toId(user)
 			if (!Rooms.lobby.enableLadderMessages) return false;
-			if (Rooms.lobby) Rooms.lobby.addRaw(searcher + ' is searching for a battle: ' + formatid + '!');
+			if (Rooms.lobby) Rooms.lobby.addRaw(searcher + ' is searching for a battle (' + formatid + ')!');
 		}
 	};
 	GlobalRoom.prototype.finishSearchBattle = function (user, formatid, result) {
