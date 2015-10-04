@@ -6377,8 +6377,24 @@ exports.BattleScripts = {
 	},
 	randomSwagPlayTeam: function (side) {
 		var pokemonLeft = 0;
-		var dice = this.random(100);
-		var lead = (dice  < 12.5)? 'banette' : 'klefki' : 'liepard' : 'murkrow' : 'purrloin' : 'sableye' : 'thundurus' : 'tornadus';
+		var dice = this.random(8);
+		if (dice < 1) {
+			lead = 'banette';
+		} else if (dice < 2) {
+			lead = 'klefki';
+		} else if (dice < 3) {
+			lead = 'liepard';
+		} else if (dice < 4) {
+			lead = 'murkrow';
+		} else if (dice < 5) {
+			lead = 'purrloin';
+		} else if (dice < 6) {
+			lead = 'sableye';
+		} else if (dice < 7) {
+			lead = 'thundurus';
+		} else {
+			lead = 'tornadus';
+		}
 		var pokemon = [this.randomSet(this.getTemplate(lead), 0)];
 
 		var pokemonPool = [];
