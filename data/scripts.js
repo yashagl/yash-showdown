@@ -6375,10 +6375,10 @@ exports.BattleScripts = {
 
 		return team;
 	},
-	randomFurryTeam: function (side) {
+	randomSwagPlayTeam: function (side) {
 		var pokemonLeft = 0;
 		var dice = this.random(100);
-		var lead = (dice  < 50)? 'purrloin' : 'liepard';
+		var lead = (dice  < 12.5)? 'banette' : 'klefki' : 'liepard' : 'murkrow' : 'purrloin' : 'sableye' : 'thundurus' : 'tornadus';
 		var pokemon = [this.randomSet(this.getTemplate(lead), 0)];
 
 		var pokemonPool = [];
@@ -6471,12 +6471,28 @@ exports.BattleScripts = {
 
 			var set = this.randomSet(template, pokemon.length, megaCount);
 
-			if (template.id === 'purrloin') {
+			if (template.id === 'banette') {
+				set.moves = ['Foul Play', 'Swagger', 'Substitute', 'Thunder Wave'];
+			} else if (template.id === 'klefki') {
 				set.item = 'Leftovers';
 				set.moves = ['Foul Play', 'Swagger', 'Substitute', 'Thunder Wave'];
 			} else if (template.id === 'liepard') {
 				set.item = 'Leftovers';
 				set.moves = ['Foul Play', 'Swagger', 'Substitute', 'Thunder Wave'];
+			} else if (template.id === 'murkrow') {
+				set.moves = ['Foul Play', 'Swagger', 'Substitute', 'Roost'];
+			} else if (template.id === 'purrloin') {
+				set.item = 'Leftovers';
+				set.moves = ['Foul Play', 'Swagger', 'Substitute', 'Thunder Wave'];
+			} else if (template.id === 'sableye') {
+				set.item = 'Leftovers';
+				set.moves = ['Foul Play', 'Swagger', 'Substitute', 'Recover'];
+			} else if (template.id === 'thundurus') {
+				set.item = 'Leftovers';
+				set.moves = ['Foul Play', 'Swagger', 'Substitute', 'Thunder Wave'];
+			} else if (template.id === 'tornadus') {
+				set.item = 'Leftovers';
+				set.moves = ['Foul Play', 'Swagger', 'Substitute', 'Protect'];
 			}
 
 			// Illusion shouldn't be on the last pokemon of the team
