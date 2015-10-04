@@ -13,5 +13,5 @@ exports.BattleFormatsData = {
 		],
 		requiredItem: "Banettite",
 		tier: "(RU)"
-	},
+	}
 };
