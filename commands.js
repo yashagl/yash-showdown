@@ -568,6 +568,40 @@ var commands = exports.commands = {
 		}
 	},
 
+	stafftopic: 'staffintro',
+	staffintro: function (target, room, user) {
+		if (!target) {
+			if (!this.can('mute', null, room)) return false;
+			if (!room.staffMessage) return this.sendReply("This room does not have a staff introduction set.");
+			this.sendReply('|raw|<div class="infobox">' + room.staffMessage + '</div>');
+			if (user.can('ban', null, room)) {
+				this.sendReply('Source:');
+				this.sendReplyBox('<code>/staffintro ' + Tools.escapeHTML(room.staffMessage) + '</code>');
+			}
+			return;
+		}
+		if (!this.can('ban', null, room)) return false;
+		target = target.trim();
+		if (!this.canHTML(target)) return;
+		if (!/</.test(target)) {
+			// not HTML, do some simple URL linking
+			var re = /(https?:\/\/(([-\w\.]+)+(:\d+)?(\/([\w/_\.]*(\?\S+)?)?)?))/g;
+			target = target.replace(re, '<a href="$1">$1</a>');
+		}
+		if (target.substr(0, 12) === '/staffintro ') target = target.substr(12);
+
+		room.staffMessage = target;
+		this.sendReply("(The staff introduction has been changed to:)");
+		this.sendReply('|raw|<div class="infobox">' + target + '</div>');
+
+		this.privateModCommand("(" + user.name + " changed the staffintro.)");
+
+		if (room.chatRoomData) {
+			room.chatRoomData.staffMessage = room.staffMessage;
+			Rooms.global.writeChatRoomData();
+		}
+	},
+
 	roomalias: function (target, room, user) {
 		if (!target) {
 			if (!this.canBroadcast()) return;
@@ -1506,6 +1540,34 @@ var commands = exports.commands = {
 		return true;
 	},
 	forcerenamehelp: ["/forcerename OR /fr [username], [reason] - Forcibly change a user's name and shows them the [reason]. Requires: % @ & ~"],
+
+	hidetext: function (target, room, user) {
+		if (!target) return this.parse('/help hidetext');
+
+		var reason = this.splitTarget(target);
+		var targetUser = this.targetUser;
+		var name = this.targetUsername;
+		var userid = this.getLastIdOf(targetUser);
+		var hidetype = '';
+		if (!targetUser) return this.errorReply("User '" + name + "' does not exist.");
+		if (!user.can('lock', targetUser) && !user.can('ban', targetUser, room)) {
+			this.errorReply('/hidetext' + this.namespaces.concat(this.cmd).join(" ") + " - Access denied.");
+			return false;
+		}
+
+		if (targetUser.locked || Users.checkBanned(targetUser.latestIp)) {
+			hidetype = 'hide|';
+		} else if (room.bannedUsers[toId(name)] && room.bannedIps[targetUser.latestIp]) {
+			hidetype = 'roomhide|';
+		} else {
+			return this.errorReply("User '" + name + "' is not banned from this room or locked.");
+		}
+
+		this.addModCommand("" + targetUser.name + "'s messages were cleared from room " + room.id + " by " + user.name + ".");
+		this.add('|unlink|' + hidetype + userid);
+		if (userid !== toId(this.inputUsername)) this.add('|unlink|' + hidetype + toId(this.inputUsername));
+	},
+	hidetexthelp: ["/hidetext [username] - Removes a locked or banned user's messages from chat (includes users banned from the room). Requires: % (global only), @ & ~"],
 
 	modlog: function (target, room, user, connection) {
 		var lines = 0;

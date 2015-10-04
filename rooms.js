@@ -1584,22 +1584,21 @@ var ChatRoom = (function () {
 	ChatRoom.prototype.tryExpire = function () {
 		this.destroy();
 	};
-	ChatRoom.prototype.getIntroMessage = function () {
-		var html = this.introMessage || '';
+	ChatRoom.prototype.getIntroMessage = function (user) {
+		var message = '';
+		if (this.introMessage) message += '\n|raw|<div class="infobox"><div>' + this.introMessage + '</div>';
+		if (this.staffMessage && user.can('mute', null, this)) message += (message ? '<br />' : '\n|raw|<div class="infobox">') + '(Staff intro:)<br /><div>' + this.staffMessage + '</div>';
 		if (this.modchat) {
-			if (html) html += '<br /><br />';
-			html += '<div class="broadcast-red">';
-			html += 'Must be rank ' + this.modchat + ' or higher to talk right now.';
-			html += '</div>';
+			message += (message ? '<br />' : '\n|raw|<div class="infobox">') + '<div class="broadcast-red">' +
+				'Must be rank ' + this.modchat + ' or higher to talk right now.' +
+				'</div>';
 		}
-
-		if (html) return '\n|raw|<div class="infobox">' + html + '</div>';
-
-		return '';
+		if (message) message += '</div>';
+		return message;
 	};
 	ChatRoom.prototype.onJoinConnection = function (user, connection) {
 		var userList = this.userList ? this.userList : this.getUserList();
-		this.sendUser(connection, '|init|chat\n|title|' + this.title + '\n' + userList + '\n' + this.getLogSlice(-25).join('\n') + this.getIntroMessage());
+		this.sendUser(connection, '|init|chat\n|title|' + this.title + '\n' + userList + '\n' + this.getLogSlice(-25).join('\n') + this.getIntroMessage(user));
 		if (global.Tournaments && Tournaments.get(this.id)) {
 			Tournaments.get(this.id).updateFor(user, connection);
 		}
@@ -1613,7 +1612,7 @@ var ChatRoom = (function () {
 
 		if (!merging) {
 			var userList = this.userList ? this.userList : this.getUserList();
-			this.sendUser(connection, '|init|chat\n|title|' + this.title + '\n' + userList + '\n' + this.getLogSlice(-100).join('\n') + this.getIntroMessage());
+			this.sendUser(connection, '|init|chat\n|title|' + this.title + '\n' + userList + '\n' + this.getLogSlice(-100).join('\n') + this.getIntroMessage(user));
 
 			if (global.Tournaments && Tournaments.get(this.id)) {
 				Tournaments.get(this.id).updateFor(user, connection);
