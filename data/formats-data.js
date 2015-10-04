@@ -2898,7 +2898,7 @@ exports.BattleFormatsData = {
 		randomBattleMoves: ["sunnyday","weatherball","solarbeam","icebeam"]
 	},
 	castformrainy: {
-		randomBattleMoves: ["raindance","weatherball","thunder","hurricane"]
+		randomBattleMoves: ["raindance","weatherball","thunder","icebeam"]
 	},
 	castformsnowy: {
 		randomBattleMoves: ["hail","weatherball","thunderbolt","fireblast"]
