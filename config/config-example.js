@@ -541,6 +541,7 @@ exports.customavatars = {
 	'roxierosalinaxl': 'roxierosalinaxl.gif',
 	'learna': 'learna.jpg',
 	'soulcooler': 'soulcooler.gif',
+	'xcrystalberryx': 'xcrystalberryx.png',
 };
 
 // custom avatars appear in profile by specifiying server url.
