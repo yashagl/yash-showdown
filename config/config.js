@@ -635,9 +635,8 @@ exports.grouplist = [
 		id: "leader",
 		name: "Leader",
 		inherit: '@',
-		jurisdiction: '@u',
+		jurisdiction: 'u',
 		promote: 'u',
-		roomowner: true,
 		roommod: true,
 		roomdriver: true,
 		roomsubdriver: true,
@@ -646,7 +645,6 @@ exports.grouplist = [
 		editroom: true,
 		potd: true,
 		disableladder: true,
-		globalonly: true,
 		tournamentsmanagement: true,
 		rmall: true
 	},
