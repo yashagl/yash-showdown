@@ -914,7 +914,7 @@ var BattleRoom = (function () {
 		// Declare variables here in case we need them for non-rated battles logging.
 		var p1score = 0.5;
 		var winnerid = toId(winner);
-		var color = '#cc4929';
+		var color = '#cc301f';
 
 		// Check if the battle was rated to update the ladder, return its response, and log the battle.
 		if (this.rated) {
