@@ -298,38 +298,6 @@ exports.commands = {
 		if (notRemoved.length) text += (text.length ? ' No other' : 'No') + ' specified users were present in the blacklist.';
 		this.say(room, text);
 	},
-	unabchat: function (arg, by, room) {
-		if (room !== 'staff') return this.say(room, 'The blacklist commands must be used in the "Staff" room.');
-		if (!this.hasRank(by, '@~')) return false;
-
-		arg = arg.split(',');
-		var removed = [];
-		var notRemoved = [];
-		if (!arg.length || (arg.length === 1 && !arg[0].trim().length)) return this.say(room, 'You must specify at least one user to unblacklist.');
-		for (var i = 0; i < arg.length; i++) {
-			var tarUser = toId(arg[i]);
-			if (tarUser.length < 1 || tarUser.length > 18) {
-				notRemoved.push(tarUser);
-				continue;
-			}
-			if (!this.unblacklistUser(tarUser, 'chat')) {
-				notRemoved.push(tarUser);
-				continue;
-			}
-			this.say(room, '/unban ' + tarUser);
-			removed.push(tarUser);
-		}
-
-		var text = '';
-		if (removed.length) {
-			text += 'User' + (removed.length > 1 ? 's "' + removed.join('", "') + '" were' : ' "' + removed[0] + '" was') + ' removed from the blacklist';
-			this.say(room, '/modnote ' + text + ' by ' + by + '.');
-			text += '.';
-			this.writeSettings();
-		}
-		if (notRemoved.length) text += (text.length ? ' No other' : 'No') + ' specified users were present in the blacklist.';
-		this.say(room, text);
-	},
 	rab: 'regexautoban',
 	regexautoban: function (arg, by, room) {
 		if (Config.regexautobanwhitelist.indexOf(toId(by)) < 0 || !this.canUse('autoban', room, by) || room.charAt(0) === ',') return false;
