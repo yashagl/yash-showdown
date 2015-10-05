@@ -779,7 +779,7 @@ Tournament = (function () {
 		// Tournament Winnings
 		//
 
-		var color = '#cc4929';
+		var color = '#cc301f';
 		var sizeRequiredToEarn = 3;
 		var currencyName = function (amount) {
 			var name = " Battle Point";
