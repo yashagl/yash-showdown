@@ -84,7 +84,7 @@ function label(text) {
 }
 
 function titleCSS(text) {
-	return '<div class="profile-title">' + text + '</div>';
+	return '<span class="profile-title">' + text + '</span>';
 }
 
 Profile.prototype.avatar = function () {
@@ -140,7 +140,7 @@ Profile.prototype.show = function (callback) {
 			if (err) throw err;
 			if (!title) title = ' ';
 			return callback(this.avatar() +
-											this.title(title) +
+											SPACE + this.title(title) + BR +
 											SPACE + this.name() + BR +
 											SPACE + this.group() + BR +
 											SPACE + this.bp(bp) + BR +
