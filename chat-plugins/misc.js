@@ -42,6 +42,19 @@ exports.commands = {
 	},
 	pmallhelp: ["/pmall [message] - PM all users in the server."],
 
+	rmall: function (target, room, user) {
+		if (!this.can('rmall', null, room)) return false;
+		if (!target) return this.parse('/help rmall');
+
+		var pmName = ' Server PM [Do not reply]';
+
+		for (var i in room.users) {
+			var message = '|pm|' + pmName + '|' + room.users[i].getIdentity() + '|' + target;
+			room.users[i].send(message);
+		}
+	},
+	rmallhelp: ["/rmall [message] - PM all users in the room."],
+
 	staffpm: 'pmallstaff',
 	pmstaff: 'pmallstaff',
 	pmallstaff: function (target, room, user) {
