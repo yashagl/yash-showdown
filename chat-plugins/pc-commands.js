@@ -27,6 +27,7 @@ exports.commands = {
 	toggleladdermessage: 'toggleladdermsg',
 	toggleladdermessages: 'toggleladdermsg',
 	toggleladdermsg: function (target, room, user) {
+		if (room.id !== 'lobby') return this.errorReply('This command can only be used in Lobby.');
 		if (!this.can('warn', null, room)) return false;
 		room.enableLadderMessages = !room.enableLadderMessages;
 		this.sendReply("Allowing ladder messages is set to " + room.enableLadderMessages + " in this room.");
