@@ -21,6 +21,7 @@ var emotes = {
 	':eevee:': 'http://cbc.pokecommunity.com/config/emoticons/eevee.png',
 	':electrode:': 'http://cbc.pokecommunity.com/config/emoticons/electrode.png',
 	':espurr:': 'http://cbc.pokecommunity.com/config/emoticons/espurr.png',
+	':fatbowie:': 'http://cbc.pokecommunity.com/config/emoticons/bowie.png',
 	':feebas:': 'http://cbc.pokecommunity.com/config/emoticons/feebas.png',
 	':flirt:': 'http://cbc.pokecommunity.com/config/emoticons/flirt.png',
 	':infernape:': 'http://cbc.pokecommunity.com/config/emoticons/infernape.png',
@@ -129,7 +130,7 @@ function parseEmoticons(message, room, user, pm) {
 	// add emotes
 	message = message.replace(patternRegex, function (match) {
 		var emote = emotes[match];
-		if (match === ':gav:' || match === ':kermit:' || match === ':nw:' || match === ':superman:' || match === ':sweep:' || match === ':yoshi:') return typeof emote != 'undefined' ?
+		if (match === ':fatbowie:' || match === ':gav:' || match === ':kermit:' || match === ':nw:' || match === ':superman:' || match === ':sweep:' || match === ':yoshi:') return typeof emote != 'undefined' ?
 			'<img src="' + emote + '" title="' + match + '" width="30" height="30"/>' :
 			match;
 		if (match === ':bowie:') return typeof emote != 'undefined' ?
