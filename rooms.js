@@ -981,7 +981,9 @@ var BattleRoom = (function () {
 			winner = Users.get(winner);
 			var tour = this.tour.tour;
 			tour.onBattleWin(this, winner);
-			this.push("|raw|<b><font color='" + color + "'>" + Tools.escapeHTML(winner) + "</font> has won " + "<font color='" + color + "'>1</font> Battle Point for winning the tournament battle!</b>");
+			if (this.format !== '1v1random' && this.format !== '1v1challengecup' && this.format !== '1v1') {
+				this.push("|raw|<b><font color='" + color + "'>" + Tools.escapeHTML(winner) + "</font> has won " + "<font color='" + color + "'>1</font> Battle Point for winning the tournament battle!</b>");
+			}
 		}
 		rooms.global.battleCount += 0 - (this.active ? 1 : 0);
 		this.active = false;
