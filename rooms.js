@@ -948,8 +948,8 @@ var BattleRoom = (function () {
 				// Battle Point Winnings
 				//
 
-				var wid = toId(winner);
 				if (this.format !== '1v1random' && this.format !== '1v1challengecup' && this.format !== '1v1') {
+					var wid = toId(winner);
 					Database.read('bp', wid, function (err, initial) {
 						if (err) throw err;
 						if (!initial) initial = 0;
