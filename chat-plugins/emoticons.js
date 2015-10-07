@@ -8,6 +8,7 @@ var emotes = {
 	':armycat:': 'http://cbc.pokecommunity.com/config/emoticons/armycat.png',
 	':azelf:': 'http://cbc.pokecommunity.com/config/emoticons/azelf.png',
 	':bidoof:': 'http://cbc.pokecommunity.com/config/emoticons/bidoof.png',
+	':blastoise:': 'http://cbc.pokecommunity.com/config/emoticons/blastoise.png',
 	':bowie:': 'http://cbc.pokecommunity.com/config/emoticons/bowie.png',
 	':castform:': 'http://cbc.pokecommunity.com/config/emoticons/castform.png',
 	':catflip:': 'http://cbc.pokecommunity.com/config/emoticons/catflip.png',
