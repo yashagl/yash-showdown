@@ -2317,13 +2317,12 @@ Battle = (function () {
 					BeforeMove: 1,
 					BasePower: 1,
 					Immunity: 1,
-					Accuracy: 1,
 					RedirectTarget: 1,
 					Heal: 1,
 					SetStatus: 1,
 					CriticalHit: 1,
 					ModifyPokemon: 1,
-					ModifyAtk: 1, ModifyDef: 1, ModifySpA: 1, ModifySpD: 1, ModifySpe: 1,
+					ModifyAtk: 1, ModifyDef: 1, ModifySpA: 1, ModifySpD: 1, ModifySpe: 1, ModifyAccuracy: 1,
 					ModifyBoost: 1,
 					ModifyDamage: 1,
 					ModifySecondaries: 1,
@@ -3058,8 +3057,6 @@ Battle = (function () {
 			}
 		}
 
-		this.add('turn', this.turn);
-
 		if (this.gameType === 'triples' && this.sides.map('pokemonLeft').count(1) === this.sides.length) {
 			// If both sides have one Pokemon left in triples and they are not adjacent, they are both moved to the center.
 			var center = false;
@@ -3074,6 +3071,9 @@ Battle = (function () {
 			}
 			if (center) this.add('-center');
 		}
+
+		this.add('turn', this.turn);
+
 		this.makeRequest('move');
 	};
 	Battle.prototype.start = function () {
@@ -3137,6 +3137,7 @@ Battle = (function () {
 		effect = this.getEffect(effect);
 		boost = this.runEvent('Boost', target, source, effect, Object.clone(boost));
 		var success = false;
+		var boosted = false;
 		for (var i in boost) {
 			var currentBoost = {};
 			currentBoost[i] = boost[i];
@@ -3162,6 +3163,10 @@ Battle = (function () {
 					if (effect.effectType === 'Move') {
 						this.add(msg, target, i, boost[i]);
 					} else {
+						if (effect.effectType === 'Ability' && !boosted) {
+							this.add('-activate', target, effect.fullname);
+							boosted = true;
+						}
 						this.add(msg, target, i, boost[i], '[from] ' + effect.fullname);
 					}
 					break;
@@ -3218,7 +3223,7 @@ Battle = (function () {
 		default:
 			if (effect.effectType === 'Move') {
 				this.add('-damage', target, target.getHealth);
-			} else if (source && source !== target) {
+			} else if (source && (source !== target || effect.effectType === 'Ability')) {
 				this.add('-damage', target, target.getHealth, '[from] ' + effect.fullname, '[of] ' + source);
 			} else {
 				this.add('-damage', target, target.getHealth, '[from] ' + name);
@@ -3860,8 +3865,17 @@ Battle = (function () {
 		switch (decision.choice) {
 		case 'start':
 			// I GIVE UP, WILL WRESTLE WITH EVENT SYSTEM LATER
-			var beginCallback = this.getFormat().onBegin;
-			if (beginCallback) beginCallback.call(this);
+			var format = this.getFormat();
+
+			if (format.onBegin) format.onBegin.call(this);
+
+			if (format.teamLength && format.teamLength.battle) {
+				// Trim the team: not all of the Pokémon brought to Preview will battle.
+				this.p1.pokemon = this.p1.pokemon.slice(0, format.teamLength.battle);
+				this.p1.pokemonLeft = this.p1.pokemon.length;
+				this.p2.pokemon = this.p2.pokemon.slice(0, format.teamLength.battle);
+				this.p2.pokemonLeft = this.p2.pokemon.length;
+			}
 
 			this.add('start');
 			for (var pos = 0; pos < this.p1.active.length; pos++) {
