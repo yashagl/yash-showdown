@@ -122,7 +122,7 @@ Profile.prototype.name = function () {
 
 Profile.prototype.seen = function (timeAgo) {
 	if (this.isOnline) return label('Last Seen') + font('#2ECC40', 'Currently Online');
-	if (!timeAgo) return label('Last Seen') + 'Never';
+	if (!timeAgo) return label('Last Seen') + 'Offline';
 	return label('Last Seen') + moment(timeAgo).fromNow();
 };
 
