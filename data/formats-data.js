@@ -2903,7 +2903,7 @@ exports.BattleFormatsData = {
 		battleOnly: true
 	},
 	castformsnowy: {
-		randomBattleMoves: ["hail","weatherball","thunderbolt","fireblast"]
+		randomBattleMoves: ["hail","weatherball","thunderbolt","fireblast"],
 		battleOnly: true
 	},
 	kecleon: {
