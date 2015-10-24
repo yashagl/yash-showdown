@@ -121,8 +121,8 @@ Profile.prototype.name = function () {
 };
 
 Profile.prototype.seen = function (timeAgo) {
-	if (this.isOnline) return label('Last Seen') + font('#1fcc33', 'Online');
-	if (!timeAgo) return label('Last Seen') + 'Offline';
+	if (this.isOnline) return label('Status') + font('#1fcc33', 'Online');
+	if (!timeAgo) return label('Status') + 'Offline';
 	return label('Last Seen') + moment(timeAgo).fromNow();
 };
 
@@ -174,5 +174,5 @@ exports.commands = {
 			room.update();
 		}.bind(this));
 	},
-	profilehelp: ["/profile -	Shows information regarding user's name, group, Battle Points, and when they were last seen."]
+	profilehelp: ["/profile -	Shows information regarding user's name, group, Battle Points, and online/offline status."]
 };
