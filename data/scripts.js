@@ -5158,7 +5158,7 @@ exports.BattleScripts = {
 
 			var set = this.randomSet(template, pokemon.length, megaCount);
 
-			set.moves[0] = 'Trick-o-Treat';
+			set.moves[4] = 'Trick-o-Treat';
 
 			// Illusion shouldn't be on the last pokemon of the team
 			if (set.ability === 'Illusion' && pokemonLeft > 4) continue;
