@@ -550,6 +550,7 @@ exports.customavatars = {
 	'greninjashadow': 'mysteryxgris.gif',
 	'pelipperzachary': 'pelipperzachary.gif',
 	'silverlaguna': 'silverlaguna.gif',
+	'ahrmtic': 'ahrmtic.png',
 };
 
 // custom avatars appear in profile by specifiying server url.
