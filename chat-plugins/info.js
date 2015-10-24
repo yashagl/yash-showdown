@@ -1976,21 +1976,22 @@ var commands = exports.commands = {
 		this.sendReplyBox(
 			"<b>~ Administrators</b><br />" +
 			"- Ausaudriel (Audy)<br />" +
-			"- Castform (Chase, Chaseform, orb castform, Powalen)<br />" +
+			"- Castform (Chase, Chaseform, orb castform)<br />" +
 			"- Hiroshi Sotomura (Sotomura, Sotomura606)<br />" +
-			"- Livewire<br />" +
+			"- Lance (Livewire)<br />" +
 			"- Nolafus<br />" +
 			"- Rukario (PPN)<br />" +
 			"- Sheep (Cirnysheep)<br />" +
 			"- shenanigans (razor leaf, unkempt harold)<br />" +
 			"- Sylphiel<br />" +
-			"- wolf (wofl)<br />" +
+			"- wolf<br />" +
 			"- Zeffy<br /><br />" +
 			"<b>@ Moderators</b><br />" +
-			"- apocalypseArisen (Megido, omicron, omicronhuh)<br />" +
-			"- Aslan<br />" +
+			"- Achromatic<br />" +
+			"- Aslan (Rainbow Arcanine)<br />" +
 			"- Christos<br />" +
-			"- Dragon (Aura Blackquill, bellossom, Captain Syrup, Dragii, Erika Senpai, Iris, Kjelle, Miss Fortune, Mitsuruu, Nabooru, Tharja)<br />" +
+			"- Dragon (Aura Blackquill, bellossom, Captain Syrup, Dragii, Emeruade, Erika Senpai, Iris, Kjelle, Miss Fortune, Mitsuruu, Nabooru, Tharja)<br />" +
+			"- Omicron (Megido, omicronhuh)<br />" +
 			"- Peitharchia (Adrastia, nymph)<br />" +
 			"- Sanguine (Natalya)<br />" +
 			"- Sweep<br />" +
