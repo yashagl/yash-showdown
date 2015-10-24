@@ -5052,28 +5052,6 @@ exports.BattleScripts = {
 			moves: moves
 		};
 	},
-	randomSummerSendoffTeam: function () {
-		var availableTeams = ['Chase', 'AmourPearlShipper', 'Nah', 'static', 'gio7sm', 'LegendaryGaming', 'Archy', 'punkysaur'];
-		var chosenTeam;
-		chosenTeam = availableTeams[this.random(availableTeams.length)];
-
-		var pokemonLeft = 0;
-		var pokemon = [];
-
-		var pokemonPool = Object.keys(this.randomSummerSendoffSets[chosenTeam]);
-
-		while (pokemonPool.length && pokemonLeft < 6) {
-			var template = this.getTemplate(this.sampleNoReplace(pokemonPool));
-			if (!template.exists) continue;
-
-			var set = this.randomSummerSendoffSet(template, pokemon.length, chosenTeam);
-			if (!set) continue;
-
-			pokemon.push(set);
-			pokemonLeft++;
-		}
-		return pokemon;
-	},
 	randomHalloweenTeam: function (side) {
 		var pokemonLeft = 0;
 		var pokemon = [];
@@ -5224,6 +5202,28 @@ exports.BattleScripts = {
 			// Increment mega and base species counters
 			if (isMegaSet) megaCount++;
 			baseFormes[template.baseSpecies] = 1;
+		}
+		return pokemon;
+	},
+	randomSummerSendoffTeam: function () {
+		var availableTeams = ['Chase', 'AmourPearlShipper', 'Nah', 'static', 'gio7sm', 'LegendaryGaming', 'Archy', 'punkysaur'];
+		var chosenTeam;
+		chosenTeam = availableTeams[this.random(availableTeams.length)];
+
+		var pokemonLeft = 0;
+		var pokemon = [];
+
+		var pokemonPool = Object.keys(this.randomSummerSendoffSets[chosenTeam]);
+
+		while (pokemonPool.length && pokemonLeft < 6) {
+			var template = this.getTemplate(this.sampleNoReplace(pokemonPool));
+			if (!template.exists) continue;
+
+			var set = this.randomSummerSendoffSet(template, pokemon.length, chosenTeam);
+			if (!set) continue;
+
+			pokemon.push(set);
+			pokemonLeft++;
 		}
 		return pokemon;
 	},
