@@ -49,5 +49,16 @@ exports.commands = {
 			"Original version: " + originalVersion + "<br />" +
 			"ASCII-only version: " + newVersion
 		);
+	},
+
+	fancy: 'fancydeclare',
+	fancydeclare: function (target, room, user) {
+		if (!target) return this.parse('/help declare');
+		if (!this.can('declare', null, room)) return false;
+
+		if (!this.canTalk()) return;
+
+		this.add('|raw|<div class="profile-title">' + target + '</div>');
+		this.logModCommand(user.name + " declared " + target);
 	}
 };
