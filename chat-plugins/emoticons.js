@@ -148,6 +148,9 @@ function parseEmoticons(message, room, user, pm) {
 		if (match === ':catflip:') return typeof emote != 'undefined' ?
 			'<img src="' + emote + '" title="' + match + '" width="44" height="32"/>' :
 			match;
+		if (match === ':redbowie:') return typeof emote != 'undefined' ?
+			'<img src="' + emote + '" title="' + match + '" width="23" height="30"/>' :
+			match;
 		if (match === ':strut:') return typeof emote != 'undefined' ?
 			'<img src="' + emote + '" title="' + match + '" width="23" height="33"/>' :
 			match;
