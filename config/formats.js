@@ -277,6 +277,14 @@ exports.Formats = [
 		}
 	},
 	{
+		name: "Halloween Random",
+		section: "Random Battles (aka Randbats)",
+
+		mod: 'halloweenrandom',
+		team: 'randomHalloween',
+		ruleset: ['Random (no PotD)']
+	},
+	{
 		name: "Summer Send-Off Random",
 		section: "Random Battles (aka Randbats)",
 
