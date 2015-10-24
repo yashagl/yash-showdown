@@ -64,7 +64,7 @@ function font(color, text) {
  * @return {String}
  */
 function img(link) {
-	return '<div class="trainersprite"><img src="' + link + '" align="left"></div>';
+	return '<img src="' + link + '" class="trainersprite" align="left">';
 }
 
 /**
