@@ -2,6 +2,10 @@ const absol98sk = [
 	"If you're a trainer, talk with Pokemon!!"
 ];
 
+const ahrmtic = [
+	"ヽ(⩺▾⩹)ﾉ 乁(⩺▾⩹)ㄏ ᕙ(⩺▾⩹)ᕗ"
+];
+
 const amiy = [
 	"went to find people to flop on.",
 	"got swallowed whole by a Snorlax."
@@ -25,6 +29,10 @@ const ctfrm = [
 
 const christs = [
 	"is everyone's favourite moderator."
+];
+
+const darkazelf = [
+	"ill see you later......naked......wet......staring"
 ];
 
 const darklight1999 = [
@@ -53,6 +61,10 @@ const kingdomoftea = [
 
 const nidokingdra44 = [
 	"is gone, everybody party! \o/"
+];
+
+const shinysquirtlesquad = [
+	"is gone for class"
 ];
 
 const srinator = [
@@ -92,6 +104,16 @@ exports.commands = {
 			user.leaveRoom(room);
 		} else if (userid.toUpperCase() === 'ABSOL98SK') {
 			var message = target || absol98sk[Math.floor(Math.random() * absol98sk.length)];
+
+			var colour = '#' + [1, 1, 1].map(function () {
+				var part = Math.floor(Math.random() * 0xaa);
+				return (part < 0x10 ? '0' : '') + part.toString(16);
+			}).join('');
+
+			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
+			user.leaveRoom(room);
+		} else if (userid.toUpperCase() === 'AHRMTIC') {
+			var message = target || ahrmtic[Math.floor(Math.random() * ahrmtic.length)];
 
 			var colour = '#' + [1, 1, 1].map(function () {
 				var part = Math.floor(Math.random() * 0xaa);
@@ -184,6 +206,16 @@ exports.commands = {
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
 			user.leaveRoom(room);
+		} else if (userid.toUpperCase() === 'DARKAZELF') {
+			var message = target || darkazelf[Math.floor(Math.random() * darkazelf.length)];
+
+			var colour = '#' + [1, 1, 1].map(function () {
+				var part = Math.floor(Math.random() * 0xaa);
+				return (part < 0x10 ? '0' : '') + part.toString(16);
+			}).join('');
+
+			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
+			user.leaveRoom(room);
 		} else if (userid.toUpperCase() === 'DARK LIGHT1999') {
 			var message = target || darklight1999[Math.floor(Math.random() * darklight1999.length)];
 			if (message.indexOf('{{user}}') < 0) {
@@ -266,6 +298,20 @@ exports.commands = {
 			user.leaveRoom(room);
 		} else if (userid.toUpperCase() === 'NIDOKINGDRA44') {
 			var message = target || nidokingdra44[Math.floor(Math.random() * nidokingdra44.length)];
+			if (message.indexOf('{{user}}') < 0) {
+				message = '{{user}} ' + message;
+			}
+			message = message.replace(/{{user}}/g, user.name);
+
+			var colour = '#' + [1, 1, 1].map(function () {
+				var part = Math.floor(Math.random() * 0xaa);
+				return (part < 0x10 ? '0' : '') + part.toString(16);
+			}).join('');
+
+			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
+			user.leaveRoom(room);
+		} else if (userid.toUpperCase() === 'SHINYSQUIRTLESQUAD') {
+			var message = target || shinysquirtlesquad[Math.floor(Math.random() * shinysquirtlesquad.length)];
 			if (message.indexOf('{{user}}') < 0) {
 				message = '{{user}} ' + message;
 			}
