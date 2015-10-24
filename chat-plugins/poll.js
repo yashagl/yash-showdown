@@ -109,6 +109,20 @@ exports.commands = {
 		this.parse('/tour new ' + target + ', roundrobin');
 	},
 
+	dtour: 'doutour',
+	doubletour: 'doutour',
+	doutour: function (target, room, user) {
+		if (!this.can('tournamentsmoderation', null, room)) return;
+		this.parse('/tour new ' + target + ', elimination, 99, 2');
+	},
+
+	ttour: 'tritour',
+	tripletour: 'tritour',
+	tritour: function (target, room, user) {
+		if (!this.can('tournamentsmoderation', null, room)) return;
+		this.parse('/tour new ' + target + ', elimination, 99, 3');
+	},
+
 	pollr: 'pollremind',
 	pollremind: function (target, room, user) {
 		if (!Poll[room.id]) Poll.reset(room.id);
