@@ -4570,7 +4570,6 @@ exports.Formats = [
 		section: "Past Generations",
 
 		mod: 'gen2',
-		searchShow: false,
 		team: 'random',
 		ruleset: ['Pokemon', 'Standard']
 	},
