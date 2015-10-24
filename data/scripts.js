@@ -5074,6 +5074,159 @@ exports.BattleScripts = {
 		}
 		return pokemon;
 	},
+	randomHalloweenTeam: function (side) {
+		var pokemonLeft = 0;
+		var pokemon = [];
+
+		var pokemonPool = [];
+		for (var id in this.data.FormatsData) {
+			var template = this.getTemplate(id);
+			if (!template.isMega && !template.isPrimal && !template.isNonstandard && template.randomBattleMoves) {
+				pokemonPool.push(id);
+			}
+		}
+
+		var typeCount = {};
+		var typeComboCount = {};
+		var baseFormes = {};
+		var uberCount = 0;
+		var puCount = 0;
+		var megaCount = 0;
+
+		while (pokemonPool.length && pokemonLeft < 6) {
+			var template = this.getTemplate(this.sampleNoReplace(pokemonPool));
+			if (!template.exists) continue;
+
+			// Limit to one of each species (Species Clause)
+			if (baseFormes[template.baseSpecies]) continue;
+
+			// Not available on ORAS
+			if (template.species === 'Pichu-Spiky-eared') continue;
+
+			var tier = template.tier;
+			switch (tier) {
+			case 'LC':
+			case 'LC Uber':
+			case 'NFE':
+				if (puCount > 1) continue;
+				break;
+			case 'PU':
+				// PUs are limited to 2 but have a 20% chance of being added anyway.
+				if (puCount > 1 && this.random(5) >= 1) continue;
+				break;
+			case 'Uber':
+				// Ubers are limited to 2 but have a 20% chance of being added anyway.
+				if (uberCount > 1 && this.random(5) >= 1) continue;
+				break;
+			case 'CAP':
+				// CAPs have 20% the normal rate
+				if (this.random(5) >= 1) continue;
+				break;
+			case 'Unreleased':
+				// Unreleased Pokémon have 20% the normal rate
+				if (this.random(5) >= 1) continue;
+			}
+
+			// Adjust rate for species with multiple formes
+			switch (template.baseSpecies) {
+			case 'Arceus':
+				if (this.random(18) >= 1) continue;
+				break;
+			case 'Basculin':
+				if (this.random(2) >= 1) continue;
+				break;
+			case 'Genesect':
+				if (this.random(5) >= 1) continue;
+				break;
+			case 'Pumpkaboo':
+				if (this.random(4) >= 1) continue;
+				break;
+			case 'Gourgeist':
+				if (this.random(4) >= 1) continue;
+				break;
+			case 'Meloetta':
+				if (this.random(2) >= 1) continue;
+				break;
+			case 'Castform':
+				if (this.random(2) >= 1) continue;
+				break;
+			case 'Pikachu':
+				// Cosplay Pikachu formes have 20% the normal rate (1/30 the normal rate each)
+				if (template.species !== 'Pikachu' && this.random(30) >= 1) continue;
+			}
+
+			// Limit 2 of any type
+			var types = template.types;
+			var skip = false;
+			for (var t = 0; t < types.length; t++) {
+				if (typeCount[types[t]] > 1 && this.random(5) >= 1) {
+					skip = true;
+					break;
+				}
+			}
+			if (skip) continue;
+
+			var halloweenList = ['aegislash', 'arceusghost', 'banette', 'chandelure', 'cofagrigus', 'doublade', 'drifblim', 'drifloon', 'dusclops', 'dusknoir', 'duskull', 'frillish', 'froslass', 'gastly', 'gengar', 'giratina', 'giratinaorigin', 'golett', 'golurk', 'gourgeist', 'gourgeistlarge', 'gourgeistsmall', 'gourgeistsuper', 'haunter', 'honedge', 'hoopa', 'jellicent', 'lampent', 'litwick', 'misdreavus', 'mismagius', 'phantump', 'pumpkaboo', 'pumpkaboolarge', 'pumpkaboosmall', 'pumpkaboosuper', 'rotom', 'sableye', 'shedinja', 'shuppet', 'spiritomb', 'trevenant', 'yamask', 'absol', 'arceusdark', 'bisharp', 'cacturne', 'carvanha', 'crawdaunt', 'darkrai', 'deino', 'drapion', 'greninja', 'honchkrow', 'hoopaunbound', 'houndoom', 'houndour', 'hydreigon', 'inkay', 'krokorok', 'krookodile', 'liepard', 'malamar', 'mandibuzz', 'mightyena', 'murkrow', 'nuzleaf', 'pangoro', 'pawniard', 'poochyena', 'purrloin', 'sandile', 'scrafty', 'scraggy', 'sharpedo', 'shiftry', 'skuntank', 'sneasel', 'stunky', 'tyranitar', 'umbreon', 'vullaby', 'weavile', 'yveltal', 'zoroark', 'zorua', 'zweilous', 'abra', 'alakazam', 'arceuspsychic', 'baltoy', 'beheeyem', 'claydol', 'cresselia', 'delphox', 'deoxys', 'deoxysattack', 'deoxysdefense', 'deoxysspeed', 'drowzee', 'elgyem', 'espurr', 'girafarig', 'gothita', 'gothitelle', 'gothorita', 'grumpig', 'hypno', 'jynx', 'kadabra', 'lunatone', 'meowstic', 'meowsticf', 'mewtwo', 'mimejr', 'mrmime', 'natu', 'sigilyph', 'smoochum', 'solrock', 'swoobat', 'unown', 'woobat', 'xatu', 'zubat', 'golbat', 'crobat', 'noibat', 'noivern', 'spinarak', 'ariados', 'joltik', 'galvantula']
+			var halloweenPokemon = halloweenList[Math.floor(Math.random()*halloweenList.length)];
+			if (pokemon.length === 0) {
+				template = halloweenPokemon;
+			}
+			if (pokemon.length === 1) {
+				template = halloweenPokemon;
+			}
+			if (pokemon.length === 2) {
+				template = halloweenPokemon;
+			}
+
+			var set = this.randomSet(template, pokemon.length, megaCount);
+
+			set.moves[0] = 'Trick-o-Treat';
+
+			// Illusion shouldn't be on the last pokemon of the team
+			if (set.ability === 'Illusion' && pokemonLeft > 4) continue;
+
+			// Limit 1 of any type combination
+			var typeCombo = types.join();
+			if (set.ability === 'Drought' || set.ability === 'Drizzle') {
+				// Drought and Drizzle don't count towards the type combo limit
+				typeCombo = set.ability;
+			}
+			if (typeCombo in typeComboCount) continue;
+
+			// Limit the number of Megas to one
+			var forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
+			var isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
+			if (isMegaSet && megaCount > 0) continue;
+
+			// Okay, the set passes, add it to our team
+			pokemon.push(set);
+
+			// Now that our Pokemon has passed all checks, we can increment our counters
+			pokemonLeft++;
+
+			// Increment type counters
+			for (var t = 0; t < types.length; t++) {
+				if (types[t] in typeCount) {
+					typeCount[types[t]]++;
+				} else {
+					typeCount[types[t]] = 1;
+				}
+			}
+			typeComboCount[typeCombo] = 1;
+
+			// Increment Uber/NU counters
+			if (tier === 'Uber') {
+				uberCount++;
+			} else if (tier === 'PU' || tier === 'LC' || tier === 'LC Uber' || tier === 'NFE') {
+				puCount++;
+			}
+
+			// Increment mega and base species counters
+			if (isMegaSet) megaCount++;
+			baseFormes[template.baseSpecies] = 1;
+		}
+		return pokemon;
+	},
 	randomSpringTeam: function (side) {
 		var pokemonLeft = 0;
 		var pokemon = [this.randomSet(this.getTemplate('castform'), 0)];
