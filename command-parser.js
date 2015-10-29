@@ -339,10 +339,6 @@ var Context = exports.Context = (function () {
 			this.errorReply('You do not have permission to use buttons in HTML.');
 			return false;
 		}
-		if (/>here.?</i.test(html) || /click here/i.test(html)) {
-			this.errorReply('Do not use "click here"');
-			return false;
-		}
 
 		// check for mismatched tags
 		var tags = html.toLowerCase().match(/<\/?(div|a|button|b|i|u|center|font)\b/g);
