@@ -3969,6 +3969,17 @@ exports.BattleScripts = {
 
 			var set = this.randomSet(template, pokemon.length, teamDetails);
 
+			if (template.id === 'wobbuffet') {
+				set.species = 'Wobbuffet';
+				set.ability = 'Telepathy';
+			} else if (template.id === 'ninetales') {
+				set.species = 'Ninetales';
+				set.ability = 'Flash Fire';
+			} else if (template.id === 'politoed') {
+				set.species = 'Politoed';
+				set.ability = 'Water Absorb';
+			}
+
 			// Illusion shouldn't be on the last pokemon of the team
 			if (set.ability === 'Illusion' && pokemonLeft > 4) continue;
 
@@ -4113,6 +4124,8 @@ exports.BattleScripts = {
 
 			var set = this.randomSet(template, pokemon.length, teamDetails);
 
+			set.level = 5;
+
 			// Illusion shouldn't be on the last pokemon of the team
 			if (set.ability === 'Illusion' && pokemonLeft > 4) continue;
 
@@ -4131,8 +4144,6 @@ exports.BattleScripts = {
 
 			// Okay, the set passes, add it to our team
 			pokemon.push(set);
-
-			set.level = 5;
 
 			// Now that our Pokemon has passed all checks, we can increment our counters
 			pokemonLeft++;
