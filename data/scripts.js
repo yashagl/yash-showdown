@@ -4342,7 +4342,7 @@ exports.BattleScripts = {
 		}
 		return pokemon;
 	},
-	randomTeam: function (side) {
+	randomCommunityTeam: function (side) {
 		var pokemonLeft = 0;
 		var pokemon = [];
 
@@ -4953,6 +4953,12 @@ exports.BattleScripts = {
 		var pokemon = [];
 
 		var pokemonPool = [];
+		for (var id in this.data.FormatsData) {
+			var template = this.getTemplate(id);
+			if (!template.isMega && !template.isPrimal && !template.isNonstandard && template.randomBattleMoves) {
+				pokemonPool.push(id);
+			}
+		}
 
 		var typeCount = {};
 		var typeComboCount = {};
