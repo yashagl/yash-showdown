@@ -2096,9 +2096,6 @@ exports.BattleScripts = {
 			case 'Genesect':
 				if (this.random(5) >= 1) continue;
 				break;
-			case 'Pumpkaboo':
-				if (this.random(4) >= 1) continue;
-				break;
 			case 'Gourgeist':
 				if (this.random(4) >= 1) continue;
 				break;
@@ -2109,8 +2106,8 @@ exports.BattleScripts = {
 				if (this.random(2) >= 1) continue;
 				break;
 			case 'Pikachu':
-				// Pikachu is not a viable NFE Pokemon
-				continue;
+				// Cosplay Pikachu formes have 20% the normal rate (1/30 the normal rate each)
+				if (template.species !== 'Pikachu' && this.random(30) >= 1) continue;
 			}
 
 			// Limit 2 of any type
@@ -2175,7 +2172,7 @@ exports.BattleScripts = {
 			// Increment Uber/NU counters
 			if (tier === 'Uber') {
 				uberCount++;
-			} else if (tier === 'PU' || tier === 'LC' || tier === 'LC Uber' || tier === 'NFE') {
+			} else if (tier === 'LC' || tier === 'LC Uber' || tier === 'NFE' || tier === 'PU') {
 				puCount++;
 			}
 
@@ -2224,8 +2221,24 @@ exports.BattleScripts = {
 			// Not available on ORAS
 			if (template.species === 'Pichu-Spiky-eared') continue;
 
+			// Only certain NFE Pokemon are allowed
+			if (template.evos.length && !allowedNFE[template.species]) continue;
+
 			var tier = template.tier;
 			switch (tier) {
+			case 'LC':
+			case 'LC Uber':
+			case 'NFE':
+				if (puCount > 1) continue;
+				break;
+			case 'PU':
+				// PUs are limited to 2 but have a 20% chance of being added anyway.
+				if (puCount > 1 && this.random(5) >= 1) continue;
+				break;
+			case 'Uber':
+				// Ubers are limited to 2 but have a 20% chance of being added anyway.
+				if (uberCount > 1 && this.random(5) >= 1) continue;
+				break;
 			case 'CAP':
 				// CAPs have 20% the normal rate
 				if (this.random(5) >= 1) continue;
@@ -2252,9 +2265,6 @@ exports.BattleScripts = {
 			case 'Genesect':
 				if (this.random(5) >= 1) continue;
 				break;
-			case 'Pumpkaboo':
-				if (this.random(4) >= 1) continue;
-				break;
 			case 'Gourgeist':
 				if (this.random(4) >= 1) continue;
 				break;
@@ -2265,8 +2275,8 @@ exports.BattleScripts = {
 				if (this.random(2) >= 1) continue;
 				break;
 			case 'Pikachu':
-				// Pikachu is not a viable NFE Pokemon
-				continue;
+				// Cosplay Pikachu formes have 20% the normal rate (1/30 the normal rate each)
+				if (template.species !== 'Pikachu' && this.random(30) >= 1) continue;
 			}
 
 			// Limit 2 of any type
@@ -2326,7 +2336,7 @@ exports.BattleScripts = {
 			// Increment Uber/NU counters
 			if (tier === 'Uber') {
 				uberCount++;
-			} else if (tier === 'PU' || tier === 'LC' || tier === 'LC Uber' || tier === 'NFE') {
+			} else if (tier === 'LC' || tier === 'LC Uber' || tier === 'NFE' || tier === 'PU') {
 				puCount++;
 			}
 
@@ -3522,14 +3532,8 @@ exports.BattleScripts = {
 			case 'Genesect':
 				if (this.random(5) >= 1) continue;
 				break;
-			case 'Pumpkaboo':
-				if (this.random(4) >= 1) continue;
-				break;
 			case 'Gourgeist':
 				if (this.random(4) >= 1) continue;
-				break;
-			case 'Hoopa':
-				if (this.random(2) >= 1) continue;
 				break;
 			case 'Meloetta':
 				if (this.random(2) >= 1) continue;
@@ -3558,7 +3562,7 @@ exports.BattleScripts = {
 			// Increment Uber/NU counters
 			if (tier === 'Uber') {
 				uberCount++;
-			} else if (tier === 'PU' || tier === 'LC' || tier === 'LC Uber' || tier === 'NFE') {
+			} else if (tier === 'LC' || tier === 'LC Uber' || tier === 'NFE' || tier === 'PU') {
 				puCount++;
 			}
 
