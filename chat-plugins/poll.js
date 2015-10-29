@@ -100,12 +100,14 @@ exports.commands = {
 	elimtour: 'etour',
 	etour: function (target, room, user) {
 		if (!this.can('tournamentsmoderation', null, room)) return;
+		if (!this.can('voicetourmoderation')) return;
 		this.parse('/tour new ' + target + ', elimination');
 	},
 
 	roundrobintour: 'rtour',
 	rtour: function (target, room, user) {
 		if (!this.can('tournamentsmoderation', null, room)) return;
+		if (!this.can('voicetourmoderation')) return;
 		this.parse('/tour new ' + target + ', roundrobin');
 	},
 
@@ -113,6 +115,7 @@ exports.commands = {
 	doubletour: 'doutour',
 	doutour: function (target, room, user) {
 		if (!this.can('tournamentsmoderation', null, room)) return;
+		if (!this.can('voicetourmoderation')) return;
 		this.parse('/tour new ' + target + ', elimination, 99, 2');
 	},
 
@@ -120,6 +123,7 @@ exports.commands = {
 	tripletour: 'tritour',
 	tritour: function (target, room, user) {
 		if (!this.can('tournamentsmoderation', null, room)) return;
+		if (!this.can('voicetourmoderation')) return;
 		this.parse('/tour new ' + target + ', elimination, 99, 3');
 	},
 
