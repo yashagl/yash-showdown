@@ -5640,8 +5640,6 @@ exports.BattleScripts = {
 			pokemonPool = rayquazaPool;
 		}
 
-		var typeCount = {};
-		var typeComboCount = {};
 		var baseFormes = {};
 		var uberCount = 0;
 		var puCount = 0;
@@ -5718,29 +5716,10 @@ exports.BattleScripts = {
 				if (template.species !== 'Pikachu' && this.random(30) >= 1) continue;
 			}
 
-			// Limit 2 of any type
-			var types = template.types;
-			var skip = false;
-			for (var t = 0; t < types.length; t++) {
-				if (typeCount[types[t]] > 1 && this.random(5) >= 1) {
-					skip = true;
-					break;
-				}
-			}
-			if (skip) continue;
-
 			var set = this.randomSet(template, pokemon.length, teamDetails);
 
 			// Illusion shouldn't be on the last pokemon of the team
 			if (set.ability === 'Illusion' && pokemonLeft > 4) continue;
-
-			// Limit 1 of any type combination
-			var typeCombo = types.join();
-			if (set.ability === 'Drought' || set.ability === 'Drizzle') {
-				// Drought and Drizzle don't count towards the type combo limit
-				typeCombo = set.ability;
-			}
-			if (typeCombo in typeComboCount) continue;
 
 			// Limit the number of Megas to one
 			var forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
@@ -5752,16 +5731,6 @@ exports.BattleScripts = {
 
 			// Now that our Pokemon has passed all checks, we can increment our counters
 			pokemonLeft++;
-
-			// Increment type counters
-			for (var t = 0; t < types.length; t++) {
-				if (types[t] in typeCount) {
-					typeCount[types[t]]++;
-				} else {
-					typeCount[types[t]] = 1;
-				}
-			}
-			typeComboCount[typeCombo] = 1;
 
 			// Increment Uber/NU counters
 			if (tier === 'Uber') {
