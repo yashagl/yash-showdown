@@ -18,6 +18,14 @@ exports.Formats = [
 		]
 	},*/
 	{
+		name: "Halloween Random",
+		section: "ORAS Singles",
+
+		mod: 'halloweenrandom',
+		team: 'randomHalloween',
+		ruleset: ['Random (no PotD)']
+	},
+	{
 		name: "OU",
 		desc: [
 			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3521201/\">OU Metagame Discussion</a>",
@@ -280,14 +288,14 @@ exports.Formats = [
 			this.add("raw|Would you like to be in Community Random? If so, <a href='http://www.pokecommunity.com/showthread.php?t=335080'>click here</a>");
 		}
 	},
-	{
+	/*{
 		name: "Halloween Random",
 		section: "Random Battles (aka Randbats)",
 
 		mod: 'halloweenrandom',
 		team: 'randomHalloween',
 		ruleset: ['Random (no PotD)']
-	},
+	},*/
 	{
 		name: "Summer Send-Off Random",
 		section: "Random Battles (aka Randbats)",
