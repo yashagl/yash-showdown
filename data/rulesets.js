@@ -288,7 +288,8 @@ exports.BattleFormats = {
 			}
 		},
 		onTeamPreview: function () {
-			this.makeRequest('teampreview');
+			var lengthData = this.getFormat().teamLength;
+			this.makeRequest('teampreview', lengthData && lengthData.battle || '');
 		}
 	},
 	teampreviewgbu: {
