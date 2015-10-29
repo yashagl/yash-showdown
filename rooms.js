@@ -941,7 +941,17 @@ var BattleRoom = (function () {
 				// Battle Point Winnings
 				//
 
-				if (this.format !== '1v1random' && this.format !== '1v1challengecup' && this.format !== '1v1') {
+				if (this.format === 'halloweenrandom') {
+					var wid = toId(winner);
+					Database.read('bp', wid, function (err, initial) {
+						if (err) throw err;
+						if (!initial) initial = 0;
+						Database.write('bp', initial + 2, wid, function (err) {
+							if (err) throw err;
+						});
+					});
+					this.push("|raw|<b><font color='" + color + "'>" + Tools.escapeHTML(winner) + "</font> has won " + "<font color='" + color + "'>2</font> Battle Points for winning the rated battle!</b>");
+				} else if (this.format !== '1v1random' && this.format !== '1v1challengecup' && this.format !== '1v1') {
 					var wid = toId(winner);
 					Database.read('bp', wid, function (err, initial) {
 						if (err) throw err;
