@@ -2096,6 +2096,9 @@ exports.BattleScripts = {
 			case 'Genesect':
 				if (this.random(5) >= 1) continue;
 				break;
+			case 'Pumpkaboo':
+				if (this.random(4) >= 1) continue;
+				break;
 			case 'Gourgeist':
 				if (this.random(4) >= 1) continue;
 				break;
@@ -2221,9 +2224,6 @@ exports.BattleScripts = {
 			// Not available on ORAS
 			if (template.species === 'Pichu-Spiky-eared') continue;
 
-			// Only certain NFE Pokemon are allowed
-			if (template.evos.length && !allowedNFE[template.species]) continue;
-
 			var tier = template.tier;
 			switch (tier) {
 			case 'LC':
@@ -2264,6 +2264,9 @@ exports.BattleScripts = {
 				break;
 			case 'Genesect':
 				if (this.random(5) >= 1) continue;
+				break;
+			case 'Pumpkaboo':
+				if (this.random(4) >= 1) continue;
 				break;
 			case 'Gourgeist':
 				if (this.random(4) >= 1) continue;
@@ -3529,11 +3532,23 @@ exports.BattleScripts = {
 			case 'Basculin':
 				if (this.random(2) >= 1) continue;
 				break;
+			case 'Castform':
+				if (this.random(2) >= 1) continue;
+				break;
+			case 'Cherrim':
+				if (this.random(2) >= 1) continue;
+				break;
 			case 'Genesect':
 				if (this.random(5) >= 1) continue;
 				break;
+			case 'Pumpkaboo':
+				if (this.random(4) >= 1) continue;
+				break;
 			case 'Gourgeist':
 				if (this.random(4) >= 1) continue;
+				break;
+			case 'Hoopa':
+				if (this.random(2) >= 1) continue;
 				break;
 			case 'Meloetta':
 				if (this.random(2) >= 1) continue;
