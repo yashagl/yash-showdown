@@ -257,11 +257,6 @@ var Context = exports.Context = (function () {
 
 			// broadcast cooldown
 			var normalized = message.toLowerCase().replace(/[^a-z0-9\s!,]/g, '');
-			if (this.room.lastBroadcast === normalized &&
-					this.room.lastBroadcastTime >= Date.now() - BROADCAST_COOLDOWN) {
-				this.errorReply("You can't broadcast this because it was just broadcast.");
-				return false;
-			}
 			this.add('|c|' + this.user.getIdentity(this.room.id) + '|' + (suppressMessage || message));
 			this.room.lastBroadcast = normalized;
 			this.room.lastBroadcastTime = Date.now();
