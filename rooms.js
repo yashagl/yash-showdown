@@ -568,12 +568,6 @@ var GlobalRoom = (function () {
 		// users must not have been matched immediately previously
 		if (user1.lastMatch === user2.userid || user2.lastMatch === user1.userid) return false;
 
-		// search must be within range
-		var searchRange = 150, elapsed = Date.now() - Math.min(search1.time, search2.time);
-		searchRange += elapsed / 300; // +1 every .3 seconds
-		if (searchRange > 300) searchRange = 300;
-		if (Math.abs(search1.rating - search2.rating) > searchRange) return false;
-
 		user1.lastMatch = user2.userid;
 		user2.lastMatch = user1.userid;
 		return true;
