@@ -2292,8 +2292,8 @@ exports.BattleScripts = {
 			if (skip) continue;
 
 			if (potd && potd.exists) {
-				// The Pokemon of the Day belongs in slot 3
-				if (pokemon.length === 2) {
+				// The Pokemon of the Day belongs in slot 1
+				if (pokemon.length === 0) {
 					template = potd;
 				} else if (template.species === potd.species) {
 					continue; // No, thanks, I've already got one
