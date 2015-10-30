@@ -266,7 +266,7 @@ exports.Formats = [
 		name: "Inverse Random",
 		section: "Random Battles (aka Randbats)",
 
-		team: 'randomNoPotD',
+		team: 'random',
 		ruleset: ['Random (no PotD)'],
 		onNegateImmunity: function (pokemon, type) {
 			if (type in this.data.TypeChart && this.runEvent('Immunity', pokemon, null, null, type)) return false;
