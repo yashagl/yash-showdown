@@ -4187,17 +4187,17 @@ exports.BattleScripts = {
 		var dice = this.random(6);
 		var pokemonPool = [];
 		if (dice < 1) {
-			pokemonPool = 'kantoPool';
+			pokemonPool = kantoPool;
 		} else if (dice < 2) {
-			pokemonPool = 'johtoPool';
+			pokemonPool = johtoPool;
 		} else if (dice < 3) {
-			pokemonPool = 'hoennPool';
+			pokemonPool = hoennPool;
 		} else if (dice < 4) {
-			pokemonPool = 'sinnohPool';
+			pokemonPool = sinnohPool;
 		} else if (dice < 5) {
-			pokemonPool = 'unovaPool';
+			pokemonPool = unovaPool;
 		} else {
-			pokemonPool = 'kalosPool';
+			pokemonPool = kalosPool;
 		}
 
 		var typeCount = {};
