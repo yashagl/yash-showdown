@@ -9,7 +9,7 @@ exports.BattleFormatsData = {
 			{"generation":6,"level":36,"shiny":true,"gender":"M","isHidden":false,"moves":["overheat","solarbeam","focusblast","holdhands"],"pokeball":"cherishball"}
 		],
 		requiredItem: ["Charizardite X","Charizardite Y"],
-		tier: "OU"
+		tier: "(OU)"
 	},
 	beedrill: {
 		randomBattleMoves: ["toxicspikes","tailwind","uturn","endeavor","poisonjab","knockoff"],
@@ -18,7 +18,7 @@ exports.BattleFormatsData = {
 			{"generation":3,"level":30,"moves":["batonpass","sludgebomb","twineedle","swordsdance"]}
 		],
 		requiredItem: "Beedrillite",
-		tier: "UU"
+		tier: "(UU)"
 	},
 	pidgeot: {
 		randomBattleMoves: ["roost","bravebird","heatwave","return","doubleedge","uturn","hurricane"],
@@ -27,7 +27,7 @@ exports.BattleFormatsData = {
 			{"generation":5,"level":61,"gender":"M","nature":"Naughty","isHidden":false,"abilities":["keeneye"],"moves":["whirlwind","wingattack","skyattack","mirrormove"],"pokeball":"cherishball"}
 		],
 		requiredItem: "Pidgeotite",
-		tier: "UU"
+		tier: "PU"
 	},
 	gengarmega: {
 		tier: "Uber"
@@ -50,13 +50,13 @@ exports.BattleFormatsData = {
 			{"generation":5,"level":15,"gender":"M","isHidden":false,"abilities":["pressure"],"moves":["steelwing","icefang","firefang","thunderfang"],"pokeball":"cherishball"}
 		],
 		requiredItem: "Aerodactylite",
-		tier: "UU"
+		tier: "(UU)"
 	},
 	ampharos: {
 		randomBattleMoves: ["voltswitch","reflect","lightscreen","focusblast","thunderbolt","toxic","healbell","hiddenpowerice"],
 		randomDoubleBattleMoves: ["focusblast","hiddenpowerice","hiddenpowergrass","thunderbolt","discharge","dragonpulse","protect"],
 		requiredItem: "Ampharosite",
-		tier: "UU"
+		tier: "(UU)"
 	},
 	houndoom: {
 		randomBattleMoves: ["nastyplot","darkpulse","suckerpunch","fireblast","hiddenpowergrass"],
@@ -74,11 +74,11 @@ exports.BattleFormatsData = {
 			{"generation":5,"level":50,"isHidden":false,"moves":["leafstorm","dragonpulse","focusblast","rockslide"],"pokeball":"cherishball"}
 		],
 		requiredItem: "Sceptilite",
-		tier: "UU"
+		tier: "(UU)"
 	},
 	gallade: {
 		randomBattleMoves: ["bulkup","drainpunch","icepunch","shadowsneak","closecombat","zenheadbutt","knockoff","trick"],
-		randomDoubleBattleMoves: ["closecombat","trick","stoneedge","shadowsneak","drainpunch","icepunch","zenheadbutt","knockoff","trickroom","protect","helpinghand","healpulse"],
+		randomDoubleBattleMoves: ["closecombat","trick","stoneedge","shadowsneak","drainpunch","icepunch","zenheadbutt","knockoff","trickroom","protect","helpinghand"],
 		requiredItem: "Galladite",
 		tier: "RU"
 	},
@@ -91,7 +91,7 @@ exports.BattleFormatsData = {
 			{"generation":6,"level":50,"nature":"Brave","isHidden":false,"abilities":["rockhead"],"moves":["ironhead","earthquake","headsmash","rockslide"],"pokeball":"cherishball"}
 		],
 		requiredItem: "Aggronite",
-		tier: "UU"
+		tier: "(UU)"
 	},
 	medicham: {
 		randomBattleMoves: ["highjumpkick","drainpunch","zenheadbutt","icepunch","bulletpunch"],
@@ -107,7 +107,7 @@ exports.BattleFormatsData = {
 			{"generation":6,"level":50,"nature":"Timid","isHidden":false,"abilities":["lightningrod"],"moves":["overheat","thunderbolt","voltswitch","protect"],"pokeball":"cherishball"}
 		],
 		requiredItem: "Manectite",
-		tier: "OU"
+		tier: "(OU)"
 	},
 	altaria: {
 		randomBattleMoves: ["dragondance","dracometeor","outrage","dragonclaw","earthquake","roost","fireblast","healbell"],
@@ -118,7 +118,7 @@ exports.BattleFormatsData = {
 			{"generation":5,"level":35,"gender":"M","isHidden":true,"moves":["takedown","naturalgift","dragonbreath","falseswipe"]}
 		],
 		requiredItem: "Altarianite",
-		tier: "OU"
+		tier: "(OU)"
 	},
 	absol: {
 		randomBattleMoves: ["swordsdance","suckerpunch","knockoff","superpower","pursuit","playrough"],
@@ -130,7 +130,7 @@ exports.BattleFormatsData = {
 			{"generation":3,"level":70,"abilities":["pressure"],"moves":["doubleteam","slash","futuresight","perishsong"]}
 		],
 		requiredItem: "Absolite",
-		tier: "UU"
+		tier: "(UU)"
 	},
 	salamencemega: {
 		tier: "Uber"
@@ -139,7 +139,7 @@ exports.BattleFormatsData = {
 		randomBattleMoves: ["return","switcheroo","highjumpkick","icepunch","healingwish"],
 		randomDoubleBattleMoves: ["return","switcheroo","highjumpkick","firepunch","icepunch","fakeout","protect","encore"],
 		requiredItem: "Lopunnite",
-		tier: "OU"
+		tier: "(OU)"
 	},
 	lucariomega: {
 		tier: "Uber"
@@ -148,6 +148,6 @@ exports.BattleFormatsData = {
 		randomBattleMoves: ["woodhammer","iceshard","blizzard","gigadrain","leechseed","substitute","focuspunch","earthquake"],
 		randomDoubleBattleMoves: ["blizzard","iceshard","gigadrain","protect","focusblast","woodhammer","earthquake"],
 		requiredItem: "Abomasite",
-		tier: "UU"
+		tier: "(UU)"
 	}
 };
