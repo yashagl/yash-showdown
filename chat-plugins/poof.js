@@ -63,12 +63,20 @@ const nidokingdra44 = [
 	"is gone, everybody party! \o/"
 ];
 
+const realluneh = [
+	"Inhale my dong enragement child"
+];
+
 const shinysquirtlesquad = [
 	"is gone for class"
 ];
 
 const srinator = [
 	"elfs smells too much, ima leave"
+];
+
+const thedarkaffliction = [
+	"used explosion"
 ];
 
 const wolf = [
@@ -310,6 +318,16 @@ exports.commands = {
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
 			user.leaveRoom(room);
+		} else if (userid.toUpperCase() === 'REALLUNEH') {
+			var message = target || realluneh[Math.floor(Math.random() * realluneh.length)];
+
+			var colour = '#' + [1, 1, 1].map(function () {
+				var part = Math.floor(Math.random() * 0xaa);
+				return (part < 0x10 ? '0' : '') + part.toString(16);
+			}).join('');
+
+			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
+			user.leaveRoom(room);
 		} else if (userid.toUpperCase() === 'SHINYSQUIRTLESQUAD') {
 			var message = target || shinysquirtlesquad[Math.floor(Math.random() * shinysquirtlesquad.length)];
 			if (message.indexOf('{{user}}') < 0) {
@@ -326,6 +344,20 @@ exports.commands = {
 			user.leaveRoom(room);
 		} else if (userid.toUpperCase() === 'SRINATOR') {
 			var message = target || srinator[Math.floor(Math.random() * srinator.length)];
+
+			var colour = '#' + [1, 1, 1].map(function () {
+				var part = Math.floor(Math.random() * 0xaa);
+				return (part < 0x10 ? '0' : '') + part.toString(16);
+			}).join('');
+
+			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
+			user.leaveRoom(room);
+		} else if (userid.toUpperCase() === 'THEDARKAFFLICTION') {
+			var message = target || thedarkaffliction[Math.floor(Math.random() * thedarkaffliction.length)];
+			if (message.indexOf('{{user}}') < 0) {
+				message = '{{user}} ' + message;
+			}
+			message = message.replace(/{{user}}/g, user.name);
 
 			var colour = '#' + [1, 1, 1].map(function () {
 				var part = Math.floor(Math.random() * 0xaa);
