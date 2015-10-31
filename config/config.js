@@ -551,6 +551,9 @@ exports.customavatars = {
 	'pelipperzachary': 'pelipperzachary.gif',
 	'silverlaguna': 'silverlaguna.gif',
 	'ahrmtic': 'ahrmtic.png',
+	'itssopheria': 'itssopheria.jpg',
+	'sopheria7': 'itssopheria.jpg',
+	'noatan': 'noatan.png',
 };
 
 // custom avatars appear in profile by specifiying server url.
