@@ -49,6 +49,7 @@ var emotes = {
 	':lapras:': 'http://cbc.pokecommunity.com/config/emoticons/lapras.png',
 	':latias:': 'http://cbc.pokecommunity.com/config/emoticons/latias.png',
 	':latios:': 'http://cbc.pokecommunity.com/config/emoticons/latios.png',
+	':lickilicky:': 'http://cbc.pokecommunity.com/config/emoticons/lickilicky.png',
 	':lickitung:': 'http://cbc.pokecommunity.com/config/emoticons/lickitung.png',
 	':lileep:': 'http://cbc.pokecommunity.com/config/emoticons/lileep.png',
 	':ludicolo:': 'http://cbc.pokecommunity.com/config/emoticons/ludicolo.png',
