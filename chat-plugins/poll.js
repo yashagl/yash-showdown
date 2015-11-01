@@ -99,32 +99,44 @@ exports.commands = {
 
 	elimtour: 'etour',
 	etour: function (target, room, user) {
-		if (!this.can('tournamentsmoderation', null, room)) return;
-		if (!this.can('voicetourmoderation')) return;
-		this.parse('/tour new ' + target + ', elimination');
+		if (!target) return;
+		if ((this.can('tournamentsmoderation', null, room)) || (this.can('voicetourmoderation'))) {
+			this.parse('/tour new ' + target + ', elimination');
+		} else {
+			return false;
+		}
 	},
 
 	roundrobintour: 'rtour',
 	rtour: function (target, room, user) {
-		if (!this.can('tournamentsmoderation', null, room)) return;
-		if (!this.can('voicetourmoderation')) return;
-		this.parse('/tour new ' + target + ', roundrobin');
+		if (!target) return;
+		if ((this.can('tournamentsmoderation', null, room)) || (this.can('voicetourmoderation'))) {
+			this.parse('/tour new ' + target + ', roundrobin');
+		} else {
+			return false;
+		}
 	},
 
 	dtour: 'doutour',
 	doubletour: 'doutour',
 	doutour: function (target, room, user) {
-		if (!this.can('tournamentsmoderation', null, room)) return;
-		if (!this.can('voicetourmoderation')) return;
-		this.parse('/tour new ' + target + ', elimination, 99, 2');
+		if (!target) return;
+		if ((this.can('tournamentsmoderation', null, room)) || (this.can('voicetourmoderation'))) {
+			this.parse('/tour new ' + target + ', elimination, 99, 2');
+		} else {
+			return false;
+		}
 	},
 
 	ttour: 'tritour',
 	tripletour: 'tritour',
 	tritour: function (target, room, user) {
-		if (!this.can('tournamentsmoderation', null, room)) return;
-		if (!this.can('voicetourmoderation')) return;
-		this.parse('/tour new ' + target + ', elimination, 99, 3');
+		if (!target) return;
+		if ((this.can('tournamentsmoderation', null, room)) || (this.can('voicetourmoderation'))) {
+			this.parse('/tour new ' + target + ', elimination, 99, 3');
+		} else {
+			return false;
+		}
 	},
 
 	pollr: 'pollremind',
