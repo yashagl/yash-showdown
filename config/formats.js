@@ -6,24 +6,21 @@ exports.Formats = [
 	// XY Singles
 	///////////////////////////////////////////////////////////////////
 
-	/*{
-		name: "OU & Aegislash (BWknd 38)",
-		section: "ORAS Singles",
-
-		ruleset: ['Pokemon', 'Standard', 'Team Preview', 'Swagger Clause', 'Baton Pass Clause'],
-		banlist: ['Soul Dew', 'Gengarite', 'Kangaskhanite', 'Lucarionite', 'Mawilite', 'Salamencite',
-			'Arceus', 'Blaziken', 'Darkrai', 'Deoxys', 'Deoxys-Attack', 'Deoxys-Defense', 'Deoxys-Speed', 'Dialga',
-			'Genesect', 'Giratina', 'Giratina-Origin', 'Greninja', 'Groudon', 'Ho-Oh', 'Kyogre', 'Kyurem-White',
-			'Lugia', 'Mewtwo', 'Palkia', 'Rayquaza', 'Reshiram', 'Shaymin-Sky', 'Xerneas', 'Yveltal', 'Zekrom'
-		]
-	},*/
 	{
-		name: "Halloween Random",
+		name: "Inverse Random (LotW 1)",
 		section: "ORAS Singles",
 
-		mod: 'halloweenrandom',
-		team: 'randomHalloween',
-		ruleset: ['Random (no PotD)']
+		team: 'random',
+		ruleset: ['Random (no PotD)'],
+		onNegateImmunity: function (pokemon, type) {
+			if (type in this.data.TypeChart && this.runEvent('Immunity', pokemon, null, null, type)) return false;
+		},
+		onEffectiveness: function (typeMod, target, type, move) {
+			// The effectiveness of Freeze Dry on Water isn't reverted
+			if (move && move.id === 'freezedry' && type === 'Water') return;
+			if (move && !this.getImmunity(move, type)) return 1;
+			return -typeMod;
+		}
 	},
 	{
 		name: "OU",
@@ -288,14 +285,14 @@ exports.Formats = [
 			this.add("raw|Would you like to be in Community Random? If so, <a href='http://www.pokecommunity.com/showthread.php?t=335080'>click here</a>");
 		}
 	},
-	/*{
+	{
 		name: "Halloween Random",
 		section: "Random Battles (aka Randbats)",
 
 		mod: 'halloweenrandom',
 		team: 'randomHalloween',
 		ruleset: ['Random (no PotD)']
-	},*/
+	},
 	{
 		name: "Summer Send-Off Random",
 		section: "Random Battles (aka Randbats)",
