@@ -187,7 +187,7 @@ exports.moderation = {
 
 	modDefault: {
 		//basic mods
-		'caps': 1,
+		'caps': 0,
 		'stretching': 1,
 		'flooding': 1,
 		'spam': 1,
@@ -198,7 +198,7 @@ exports.moderation = {
 		//specific mods
 		'spoiler': 0,
 		'youtube': 0,
-		'psservers': 0,
+		'psservers': 1,
 
 		//multiple infraction
 		'multiple': 1,
@@ -215,6 +215,7 @@ exports.moderation = {
 	],
 
 	psServersExcepts: {
+		"pokecommunity": 1,
 		"showdown": 1,
 		"smogtours": 1
 	},
@@ -293,7 +294,7 @@ exports.tourDefault = {
 */
 
 exports.youtube = {
-	enableByDefault: false
+	enableByDefault: true
 };
 
 /*
