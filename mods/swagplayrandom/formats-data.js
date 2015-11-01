@@ -10,8 +10,6 @@ exports.BattleFormatsData = {
 		tier: "(OU)"
 	},
 	sableyemega: {
-		randomBattleMoves: ["recover","willowisp","darkpulse","calmmind","shadowball"],
-		randomDoubleBattleMoves: ["fakeout","knockoff","darkpulse","shadowball","willowisp","protect"],
 		tier: "OU"
 	},
 	banette: {
