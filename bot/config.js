@@ -159,7 +159,7 @@ exports.moderation = {
 	disableModNote: false,
 
 	MOD_CONSTS: {
-		FLOOD_MESSAGE_NUM: 7,
+		FLOOD_MESSAGE_NUM: 6,
 		FLOOD_PER_MSG_MIN: 500, // this is the minimum time between messages for legitimate spam. It's used to determine what "flooding" is caused by lag
 		FLOOD_MESSAGE_TIME: 6 * 1000,
 
