@@ -72,7 +72,7 @@ exports.commands = {
 	ab: 'autoban',
 	autoban: function (arg, by, room, cmd) {
 		if (!this.can('autoban')) return;
-		if (room !== 'staff') return this.say(room, 'The autoban commands must be used in the "Staff" room.');
+		if (room !== 'staff') return this.say(room, 'The blacklist commands must be used in the "Staff" room.');
 		var tarRoom = 'lobby';
 		var textHelper = '';
 		if (!Bot.rooms[tarRoom] || Bot.rooms[tarRoom].type !== 'chat') return this.reply(this.trad('notchat') + textHelper);
@@ -118,7 +118,7 @@ exports.commands = {
 	unab: 'unautoban',
 	unautoban: function (arg, by, room, cmd) {
 		if (!this.can('autoban')) return;
-		if (room !== 'staff') return this.say(room, 'The autoban commands must be used in the "Staff" room.');
+		if (room !== 'staff') return this.say(room, 'The blacklist commands must be used in the "Staff" room.');
 		var tarRoom = 'lobby';
 		var textHelper = '';
 		if (!Bot.rooms[tarRoom] || Bot.rooms[tarRoom].type !== 'chat') return this.reply(this.trad('notchat') + textHelper);
@@ -157,7 +157,7 @@ exports.commands = {
 	rab: 'regexautoban',
 	regexautoban: function (arg, user, room) {
 		if (!this.can('autoban')) return;
-		if (room !== 'staff') return this.say(room, 'The autoban commands must be used in the "Staff" room.');
+		if (room !== 'staff') return this.say(room, 'The blacklist commands must be used in the "Staff" room.');
 		var tarRoom = 'lobby';
 		var textHelper = '';
 		if (!Bot.rooms[tarRoom] || Bot.rooms[tarRoom].type !== 'chat') return this.reply(this.trad('notchat') + textHelper);
@@ -185,7 +185,7 @@ exports.commands = {
 	unrab: 'unregexautoban',
 	unregexautoban: function (arg, user, room) {
 		if (!this.can('autoban')) return;
-		if (room !== 'staff') return this.say(room, 'The autoban commands must be used in the "Staff" room.');
+		if (room !== 'staff') return this.say(room, 'The blacklist commands must be used in the "Staff" room.');
 		var tarRoom = 'lobby';
 		var textHelper = '';
 		if (!Bot.rooms[tarRoom] || Bot.rooms[tarRoom].type !== 'chat') return this.reply(this.trad('notchat') + textHelper);
