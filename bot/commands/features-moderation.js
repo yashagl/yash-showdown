@@ -70,8 +70,9 @@ exports.commands = {
 	blacklist: 'autoban',
 	ban: 'autoban',
 	ab: 'autoban',
-	autoban: function (arg, by, cmd) {
+	autoban: function (arg, by, room, cmd) {
 		if (!this.can('autoban')) return;
+		if (room !== 'staff') return this.say(room, 'The autoban commands must be used in the "Staff" room.');
 		var tarRoom = 'lobby';
 		var textHelper = '';
 		if (!Bot.rooms[tarRoom] || Bot.rooms[tarRoom].type !== 'chat') return this.reply(this.trad('notchat') + textHelper);
@@ -95,7 +96,7 @@ exports.commands = {
 				alreadyAdded.push(tarUser);
 				continue;
 			}
-			this.say(tarRoom, '/roomban ' + tarUser + ', ' + this.trad('bu'));
+			this.say(tarRoom, '/ban ' + tarUser + ', ' + this.trad('bu'));
 			added.push(tarUser);
 		}
 
@@ -115,8 +116,9 @@ exports.commands = {
 	unblacklist: 'unautoban',
 	unban: 'unautoban',
 	unab: 'unautoban',
-	unautoban: function (arg, by, cmd) {
+	unautoban: function (arg, by, room, cmd) {
 		if (!this.can('autoban')) return;
+		if (room !== 'staff') return this.say(room, 'The autoban commands must be used in the "Staff" room.');
 		var tarRoom = 'lobby';
 		var textHelper = '';
 		if (!Bot.rooms[tarRoom] || Bot.rooms[tarRoom].type !== 'chat') return this.reply(this.trad('notchat') + textHelper);
@@ -139,7 +141,7 @@ exports.commands = {
 				notRemoved.push(tarUser);
 				continue;
 			}
-			this.say(tarRoom, '/roomunban ' + tarUser);
+			this.say(tarRoom, '/unban ' + tarUser);
 			removed.push(tarUser);
 		}
 
@@ -153,8 +155,9 @@ exports.commands = {
 	},
 
 	rab: 'regexautoban',
-	regexautoban: function (arg, user) {
+	regexautoban: function (arg, user, room) {
 		if (!this.can('autoban')) return;
+		if (room !== 'staff') return this.say(room, 'The autoban commands must be used in the "Staff" room.');
 		var tarRoom = 'lobby';
 		var textHelper = '';
 		if (!Bot.rooms[tarRoom] || Bot.rooms[tarRoom].type !== 'chat') return this.reply(this.trad('notchat') + textHelper);
@@ -180,8 +183,9 @@ exports.commands = {
 	},
 
 	unrab: 'unregexautoban',
-	unregexautoban: function (arg, user) {
+	unregexautoban: function (arg, user, room) {
 		if (!this.can('autoban')) return;
+		if (room !== 'staff') return this.say(room, 'The autoban commands must be used in the "Staff" room.');
 		var tarRoom = 'lobby';
 		var textHelper = '';
 		if (!Bot.rooms[tarRoom] || Bot.rooms[tarRoom].type !== 'chat') return this.reply(this.trad('notchat') + textHelper);
