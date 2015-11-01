@@ -10,7 +10,7 @@ exports.Formats = [
 		name: "Inverse Random (LotW 1)",
 		section: "ORAS Singles",
 
-		team: 'random',
+		team: 'randomNoPotD',
 		ruleset: ['Random (no PotD)'],
 		onNegateImmunity: function (pokemon, type) {
 			if (type in this.data.TypeChart && this.runEvent('Immunity', pokemon, null, null, type)) return false;
@@ -263,7 +263,7 @@ exports.Formats = [
 		name: "Inverse Random",
 		section: "Random Battles (aka Randbats)",
 
-		team: 'random',
+		team: 'randomNoPotD',
 		ruleset: ['Random (no PotD)'],
 		onNegateImmunity: function (pokemon, type) {
 			if (type in this.data.TypeChart && this.runEvent('Immunity', pokemon, null, null, type)) return false;
