@@ -941,7 +941,7 @@ var BattleRoom = (function () {
 				// Battle Point Winnings
 				//
 
-				if (this.format === 'halloweenrandom') {
+				if (this.format === 'inverserandomlotw1') {
 					var wid = toId(winner);
 					Database.read('bp', wid, function (err, initial) {
 						if (err) throw err;
@@ -950,7 +950,7 @@ var BattleRoom = (function () {
 							if (err) throw err;
 						});
 					});
-					this.push("|raw|<b><font color='" + color + "'>" + Tools.escapeHTML(winner) + "</font> has won " + "<font color='" + color + "'>2</font> Battle Points for winning the rated battle!</b>");
+					this.push("|raw|<b><font color='" + color + "'>" + Tools.escapeHTML(winner) + "</font> has won " + "<font color='" + color + "'>2</font> Battle Points for winning the rated battle in the Ladder of the Week format!</b>");
 				} else if (this.format !== '1v1random' && this.format !== '1v1challengecup' && this.format !== '1v1') {
 					var wid = toId(winner);
 					Database.read('bp', wid, function (err, initial) {
