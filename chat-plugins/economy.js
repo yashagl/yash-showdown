@@ -8,7 +8,7 @@ var shop = [
 	['Fix', 'Buy the ability to alter your current custom avatar. (Don\'t buy this if you don\'t have a custom avatar. If you have a custom avatar and would like to apply it to other usernames, contact the admin "wolf" and don\'t buy this.)', 25],
 	['Title', 'Buy a user title for your profile. (Can be seen via "/profile username". Check "/profile wolf" for an example.)', 30],
 	['Avatar', 'Buy a custom avatar to be applied to your name. (You supply. Images larger than 80x80 may not show correctly.)', 50],
-	['JoinPhrase', 'Buy a join phrase that the bot says every time you join the Lobby.', 60],
+	['JoinPhrase', 'Buy a join phrase that the bot submits every time you join the Lobby.', 60],
 	['BlackStar', 'Buy a \u2605 to go in front of your name and puts you at the top of the user list. (Lasts for four weeks.)', 60],
 ];
 
