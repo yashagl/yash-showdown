@@ -331,6 +331,7 @@ exports.customavatars = {
 	'ashadowssoul': 'sairentotamashii.jpg',
 	'lostchristms': 'sairentotamashii.jpg',
 	'kingdomoftea': 'sairentotamashii.jpg',
+	'kingdomofkappa': 'sairentotamashii.jpg',
 	'mk1091': 'mk1091.png',
 	'brndncullum': 'brndncullum.jpg',
 	'ejgmorgan': 'ejgmorgan.jpg',
@@ -556,6 +557,7 @@ exports.customavatars = {
 	'itssopheria': 'itssopheria.jpg',
 	'sopheria7': 'itssopheria.jpg',
 	'noatan': 'noatan.png',
+	'nakasu': 'nakasu.gif',
 };
 
 // custom avatars appear in profile by specifiying server url.
