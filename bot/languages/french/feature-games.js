@@ -12,6 +12,17 @@
 			'nogame': 'Il n\'y a pas de jeux dans cette salle',
 			'del1': 'Le jeu de',
 			'del2': 'a été résilié'
+		},
+		rps: {
+			'err': 'S\'il vous plaît choisir roche, papier ou ciseaux',
+			'r': 'Roche',
+			'p': 'Papier',
+			's': 'Ciseaux',
+			'win': 'Tu as gagné',
+			'lose': 'Tu as perdu',
+			'tie': 'C\'est une cravate',
+			'chosen': 'choisi',
+			'aliases': {'roche': 'r', 'papier': 'p', 'ciseaux': 's'}
 		}
 	},
 
@@ -160,6 +171,27 @@
 			'tie2': 'entre',
 			'forceend1': 'Le jeu Kunc a été résilié!',
 			'forceend2': 'Le pokemon était'
+		},
+		ambush: {
+			'init': '**Un nouveau jeu de Ambush a été créé!** Utiliser **$in** pour participer et **$start** pour lancer le jeu',
+			'noplayers': 'Il n\'y a pas assez de joueurs participant à ce jeu',
+			'round': 'Round',
+			'players': 'Joueurs',
+			'help': 'Utiliser **$fire [user]** pour tuer d\'autres joueurs',
+			'end1': '**Le jeu Ambush terminé!** Félicitations à',
+			'end2': 'pour gagner le jeu!',
+			'forceend': 'Le jeu Ambush a été résilié!'
+		},
+		passthebomb: {
+			'init': '**Un nouveau jeu de Pass-The-Bomb a été créé!** Utiliser **$in** pour participer et **$start** pour lancer le jeu',
+			'noplayers': 'Il n\'y a pas assez de joueurs participant à ce jeu',
+			'round': 'est remis la bombe!',
+			'players': 'Joueurs',
+			'help': 'Utiliser **$pass [user]** pour passer la bombe à un autre joueur!',
+			'lose': 'se éliminé!',
+			'end1': '**Le jeu Pass-The-Bomb terminé!** Félicitations à',
+			'end2': 'pour gagner le jeu!',
+			'forceend': 'Le jeu Pass-The-Bomb a été résilié!'
 		}
 	}
 };

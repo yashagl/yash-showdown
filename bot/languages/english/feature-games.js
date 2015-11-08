@@ -12,6 +12,17 @@ exports.translations = {
 			'nogame': 'There are no games in this room',
 			'del1': 'The game of',
 			'del2': 'was terminated'
+		},
+		rps: {
+			'err': 'Please choose rock, paper or scissors',
+			'r': 'Rock',
+			'p': 'Paper',
+			's': 'Scissors',
+			'win': 'You win',
+			'lose': 'You lose',
+			'tie': 'It\'s a draw',
+			'chosen': 'chose',
+			'aliases': {}
 		}
 	},
 
@@ -160,6 +171,27 @@ exports.translations = {
 			'tie2': 'between',
 			'forceend1': 'The Kunc game was terminated!',
 			'forceend2': 'The pokemon was'
+		},
+		ambush: {
+			'init': '**A new game of Ambush was created!** Use **$in** to participate and **$start** to start the game',
+			'noplayers': 'There are not enough players participating in this game',
+			'round': 'Round',
+			'players': 'Players',
+			'help': 'Use **$fire [user]** to kill other players',
+			'end1': '**The Ambush game ended!** Congratulations to',
+			'end2': 'for winning the game!',
+			'forceend': 'The Ambush game was terminated!'
+		},
+		passthebomb: {
+			'init': '**A new game of Pass-The-Bomb was created!** Use **$in** to participate and **$start** to start the game',
+			'noplayers': 'There are not enough players participating in this game',
+			'round': 'is handed the bomb!',
+			'players': 'Players',
+			'help': 'Use **$pass [user]** to pass the bomb to another player!',
+			'lose': 'got eliminated!',
+			'end1': '**The Pass-The-Bomb game ended!** Congratulations to',
+			'end2': 'for winning the game!',
+			'forceend': 'The Pass-The-Bomb game was terminated!'
 		}
 	}
 };

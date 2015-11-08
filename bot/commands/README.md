@@ -85,6 +85,9 @@ Commands for developing (only for excepted users)
  - `send` - Send anything to the server
  - `ignore [user]` - Bot will ignore an user
  - `unignore [user]` - Stop ignoring an user
+ - `sleep [room]` - Change the room status to `Sleeping`, to disable bot commands in a room
+ - `wake [room]` - Change the room status to `Ready`, to re-enable bot  commands in a room
+ - `status` or `roomstatus [room]` - Show the current status. Abbreviations: [c - chat, b - battle][r - ready, s - sleeping][Bot group][p - public, h - hidden]. Example: crup = chat, ready, user, private
  - `reload [commands/config/features/laguages]` - Hotpatch source files
  - `updategit` - Fast forward from git repo
  - `kill` - End the process
@@ -186,7 +189,6 @@ General commands for managing games:
  - `endgame` - Force end a game
  - `reloadgames` - Alias of `reload feature, games`
 
-
 **Hangman** and **Poke-Hangman**. Arguments: maxfails (max number of allowed fails, 0 or no specify this argument for infinite), lang (optional only for Poke-Hangman to change the language of the pokemon stuff). Commands:
 
  - `g [word/char]` - To guess words or characters
@@ -219,6 +221,24 @@ General commands for managing games:
 
  - `g [pokemon]` - To guess the pokemon
  - `view` - To view the game status
+ - `end` - To force end the game
+ 
+**Rock, paper, scissors**. Single command game: `rps [rock/paper/scissors]`
+
+**Ambush**. Arguments: roundtime (time per round). Commands:
+
+ - `in` - To join the game. Use `out` to leave
+ - `players` - To view the players list
+ - `start` - To start the game
+ - `fire [user]` - To kill other players
+ - `end` - To force end the game
+
+**Pass-The-Bomb**. Arguments: maxplayers (max number of players). Commands:
+
+ - `in` - To join the game. Use `out` to leave
+ - `players` - To view the players list
+ - `start` - To start the game
+ - `pass [user]` - To pass the bomb to another user
  - `end` - To force end the game
 
 Youtube

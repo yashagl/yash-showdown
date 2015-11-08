@@ -12,6 +12,17 @@
 			'nogame': 'No hay ningún juego en esta sala',
 			'del1': 'El juego de',
 			'del2': 'ha sido finalizado'
+		},
+		rps: {
+			'err': 'Por favor elige piedra, papel o tijeras',
+			'r': 'Piedra',
+			'p': 'Papel',
+			's': 'Tijeras',
+			'win': 'Has ganado',
+			'lose': 'Has perdido',
+			'tie': 'Es un empate',
+			'chosen': 'eligió',
+			'aliases': {'piedra': 'r', 'papel': 'p', 'tijeras': 's'}
 		}
 	},
 
@@ -160,6 +171,27 @@
 			'tie2': 'entre',
 			'forceend1': 'El juego de Kunc ha sido finalizado!',
 			'forceend2': 'El pokemon era'
+		},
+		ambush: {
+			'init': '**Se ha iniciado un juego de Ambush!** Usa **$in** para participar y **$start** para iniciar el juego',
+			'noplayers': 'No hay suficientes jugadores participando en este juego',
+			'round': 'Ronda',
+			'players': 'Jugadores',
+			'help': 'Usa **$fire [usuario]** para eliminar a otros jugadores',
+			'end1': '**El juego de Ambush ha terminado!** Felicidades a',
+			'end2': 'por ganar el juego!',
+			'forceend': 'El juego de Ambush game ha sido finalizado!'
+		},
+		passthebomb: {
+			'init': '**Se ha iniciado un juego de Pass-The-Bomb!** Usa **$in** para participar y **$start** para iniciar el juego',
+			'noplayers': 'No hay suficientes jugadores participando en este juego',
+			'round': 'tiene la bomba!',
+			'players': 'Jugadores',
+			'help': 'Usa **$pass [usuario]** para pasar la bomba a otro jugador!',
+			'lose': 'fue eliminado!',
+			'end1': '**El juego de Pass-The-Bomb ha terminado!** Felicidades a',
+			'end2': 'por ganar el juego!',
+			'forceend': 'El juego de Pass-The-Bomb ha sido finalizado!'
 		}
 	}
 };
