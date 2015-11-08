@@ -967,13 +967,13 @@ exports.commands = {
 	customkick: function (target, room, user) {
 		if (!target) return;
 		target = this.splitTarget(target);
-		var targetUser = this.targetUser;
+		let targetUser = this.targetUser;
 		if (!targetUser || !targetUser.connected) {
 			return this.sendReply("User " + this.targetUsername + " not found.");
 		}
 		if (targetUser.userid === user.userid) return this.sendReply('Please buy a poof from the "/shop" instead.');
 		if (!this.can('kick', targetUser, room)) return false;
-		var msg = (target ? " " + target + "" : "");
+		let msg = (target ? " " + target + "" : "");
 		this.add(targetUser.name + msg);
 		this.logModCommand("" + targetUser.name + " was kicked by " + user.name + ".");
 		targetUser.popup(targetUser.name + msg);
