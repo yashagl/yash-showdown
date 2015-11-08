@@ -601,7 +601,7 @@ exports.Formats = [
 				this.add('c|@Steamroll|I wasn\'t aware we were starting. Allow me...');
 				this.p2.pokemon[0].isLead = true;
 			}
-			// This letiable saves the status of a spammy conversation to be played, so it's only played once.
+			// This variable saves the status of a spammy conversation to be played, so it's only played once.
 			this.convoPlayed = false;
 
 			// This code here is used for the renaming of moves showing properly on client.
@@ -805,7 +805,7 @@ exports.Formats = [
 			}
 
 			// Edgy switch-in sentences go here.
-			// Sentences lety in style and how they are presented, so each Pokémon has its own way of sending them.
+			// Sentences vary in style and how they are presented, so each Pokémon has its own way of sending them.
 			let sentences = [];
 			let sentence = '';
 
