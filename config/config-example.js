@@ -1,3 +1,5 @@
+'use strict';
+
 // The server ID - a unique ID describing this Showdown server
 exports.serverid = 'pokecommunity';
 
@@ -574,7 +576,7 @@ exports.appealurl = 'http://www.pokecommunity.com/showthread.php?t=289012#senior
 // replsocketprefix - the prefix for the repl sockets to be listening on
 // replsocketmode - the file mode bits to use for the repl sockets
 exports.replsocketprefix = './logs/repl/';
-exports.replsocketmode = 0600;
+exports.replsocketmode = '0600';
 
 // permissions and groups:
 //   Each entry in `grouplist' is a seperate group. Some of the members are "special"

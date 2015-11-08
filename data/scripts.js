@@ -1,8 +1,10 @@
+'use strict';
+
 exports.BattleScripts = {
 	gen: 6,
 	runMove: function (move, pokemon, target, sourceEffect) {
 		if (!sourceEffect && toId(move) !== 'struggle') {
-			var changedMove = this.runEvent('OverrideDecision', pokemon, target, move);
+			let changedMove = this.runEvent('OverrideDecision', pokemon, target, move);
 			if (changedMove && changedMove !== true) {
 				move = changedMove;
 				target = null;
@@ -36,7 +38,7 @@ exports.BattleScripts = {
 			}
 		}
 		pokemon.lastDamage = 0;
-		var lockedMove = this.runEvent('LockMove', pokemon);
+		let lockedMove = this.runEvent('LockMove', pokemon);
 		if (lockedMove === true) lockedMove = false;
 		if (!lockedMove) {
 			if (!pokemon.deductPP(move, null, target) && (move.id !== 'struggle')) {
@@ -55,13 +57,13 @@ exports.BattleScripts = {
 		if (!sourceEffect && this.effect.id) sourceEffect = this.effect;
 		move = this.getMoveCopy(move);
 		if (this.activeMove) move.priority = this.activeMove.priority;
-		var baseTarget = move.target;
+		let baseTarget = move.target;
 		if (!target && target !== false) target = this.resolveTarget(pokemon, move);
 		if (move.target === 'self' || move.target === 'allies') {
 			target = pokemon;
 		}
 		if (sourceEffect) move.sourceEffect = sourceEffect.id;
-		var moveResult = false;
+		let moveResult = false;
 
 		this.setActiveMove(move, pokemon, target);
 
@@ -79,8 +81,7 @@ exports.BattleScripts = {
 		}
 		if (!move) return false;
 
-		var attrs = '';
-		var missed = false;
+		let attrs = '';
 		if (pokemon.fainted) {
 			return false;
 		}
@@ -89,7 +90,7 @@ exports.BattleScripts = {
 			attrs = '|[still]'; // suppress the default move animation
 		}
 
-		var movename = move.name;
+		let movename = move.name;
 		if (move.id === 'hiddenpower') movename = 'Hidden Power';
 		if (sourceEffect) attrs += '|[from]' + this.getEffect(sourceEffect);
 		this.addMove('move', pokemon, movename, target + attrs);
@@ -101,10 +102,10 @@ exports.BattleScripts = {
 			return true;
 		}
 
-		var targets = pokemon.getMoveTargets(move, target);
-		var extraPP = 0;
-		for (var i = 0; i < targets.length; i++) {
-			var ppDrop = this.singleEvent('DeductPP', targets[i].getAbility(), targets[i].abilityData, targets[i], pokemon, move);
+		let targets = pokemon.getMoveTargets(move, target);
+		let extraPP = 0;
+		for (let i = 0; i < targets.length; i++) {
+			let ppDrop = this.singleEvent('DeductPP', targets[i].getAbility(), targets[i].abilityData, targets[i], pokemon, move);
 			if (ppDrop !== true) {
 				extraPP += ppDrop || 0;
 			}
@@ -123,7 +124,7 @@ exports.BattleScripts = {
 			move.ignoreImmunity = (move.category === 'Status');
 		}
 
-		var damage = false;
+		let damage = false;
 		if (move.target === 'all' || move.target === 'foeSide' || move.target === 'allySide' || move.target === 'allyTeam') {
 			damage = this.tryMoveHit(target, pokemon, move);
 			if (damage || damage === 0 || damage === undefined) moveResult = true;
@@ -138,15 +139,15 @@ exports.BattleScripts = {
 			}
 			if (targets.length > 1) move.spreadHit = true;
 			damage = 0;
-			for (var i = 0; i < targets.length; i++) {
-				var hitResult = this.tryMoveHit(targets[i], pokemon, move, true);
+			for (let i = 0; i < targets.length; i++) {
+				let hitResult = this.tryMoveHit(targets[i], pokemon, move, true);
 				if (hitResult || hitResult === 0 || hitResult === undefined) moveResult = true;
 				damage += hitResult || 0;
 			}
 			if (!pokemon.hp) pokemon.faint();
 		} else {
 			target = targets[0];
-			var lacksTarget = target.fainted;
+			let lacksTarget = target.fainted;
 			if (!lacksTarget) {
 				if (move.target === 'adjacentFoe' || move.target === 'adjacentAlly' || move.target === 'normal' || move.target === 'randomNormal') {
 					lacksTarget = !this.isAdjacent(target, pokemon);
@@ -184,7 +185,7 @@ exports.BattleScripts = {
 		if (move.selfdestruct && spreadHit) pokemon.hp = 0;
 
 		this.setActiveMove(move, pokemon, target);
-		var hitResult = true;
+		let hitResult = true;
 
 		hitResult = this.singleEvent('PrepareHit', move, {}, target, pokemon, move);
 		if (!hitResult) {
@@ -224,11 +225,11 @@ exports.BattleScripts = {
 			return false;
 		}
 
-		var boostTable = [1, 4 / 3, 5 / 3, 2, 7 / 3, 8 / 3, 3];
+		let boostTable = [1, 4 / 3, 5 / 3, 2, 7 / 3, 8 / 3, 3];
 
 		// calculate true accuracy
-		var accuracy = move.accuracy;
-		var boosts, boost;
+		let accuracy = move.accuracy;
+		let boosts, boost;
 		if (accuracy !== true) {
 			if (!move.ignoreAccuracy) {
 				boosts = this.runEvent('ModifyBoost', pokemon, null, null, Object.clone(pokemon.boosts));
@@ -274,12 +275,12 @@ exports.BattleScripts = {
 		}
 
 		if (move.breaksProtect) {
-			var broke = false;
-			for (var i in {kingsshield:1, protect:1, spikyshield:1}) {
+			let broke = false;
+			for (let i in {kingsshield:1, protect:1, spikyshield:1}) {
 				if (target.removeVolatile(i)) broke = true;
 			}
 			if (this.gen >= 6 || target.side !== pokemon.side) {
-				for (var i in {craftyshield:1, matblock:1, quickguard:1, wideguard:1}) {
+				for (let i in {craftyshield:1, matblock:1, quickguard:1, wideguard:1}) {
 					if (target.side.removeSideCondition(i)) broke = true;
 				}
 			}
@@ -292,11 +293,11 @@ exports.BattleScripts = {
 			}
 		}
 
-		var totalDamage = 0;
-		var damage = 0;
+		let totalDamage = 0;
+		let damage = 0;
 		pokemon.lastDamage = 0;
 		if (move.multihit) {
-			var hits = move.multihit;
+			let hits = move.multihit;
 			if (hits.length) {
 				// yes, it's hardcoded... meh
 				if (hits[0] === 2 && hits[1] === 5) {
@@ -310,11 +311,11 @@ exports.BattleScripts = {
 				}
 			}
 			hits = Math.floor(hits);
-			var nullDamage = true;
-			var moveDamage;
+			let nullDamage = true;
+			let moveDamage;
 			// There is no need to recursively check the ´sleepUsable´ flag as Sleep Talk can only be used while asleep.
-			var isSleepUsable = move.sleepUsable || this.getMove(move.sourceEffect).sleepUsable;
-			var i;
+			let isSleepUsable = move.sleepUsable || this.getMove(move.sourceEffect).sleepUsable;
+			let i;
 			for (i = 0; i < hits && target.hp && pokemon.hp; i++) {
 				if (pokemon.status === 'slp' && !isSleepUsable) break;
 
@@ -354,12 +355,12 @@ exports.BattleScripts = {
 		return damage;
 	},
 	moveHit: function (target, pokemon, move, moveData, isSecondary, isSelf) {
-		var damage;
+		let damage;
 		move = this.getMoveCopy(move);
 
 		if (!moveData) moveData = move;
 		if (!moveData.flags) moveData.flags = {};
-		var hitResult = true;
+		let hitResult = true;
 
 		// TryHit events:
 		//   STEP 1: we see if the move will succeed at all:
@@ -421,7 +422,7 @@ exports.BattleScripts = {
 		}
 
 		if (target) {
-			var didSomething = false;
+			let didSomething = false;
 
 			damage = this.getDamage(pokemon, target, moveData);
 
@@ -465,7 +466,7 @@ exports.BattleScripts = {
 				didSomething = didSomething || hitResult;
 			}
 			if (moveData.heal && !target.fainted) {
-				var d = target.heal((this.gen < 5 ? Math.floor : Math.round)(target.maxhp * moveData.heal[0] / moveData.heal[1]));
+				let d = target.heal((this.gen < 5 ? Math.floor : Math.round)(target.maxhp * moveData.heal[0] / moveData.heal[1]));
 				if (!d && d !== 0) {
 					this.add('-fail', target);
 					this.debug('heal interrupted');
@@ -546,7 +547,7 @@ exports.BattleScripts = {
 			}
 		}
 		if (moveData.self) {
-			var selfRoll;
+			let selfRoll;
 			if (!isSecondary && moveData.self.boosts) selfRoll = this.random(100);
 			// This is done solely to mimic in-game RNG behaviour. All self drops have a 100% chance of happening but still grab a random number.
 			if (typeof moveData.self.chance === 'undefined' || selfRoll < moveData.self.chance) {
@@ -554,9 +555,9 @@ exports.BattleScripts = {
 			}
 		}
 		if (moveData.secondaries) {
-			var secondaryRoll;
-			var secondaries = this.runEvent('ModifySecondaries', target, pokemon, moveData, moveData.secondaries.slice());
-			for (var i = 0; i < secondaries.length; i++) {
+			let secondaryRoll;
+			let secondaries = this.runEvent('ModifySecondaries', target, pokemon, moveData, moveData.secondaries.slice());
+			for (let i = 0; i < secondaries.length; i++) {
 				secondaryRoll = this.random(100);
 				if (typeof secondaries[i].chance === 'undefined' || secondaryRoll < secondaries[i].chance) {
 					this.moveHit(target, pokemon, move, secondaries[i], true, isSelf);
@@ -578,20 +579,20 @@ exports.BattleScripts = {
 	},
 
 	canMegaEvo: function (pokemon) {
-		var altForme = pokemon.baseTemplate.otherFormes && this.getTemplate(pokemon.baseTemplate.otherFormes[0]);
+		let altForme = pokemon.baseTemplate.otherFormes && this.getTemplate(pokemon.baseTemplate.otherFormes[0]);
 		if (altForme && altForme.isMega && altForme.requiredMove && pokemon.moves.indexOf(toId(altForme.requiredMove)) >= 0) return altForme.species;
-		var item = pokemon.getItem();
+		let item = pokemon.getItem();
 		if (item.megaEvolves !== pokemon.baseTemplate.baseSpecies || item.megaStone === pokemon.species) return false;
 		return item.megaStone;
 	},
 
 	runMegaEvo: function (pokemon) {
-		var template = this.getTemplate(pokemon.canMegaEvo);
-		var side = pokemon.side;
+		let template = this.getTemplate(pokemon.canMegaEvo);
+		let side = pokemon.side;
 
 		// Pokémon affected by Sky Drop cannot mega evolve. Enforce it here for now.
-		var foeActive = side.foe.active;
-		for (var i = 0; i < foeActive.length; i++) {
+		let foeActive = side.foe.active;
+		for (let i = 0; i < foeActive.length; i++) {
 			if (foeActive[i].volatiles['skydrop'] && foeActive[i].volatiles['skydrop'].source === pokemon) {
 				return false;
 			}
@@ -606,7 +607,7 @@ exports.BattleScripts = {
 		pokemon.baseAbility = pokemon.ability;
 
 		// Limit one mega evolution
-		for (var i = 0; i < side.pokemon.length; i++) {
+		for (let i = 0; i < side.pokemon.length; i++) {
 			side.pokemon[i].canMegaEvo = false;
 		}
 		return true;
@@ -619,10 +620,10 @@ exports.BattleScripts = {
 	},
 	checkAbilities: function (selectedAbilities, defaultAbilities) {
 		if (!selectedAbilities.length) return true;
-		var selectedAbility = selectedAbilities.pop();
-		var isValid = false;
-		for (var i = 0; i < defaultAbilities.length; i++) {
-			var defaultAbility = defaultAbilities[i];
+		let selectedAbility = selectedAbilities.pop();
+		let isValid = false;
+		for (let i = 0; i < defaultAbilities.length; i++) {
+			let defaultAbility = defaultAbilities[i];
 			if (!defaultAbility) break;
 			if (defaultAbility.indexOf(selectedAbility) >= 0) {
 				defaultAbilities.splice(i, 1);
@@ -635,10 +636,10 @@ exports.BattleScripts = {
 		return isValid;
 	},
 	sampleNoReplace: function (list) {
-		var length = list.length;
-		var index = this.random(length);
-		var element = list[index];
-		for (var nextIndex = index + 1; nextIndex < length; index += 1, nextIndex += 1) {
+		let length = list.length;
+		let index = this.random(length);
+		let element = list[index];
+		for (let nextIndex = index + 1; nextIndex < length; index += 1, nextIndex += 1) {
 			list[index] = list[nextIndex];
 		}
 		list.pop();
@@ -646,9 +647,9 @@ exports.BattleScripts = {
 	},
 	hasMegaEvo: function (template) {
 		if (template.otherFormes) {
-			var forme = this.getTemplate(template.otherFormes[0]);
+			let forme = this.getTemplate(template.otherFormes[0]);
 			if (forme.requiredItem) {
-				var item = this.getItem(forme.requiredItem);
+				let item = this.getItem(forme.requiredItem);
 				if (item.megaStone) return true;
 			} else if (forme.requiredMove && forme.isMega) {
 				return true;
@@ -657,7 +658,7 @@ exports.BattleScripts = {
 		return false;
 	},
 	getTeam: function (side, team) {
-		var format = side.battle.getFormat();
+		let format = side.battle.getFormat();
 		if (typeof format.team === 'string' && format.team.substr(0, 6) === 'random') {
 			return this[format.team + 'Team'](side);
 		} else if (team) {
@@ -667,40 +668,40 @@ exports.BattleScripts = {
 		}
 	},
 	randomCCTeam: function (side) {
-		var team = [];
+		let team = [];
 
-		var natures = Object.keys(this.data.Natures);
-		var items = Object.keys(this.data.Items);
+		let natures = Object.keys(this.data.Natures);
+		let items = Object.keys(this.data.Items);
 
-		var hasDexNumber = {};
-		var formes = [[], [], [], [], [], []];
+		let hasDexNumber = {};
+		let formes = [[], [], [], [], [], []];
 
 		// Pick six random pokemon--no repeats, even among formes
 		// Also need to either normalize for formes or select formes at random
 		// Unreleased are okay but no CAP
 
-		var num;
-		for (var i = 0; i < 6; i++) {
+		let num;
+		for (let i = 0; i < 6; i++) {
 			do {
 				num = this.random(721) + 1;
 			} while (num in hasDexNumber);
 			hasDexNumber[num] = i;
 		}
 
-		for (var id in this.data.Pokedex) {
+		for (let id in this.data.Pokedex) {
 			if (!(this.data.Pokedex[id].num in hasDexNumber)) continue;
-			var template = this.getTemplate(id);
+			let template = this.getTemplate(id);
 			if (template.species !== 'Pichu-Spiky-eared') {
 				formes[hasDexNumber[template.num]].push(template.species);
 			}
 		}
 
-		for (var i = 0; i < 6; i++) {
-			var poke = formes[i][this.random(formes[i].length)];
-			var template = this.getTemplate(poke);
+		for (let i = 0; i < 6; i++) {
+			let poke = formes[i][this.random(formes[i].length)];
+			let template = this.getTemplate(poke);
 
 			// Random item
-			var item = items[this.random(items.length)];
+			let item = items[this.random(items.length)];
 
 			// Make sure forme is legal
 			if ((template.requiredItem && item !== template.requiredItem) || template.num === 351 ||
@@ -718,18 +719,18 @@ exports.BattleScripts = {
 			}
 
 			// Random ability
-			var abilities = [template.abilities['0']];
+			let abilities = [template.abilities['0']];
 			if (template.abilities['1']) {
 				abilities.push(template.abilities['1']);
 			}
 			if (template.abilities['H']) {
 				abilities.push(template.abilities['H']);
 			}
-			var ability = abilities[this.random(abilities.length)];
+			let ability = abilities[this.random(abilities.length)];
 
 			// Four random unique moves from the movepool
-			var moves;
-			var pool = ['struggle'];
+			let moves;
+			let pool = ['struggle'];
 			if (poke === 'Smeargle') {
 				pool = Object.keys(this.data.Movedex).exclude('chatter', 'struggle', 'magikarpsrevenge');
 			} else if (template.learnset) {
@@ -744,36 +745,36 @@ exports.BattleScripts = {
 			}
 
 			// Random EVs
-			var evs = {hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0};
-			var s = ["hp", "atk", "def", "spa", "spd", "spe"];
-			var evpool = 510;
+			let evs = {hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0};
+			let s = ["hp", "atk", "def", "spa", "spd", "spe"];
+			let evpool = 510;
 			do {
-				var x = s[this.random(s.length)];
-				var y = this.random(Math.min(256 - evs[x], evpool + 1));
+				let x = s[this.random(s.length)];
+				let y = this.random(Math.min(256 - evs[x], evpool + 1));
 				evs[x] += y;
 				evpool -= y;
 			} while (evpool > 0);
 
 			// Random IVs
-			var ivs = {hp: this.random(32), atk: this.random(32), def: this.random(32), spa: this.random(32), spd: this.random(32), spe: this.random(32)};
+			let ivs = {hp: this.random(32), atk: this.random(32), def: this.random(32), spa: this.random(32), spd: this.random(32), spe: this.random(32)};
 
 			// Random nature
-			var nature = natures[this.random(natures.length)];
+			let nature = natures[this.random(natures.length)];
 
 			// Level balance--calculate directly from stats rather than using some silly lookup table
-			var mbstmin = 1307; // Sunkern has the lowest modified base stat total, and that total is 807
+			let mbstmin = 1307; // Sunkern has the lowest modified base stat total, and that total is 807
 
-			var stats = template.baseStats;
+			let stats = template.baseStats;
 
 			// Modified base stat total assumes 31 IVs, 85 EVs in every stat
-			var mbst = (stats["hp"] * 2 + 31 + 21 + 100) + 10;
+			let mbst = (stats["hp"] * 2 + 31 + 21 + 100) + 10;
 			mbst += (stats["atk"] * 2 + 31 + 21 + 100) + 5;
 			mbst += (stats["def"] * 2 + 31 + 21 + 100) + 5;
 			mbst += (stats["spa"] * 2 + 31 + 21 + 100) + 5;
 			mbst += (stats["spd"] * 2 + 31 + 21 + 100) + 5;
 			mbst += (stats["spe"] * 2 + 31 + 21 + 100) + 5;
 
-			var level = Math.floor(100 * mbstmin / mbst); // Initial level guess will underestimate
+			let level = Math.floor(100 * mbstmin / mbst); // Initial level guess will underestimate
 
 			while (level < 100) {
 				mbst = Math.floor((stats["hp"] * 2 + 31 + 21 + 100) * level / 100 + 10);
@@ -790,10 +791,10 @@ exports.BattleScripts = {
 			// Random gender--already handled by PS
 
 			// Random happiness
-			var happiness = this.random(256);
+			let happiness = this.random(256);
 
 			// Random shininess
-			var shiny = !this.random(1024);
+			let shiny = !this.random(1024);
 
 			team.push({
 				name: poke,
@@ -812,43 +813,43 @@ exports.BattleScripts = {
 		return team;
 	},
 	randomHCTeam: function (side) {
-		var team = [];
+		let team = [];
 
-		var itemPool = Object.keys(this.data.Items);
-		var abilityPool = Object.keys(this.data.Abilities);
-		var movePool = Object.keys(this.data.Movedex);
-		var naturePool = Object.keys(this.data.Natures);
+		let itemPool = Object.keys(this.data.Items);
+		let abilityPool = Object.keys(this.data.Abilities);
+		let movePool = Object.keys(this.data.Movedex);
+		let naturePool = Object.keys(this.data.Natures);
 
-		var hasDexNumber = {};
-		var formes = [[], [], [], [], [], []];
+		let hasDexNumber = {};
+		let formes = [[], [], [], [], [], []];
 
 		// Pick six random pokemon--no repeats, even among formes
 		// Also need to either normalize for formes or select formes at random
 		// Unreleased are okay but no CAP
 
-		var num;
-		for (var i = 0; i < 6; i++) {
+		let num;
+		for (let i = 0; i < 6; i++) {
 			do {
 				num = this.random(721) + 1;
 			} while (num in hasDexNumber);
 			hasDexNumber[num] = i;
 		}
 
-		for (var id in this.data.Pokedex) {
+		for (let id in this.data.Pokedex) {
 			if (!(this.data.Pokedex[id].num in hasDexNumber)) continue;
-			var template = this.getTemplate(id);
+			let template = this.getTemplate(id);
 			if (template.learnset && template.species !== 'Pichu-Spiky-eared') {
 				formes[hasDexNumber[template.num]].push(template.species);
 			}
 		}
 
-		for (var i = 0; i < 6; i++) {
+		for (let i = 0; i < 6; i++) {
 			// Choose forme
-			var pokemon = formes[i][this.random(formes[i].length)];
-			var template = this.getTemplate(pokemon);
+			let pokemon = formes[i][this.random(formes[i].length)];
+			let template = this.getTemplate(pokemon);
 
 			// Random unique item
-			var item = '';
+			let item = '';
 			do {
 				item = this.sampleNoReplace(itemPool);
 			} while (this.data.Items[item].isNonstandard);
@@ -857,47 +858,47 @@ exports.BattleScripts = {
 			if (template.species.substr(0, 9) === 'Genesect-' && item !== toId(template.requiredItem)) pokemon = 'Genesect';
 
 			// Random unique ability
-			var ability = '';
+			let ability = '';
 			do {
 				ability = this.sampleNoReplace(abilityPool);
 			} while (this.data.Abilities[ability].isNonstandard);
 
 			// Random unique moves
-			var m = [];
+			let m = [];
 			while (true) {
-				var moveid = this.sampleNoReplace(movePool);
+				let moveid = this.sampleNoReplace(movePool);
 				if (!this.data.Movedex[moveid].isNonstandard && (moveid === 'hiddenpower' || moveid.substr(0, 11) !== 'hiddenpower')) {
 					if (m.push(moveid) >= 4) break;
 				}
 			}
 
 			// Random EVs
-			var evs = {hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0};
-			var s = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
-			var evpool = 510;
+			let evs = {hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0};
+			let s = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
+			let evpool = 510;
 			do {
-				var x = s[this.random(s.length)];
-				var y = this.random(Math.min(256 - evs[x], evpool + 1));
+				let x = s[this.random(s.length)];
+				let y = this.random(Math.min(256 - evs[x], evpool + 1));
 				evs[x] += y;
 				evpool -= y;
 			} while (evpool > 0);
 
 			// Random IVs
-			var ivs = {hp: this.random(32), atk: this.random(32), def: this.random(32), spa: this.random(32), spd: this.random(32), spe: this.random(32)};
+			let ivs = {hp: this.random(32), atk: this.random(32), def: this.random(32), spa: this.random(32), spd: this.random(32), spe: this.random(32)};
 
 			// Random nature
-			var nature = naturePool[this.random(naturePool.length)];
+			let nature = naturePool[this.random(naturePool.length)];
 
 			// Level balance
-			var mbstmin = 1307;
-			var stats = template.baseStats;
-			var mbst = (stats['hp'] * 2 + 31 + 21 + 100) + 10;
+			let mbstmin = 1307;
+			let stats = template.baseStats;
+			let mbst = (stats['hp'] * 2 + 31 + 21 + 100) + 10;
 			mbst += (stats['atk'] * 2 + 31 + 21 + 100) + 5;
 			mbst += (stats['def'] * 2 + 31 + 21 + 100) + 5;
 			mbst += (stats['spa'] * 2 + 31 + 21 + 100) + 5;
 			mbst += (stats['spd'] * 2 + 31 + 21 + 100) + 5;
 			mbst += (stats['spe'] * 2 + 31 + 21 + 100) + 5;
-			var level = Math.floor(100 * mbstmin / mbst);
+			let level = Math.floor(100 * mbstmin / mbst);
 			while (level < 100) {
 				mbst = Math.floor((stats['hp'] * 2 + 31 + 21 + 100) * level / 100 + 10);
 				mbst += Math.floor(((stats['atk'] * 2 + 31 + 21 + 100) * level / 100 + 5) * level / 100);
@@ -910,10 +911,10 @@ exports.BattleScripts = {
 			}
 
 			// Random happiness
-			var happiness = this.random(256);
+			let happiness = this.random(256);
 
 			// Random shininess
-			var shiny = !this.random(1024);
+			let shiny = !this.random(1024);
 
 			team.push({
 				name: pokemon,
@@ -933,7 +934,7 @@ exports.BattleScripts = {
 	},
 	queryMoves: function (moves, hasType, hasAbility) {
 		// This is primarily a helper function for random setbuilder functions.
-		var counter = {
+		let counter = {
 			Physical: 0, Special: 0, Status: 0, damage: 0, recovery: 0, stab: 0,
 			blaze: 0, overgrow: 0, swarm: 0, torrent: 0,
 			adaptability: 0, ate: 0, bite: 0, contrary: 0, hustle: 0,
@@ -950,38 +951,38 @@ exports.BattleScripts = {
 		if (!hasAbility) hasAbility = {};
 
 		// Moves that heal a fixed amount:
-		var RecoveryMove = {
+		let RecoveryMove = {
 			milkdrink: 1, recover: 1, roost: 1, slackoff: 1, softboiled: 1
 		};
 		// Moves which drop stats:
-		var ContraryMove = {
+		let ContraryMove = {
 			leafstorm: 1, overheat: 1, closecombat: 1, superpower: 1, vcreate: 1
 		};
 		// Moves that boost Attack:
-		var PhysicalSetup = {
+		let PhysicalSetup = {
 			bellydrum:1, bulkup:1, coil:1, curse:1, dragondance:1, honeclaws:1, howl:1, poweruppunch:1, shiftgear:1, swordsdance:1
 		};
 		// Moves which boost Special Attack:
-		var SpecialSetup = {
+		let SpecialSetup = {
 			calmmind:1, chargebeam:1, geomancy:1, nastyplot:1, quiverdance:1, tailglow:1
 		};
 		// Moves which boost Attack AND Special Attack:
-		var MixedSetup = {
+		let MixedSetup = {
 			growth:1, workup:1, shellsmash:1
 		};
 		// Moves which boost Speed:
-		var SpeedSetup = {
+		let SpeedSetup = {
 			autotomize:1, agility:1, rockpolish:1
 		};
 		// Moves that shouldn't be the only STAB moves:
-		var NoStab = {
+		let NoStab = {
 			aquajet:1, bounce:1, chargebeam:1, clearsmog:1, eruption:1, fakeout:1, flamecharge:1, pursuit:1, quickattack:1, skyattack:1, waterspout:1
 		};
 
 		// Iterate through all moves we've chosen so far and keep track of what they do:
-		for (var k = 0; k < moves.length; k++) {
-			var move = this.getMove(moves[k]);
-			var moveid = move.id;
+		for (let k = 0; k < moves.length; k++) {
+			let move = this.getMove(moves[k]);
+			let moveid = move.id;
 			if (move.damage || move.damageCallback) {
 				// Moves that do a set amount of damage:
 				counter['damage']++;
@@ -1003,7 +1004,7 @@ exports.BattleScripts = {
 					counter['adaptability']++;
 					// STAB:
 					// Certain moves aren't acceptable as a Pokemon's only STAB attack
-					if (!(moveid in NoStab)) counter['stab']++;
+					if (!(moveid in NoStab) && (moveid !== 'hiddenpower' || Object.keys(hasType).length === 1)) counter['stab']++;
 				}
 				if (hasAbility['Protean']) counter['stab']++;
 				if (move.category === 'Physical') counter['hustle']++;
@@ -1056,15 +1057,15 @@ exports.BattleScripts = {
 	},
 	randomSet: function (template, slot, teamDetails) {
 		if (slot === undefined) slot = 1;
-		var baseTemplate = (template = this.getTemplate(template));
-		var name = template.name;
+		let baseTemplate = (template = this.getTemplate(template));
+		let name = template.name;
 
 		if (!template.exists || (!template.randomBattleMoves && !template.learnset)) {
 			// GET IT? UNOWN? BECAUSE WE CAN'T TELL WHAT THE POKEMON IS
 			template = this.getTemplate('unown');
 
-			var stack = 'Template incompatible with random battles: ' + name;
-			var fakeErr = {stack: stack};
+			let stack = 'Template incompatible with random battles: ' + name;
+			let fakeErr = {stack: stack};
 			require('../crashlogger.js')(fakeErr, 'The randbat set generator');
 		}
 
@@ -1092,11 +1093,11 @@ exports.BattleScripts = {
 			template = this.getTemplate(template.otherFormes[0]);
 		}
 
-		var movePool = (template.randomBattleMoves ? template.randomBattleMoves.slice() : Object.keys(template.learnset));
-		var moves = [];
-		var ability = '';
-		var item = '';
-		var evs = {
+		let movePool = (template.randomBattleMoves ? template.randomBattleMoves.slice() : Object.keys(template.learnset));
+		let moves = [];
+		let ability = '';
+		let item = '';
+		let evs = {
 			hp: 85,
 			atk: 85,
 			def: 85,
@@ -1104,7 +1105,7 @@ exports.BattleScripts = {
 			spd: 85,
 			spe: 85
 		};
-		var ivs = {
+		let ivs = {
 			hp: 31,
 			atk: 31,
 			def: 31,
@@ -1112,12 +1113,12 @@ exports.BattleScripts = {
 			spd: 31,
 			spe: 31
 		};
-		var hasType = {};
+		let hasType = {};
 		hasType[template.types[0]] = true;
 		if (template.types[1]) {
 			hasType[template.types[1]] = true;
 		}
-		var hasAbility = {};
+		let hasAbility = {};
 		hasAbility[template.abilities[0]] = true;
 		if (template.abilities[1]) {
 			hasAbility[template.abilities[1]] = true;
@@ -1125,30 +1126,30 @@ exports.BattleScripts = {
 		if (template.abilities['H']) {
 			hasAbility[template.abilities['H']] = true;
 		}
-		var availableHP = 0;
-		for (var i = 0, len = movePool.length; i < len; i++) {
+		let availableHP = 0;
+		for (let i = 0, len = movePool.length; i < len; i++) {
 			if (movePool[i].substr(0, 11) === 'hiddenpower') availableHP++;
 		}
 
 		// These moves can be used even if we aren't setting up to use them:
-		var SetupException = {
+		let SetupException = {
 			extremespeed:1, suckerpunch:1, superpower:1,
 			dracometeor:1, leafstorm:1, overheat:1, technoblast:1
 		};
-		var counterAbilities = {
+		let counterAbilities = {
 			'Adaptability':1, 'Blaze':1, 'Contrary':1, 'Hustle':1, 'Iron Fist':1,
 			'Overgrow':1, 'Sheer Force':1, 'Skill Link':1, 'Swarm':1, 'Torrent':1
 		};
-		var ateAbilities = {
+		let ateAbilities = {
 			'Aerilate':1, 'Pixilate':1, 'Refrigerate':1
 		};
 
-		var hasMove, counter;
+		let hasMove, counter;
 
 		do {
 			// Keep track of all moves we have:
 			hasMove = {};
-			for (var k = 0; k < moves.length; k++) {
+			for (let k = 0; k < moves.length; k++) {
 				if (moves[k].substr(0, 11) === 'hiddenpower') {
 					hasMove['hiddenpower'] = true;
 				} else {
@@ -1158,7 +1159,7 @@ exports.BattleScripts = {
 
 			// Choose next 4 moves from learnset/viable moves and add them to moves list:
 			while (moves.length < 4 && movePool.length) {
-				var moveid = this.sampleNoReplace(movePool);
+				let moveid = this.sampleNoReplace(movePool);
 				if (moveid.substr(0, 11) === 'hiddenpower') {
 					availableHP--;
 					if (hasMove['hiddenpower']) continue;
@@ -1172,11 +1173,11 @@ exports.BattleScripts = {
 			counter = this.queryMoves(moves, hasType, hasAbility);
 
 			// Iterate through the moves again, this time to cull them:
-			for (var k = 0; k < moves.length; k++) {
-				var moveid = moves[k];
-				var move = this.getMove(moveid);
-				var rejected = false;
-				var isSetup = false;
+			for (let k = 0; k < moves.length; k++) {
+				let moveid = moves[k];
+				let move = this.getMove(moveid);
+				let rejected = false;
+				let isSetup = false;
 
 				switch (moveid) {
 
@@ -1190,13 +1191,14 @@ exports.BattleScripts = {
 				case 'perishsong':
 					if (!hasMove['protect']) rejected = true;
 					break;
-				case 'rest':
-					var sleepTalk = movePool.indexOf('sleeptalk');
+				case 'rest': {
+					let sleepTalk = movePool.indexOf('sleeptalk');
 					if (sleepTalk >= 0) {
 						movePool.splice(sleepTalk, 1);
 						rejected = true;
 					}
 					break;
+				}
 				case 'sleeptalk':
 					if (!hasMove['rest']) rejected = true;
 					break;
@@ -1240,11 +1242,15 @@ exports.BattleScripts = {
 				case 'fakeout':
 					if (counter.setupType || hasMove['substitute'] || hasMove['switcheroo'] || hasMove['trick']) rejected = true;
 					break;
-				case 'foulplay': case 'superfang':
+				case 'superfang':
 					if (counter.setupType) rejected = true;
 					break;
 				case 'haze': case 'healingwish': case 'pursuit': case 'spikes': case 'toxicspikes': case 'waterspout':
 					if (counter.setupType || !!counter['speedsetup'] || (hasMove['rest'] && hasMove['sleeptalk'])) rejected = true;
+					break;
+				case 'foulplay':
+					if (counter.setupType || !!counter['speedsetup'] || (hasMove['rest'] && hasMove['sleeptalk'])) rejected = true;
+					if (hasMove['darkpulse'] || hasMove['knockoff']) rejected = true;
 					break;
 				case 'healbell':
 					if (!!counter['speedsetup']) rejected = true;
@@ -1274,10 +1280,10 @@ exports.BattleScripts = {
 					if (hasMove['lightscreen'] || hasMove['reflect']) rejected = true;
 					break;
 				case 'uturn':
-					if (counter.setupType || !!counter['speedsetup']) rejected = true;
+					if (counter.setupType || !!counter['speedsetup'] || hasMove['batonpass']) rejected = true;
 					break;
 				case 'voltswitch':
-					if (counter.setupType || !!counter['speedsetup'] || hasMove['magnetrise'] || hasMove['uturn']) rejected = true;
+					if (counter.setupType || !!counter['speedsetup'] || hasMove['batonpass'] || hasMove['magnetrise'] || hasMove['uturn']) rejected = true;
 					break;
 
 				// Bit redundant to have both
@@ -1287,9 +1293,6 @@ exports.BattleScripts = {
 					break;
 				case 'darkpulse':
 					if (hasMove['crunch'] && counter.setupType !== 'Special') rejected = true;
-					break;
-				case 'foulplay':
-					if (hasMove['darkpulse'] || hasMove['knockoff']) rejected = true;
 					break;
 				case 'suckerpunch':
 					if ((hasMove['crunch'] || hasMove['darkpulse']) && (hasMove['knockoff'] || hasMove['pursuit'])) rejected = true;
@@ -1512,8 +1515,8 @@ exports.BattleScripts = {
 
 				// Handle Hidden Power IVs
 				if (move.id === 'hiddenpower') {
-					var HPivs = this.getType(move.type).HPivs;
-					for (var iv in HPivs) {
+					let HPivs = this.getType(move.type).HPivs;
+					for (let iv in HPivs) {
 						ivs[iv] = HPivs[iv];
 					}
 				}
@@ -1522,9 +1525,9 @@ exports.BattleScripts = {
 				// Move post-processing:
 				if (template.baseStats.hp >= 165 && movePool.indexOf('wish') >= 0 && !counter.recovery) {
 					// Certain Pokemon should always have a recovery move
-					var rejectableMoves = [];
-					for (var l = 0; l < moves.length; l++) {
-						var move = this.getMove(moves[l]);
+					let rejectableMoves = [];
+					for (let l = 0; l < moves.length; l++) {
+						let move = this.getMove(moves[l]);
 						if (move.category === 'Status' || (!hasType[move.type] && !move.damage)) {
 							rejectableMoves.push(l);
 						}
@@ -1536,15 +1539,15 @@ exports.BattleScripts = {
 					// A set shouldn't have no attacking moves
 					moves.splice(this.random(moves.length), 1);
 				} else if (counter.damagingMoves.length === 1) {
-					var damagingid = counter.damagingMoves[0].id;
+					let damagingid = counter.damagingMoves[0].id;
 					if (movePool.length - availableHP || availableHP && (damagingid === 'hiddenpower' || !hasMove['hiddenpower'])) {
-						var replace = false;
+						let replace = false;
 						if (damagingid in {focuspunch:1, suckerpunch:1} || (damagingid === 'hiddenpower' && !counter.stab)) {
 							// Unacceptable as the only attacking move
 							replace = true;
 						} else if (!counter.damagingMoves[0].damage) {
 							if (!counter.stab) {
-								var damagingType = counter.damagingMoves[0].type;
+								let damagingType = counter.damagingMoves[0].type;
 								if (damagingType === 'Fairy') {
 									// Mono-Fairy is acceptable for Psychic types
 									if (!hasType['Psychic']) replace = true;
@@ -1564,11 +1567,11 @@ exports.BattleScripts = {
 					}
 				} else if (counter.damagingMoves.length === 2 && !counter.stab) {
 					// If you have two attacks, neither is STAB, and the combo isn't Electric/Ice or Fighting/Ghost, reject one of them at random.
-					var type1 = counter.damagingMoves[0].type, type2 = counter.damagingMoves[1].type;
-					var typeCombo = [type1, type2].sort().join('/');
+					let type1 = counter.damagingMoves[0].type, type2 = counter.damagingMoves[1].type;
+					let typeCombo = [type1, type2].sort().join('/');
 					if ((typeCombo !== 'Electric/Ice' || !hasType['Normal'] || counter.Physical >= 2) && typeCombo !== 'Fighting/Ghost' && !counter.damagingMoves[0].damage && !counter.damagingMoves[1].damage) {
-						var rejectableMoves = [];
-						var baseDiff = movePool.length - availableHP;
+						let rejectableMoves = [];
+						let baseDiff = movePool.length - availableHP;
 						if (baseDiff || availableHP && (!hasMove['hiddenpower'] || counter.damagingMoves[0].id === 'hiddenpower')) {
 							rejectableMoves.push(counter.damagingMoveIndex[counter.damagingMoves[0].id]);
 						}
@@ -1582,9 +1585,9 @@ exports.BattleScripts = {
 				} else if (!counter.stab || ((hasAbility['Aerilate'] || hasAbility['Pixilate'] || hasAbility['Refrigerate']) && !counter['ate'])) {
 					// If you have three or more attacks, and none of them are STAB, reject one of them at random.
 					// Alternatively, if you have an -ate ability and no Normal moves, reject an attack move at random.
-					var rejectableMoves = [];
-					var baseDiff = movePool.length - availableHP;
-					for (var l = 0; l < counter.damagingMoves.length; l++) {
+					let rejectableMoves = [];
+					let baseDiff = movePool.length - availableHP;
+					for (let l = 0; l < counter.damagingMoves.length; l++) {
 						if (baseDiff || availableHP && (!hasMove['hiddenpower'] || counter.damagingMoves[l].id === 'hiddenpower')) {
 							rejectableMoves.push(counter.damagingMoveIndex[counter.damagingMoves[l].id]);
 						}
@@ -1598,7 +1601,7 @@ exports.BattleScripts = {
 
 		// Any moveset modification goes here:
 		// moves[0] = 'safeguard';
-		var changedMove = false;
+		let changedMove = false;
 		if (template.requiredItem && template.requiredItem.slice(-5) === 'Drive' && !hasMove['technoblast']) {
 			delete hasMove[this.getMove(moves[3]).id];
 			moves[3] = 'technoblast';
@@ -1627,13 +1630,13 @@ exports.BattleScripts = {
 		// Re-query in case a moveset modification occurred
 		if (changedMove) counter = this.queryMoves(moves, hasType, hasAbility);
 
-		var abilities = Object.values(baseTemplate.abilities).sort(function (a, b) {
+		let abilities = Object.values(baseTemplate.abilities).sort(function (a, b) {
 			return this.getAbility(b).rating - this.getAbility(a).rating;
 		}.bind(this));
-		var ability0 = this.getAbility(abilities[0]);
-		var ability1 = this.getAbility(abilities[1]);
-		var ability2 = this.getAbility(abilities[2]);
-		var ability = ability0.name;
+		let ability0 = this.getAbility(abilities[0]);
+		let ability1 = this.getAbility(abilities[1]);
+		let ability2 = this.getAbility(abilities[2]);
+		ability = ability0.name;
 		if (abilities[1]) {
 			if (abilities[2] && ability2.rating === ability1.rating) {
 				if (this.random(2)) ability1 = ability2;
@@ -1644,7 +1647,7 @@ exports.BattleScripts = {
 				if (!this.random(3)) ability = ability1.name;
 			}
 
-			var rejectAbility = false;
+			let rejectAbility = false;
 			if (ability in counterAbilities) {
 				// Adaptability, Blaze, Contrary, Hustle, Iron Fist, Overgrow, Skill Link, Swarm, Technician, Torrent
 				rejectAbility = !counter[toId(ability)];
@@ -1717,7 +1720,7 @@ exports.BattleScripts = {
 				// Might as well give it Pickup just in case
 				ability = 'Pickup';
 			} else if (template.id === 'aurorus' && ability === 'Snow Warning' && hasMove['hypervoice']) {
-				for (var i = 0; i < moves.length; i++) {
+				for (let i = 0; i < moves.length; i++) {
 					if (moves[i] === 'hypervoice') {
 						moves[i] = 'blizzard';
 						counter['ate'] = 0;
@@ -1809,7 +1812,7 @@ exports.BattleScripts = {
 		} else if (ability === 'Magic Guard' && hasMove['psychoshift']) {
 			item = 'Flame Orb';
 		} else if (hasMove['switcheroo'] || hasMove['trick']) {
-			var randomNum = this.random(2);
+			let randomNum = this.random(2);
 			if (counter.Physical >= 3 && (template.baseStats.spe >= 95 || randomNum)) {
 				item = 'Choice Band';
 			} else if (counter.Special >= 3 && (template.baseStats.spe >= 95 || randomNum)) {
@@ -1854,8 +1857,8 @@ exports.BattleScripts = {
 				item = 'Sitrus Berry';
 			} else {
 				item = 'Red Card';
-				for (var m in moves) {
-					var move = this.getMove(moves[m]);
+				for (let m in moves) {
+					let move = this.getMove(moves[m]);
 					if (hasType[move.type] && move.basePower >= 90) {
 						item = move.type + ' Gem';
 						break;
@@ -1914,7 +1917,7 @@ exports.BattleScripts = {
 			item = 'Leftovers';
 		} else if (this.getImmunity('Ground', template) && this.getEffectiveness('Ground', template) >= 1 && ability !== 'Levitate' && ability !== 'Solid Rock' && !hasMove['magnetrise'] && !hasMove['sleeptalk']) {
 			item = 'Air Balloon';
-		} else if (counter.Status <= 1 && ability !== 'Sturdy') {
+		} else if (counter.Status <= 1 && ability !== 'Sturdy' && !hasMove['rapidspin']) {
 			item = 'Life Orb';
 		} else {
 			item = 'Leftovers';
@@ -1925,7 +1928,7 @@ exports.BattleScripts = {
 			item = 'Black Sludge';
 		}
 
-		var levelScale = {
+		let levelScale = {
 			LC: 87,
 			'LC Uber': 86,
 			NFE: 84,
@@ -1943,14 +1946,14 @@ exports.BattleScripts = {
 			Uber: 73,
 			AG: 71
 		};
-		var customScale = {
+		let customScale = {
 			// Between OU and Uber
 			Aegislash: 74, Blaziken: 74, 'Blaziken-Mega': 74, Genesect: 74, 'Genesect-Burn': 74, 'Genesect-Chill': 74, 'Genesect-Douse': 74, 'Genesect-Shock': 74, Greninja: 74, 'Kangaskhan-Mega': 74, 'Lucario-Mega': 74, 'Mawile-Mega': 74,
 
 			// Not holding Mega Stone
 			Banette: 83, Beedrill: 83, Glalie: 83, Lopunny: 83,
-			Altaria: 81, Ampharos: 81, Charizard: 81,
-			Aerodactyl: 79, Aggron: 79, Blastoise: 79, Gardevoir: 79, Manectric: 79, Sceptile: 79, Venusaur: 79,
+			Altaria: 81, Ampharos: 81, Charizard: 81, Pinsir: 81,
+			Aerodactyl: 79, Aggron: 79, Blastoise: 79, Gardevoir: 79, Manectric: 79, Medicham: 79, Sceptile: 79, Venusaur: 79,
 			Diancie: 77, Metagross: 77, Sableye: 77,
 
 			// Banned Ability
@@ -1959,18 +1962,18 @@ exports.BattleScripts = {
 			// Holistic judgement
 			Unown: 85
 		};
-		var tier = template.tier;
+		let tier = template.tier;
 		if (tier.charAt(0) === '(') {
 			tier = tier.slice(1, -1);
 		}
-		var level = levelScale[tier] || 90;
+		let level = levelScale[tier] || 90;
 		if (customScale[template.name]) level = customScale[template.name];
 
 		if (template.name === 'Xerneas' && hasMove['geomancy']) level = 71;
 
 		// Prepare HP for Belly Drum.
 		if (hasMove['bellydrum'] && item === 'Sitrus Berry') {
-			var hp = Math.floor(Math.floor(2 * template.baseStats.hp + ivs.hp + Math.floor(evs.hp / 4) + 100) * level / 100 + 10);
+			let hp = Math.floor(Math.floor(2 * template.baseStats.hp + ivs.hp + Math.floor(evs.hp / 4) + 100) * level / 100 + 10);
 			if (hp % 2 > 0) {
 				evs.hp -= 4;
 				evs.atk += 4;
@@ -1979,7 +1982,7 @@ exports.BattleScripts = {
 			// Prepare HP for double Stealth Rock weaknesses. Those are mutually exclusive with Belly Drum HP check.
 			// First, 25% damage.
 			if (this.getEffectiveness('Rock', template) === 1) {
-				var hp = Math.floor(Math.floor(2 * template.baseStats.hp + ivs.hp + Math.floor(evs.hp / 4) + 100) * level / 100 + 10);
+				let hp = Math.floor(Math.floor(2 * template.baseStats.hp + ivs.hp + Math.floor(evs.hp / 4) + 100) * level / 100 + 10);
 				if (hp % 4 === 0) {
 					evs.hp -= 4;
 					if (counter.Physical > counter.Special) {
@@ -1992,7 +1995,7 @@ exports.BattleScripts = {
 
 			// Then, prepare it for 50% damage.
 			if (this.getEffectiveness('Rock', template) === 2) {
-				var hp = Math.floor(Math.floor(2 * template.baseStats.hp + ivs.hp + Math.floor(evs.hp / 4) + 100) * level / 100 + 10);
+				let hp = Math.floor(Math.floor(2 * template.baseStats.hp + ivs.hp + Math.floor(evs.hp / 4) + 100) * level / 100 + 10);
 				if (hp % 2 === 0) {
 					evs.hp -= 4;
 					if (counter.Physical > counter.Special) {
@@ -2016,32 +2019,32 @@ exports.BattleScripts = {
 		};
 	},
 	randomTeam: function (side) {
-		var pokemonLeft = 0;
-		var pokemon = [];
+		let pokemonLeft = 0;
+		let pokemon = [];
 
-		var pokemonPool = [];
-		for (var id in this.data.FormatsData) {
-			var template = this.getTemplate(id);
+		let pokemonPool = [];
+		for (let id in this.data.FormatsData) {
+			let template = this.getTemplate(id);
 			if (!template.isMega && !template.isPrimal && !template.isNonstandard && template.randomBattleMoves) {
 				pokemonPool.push(id);
 			}
 		}
 
 		// PotD stuff
-		var potd;
+		let potd;
 		if (Config.potd && 'Rule:potd' in this.getBanlistTable(this.getFormat())) {
 			potd = this.getTemplate(Config.potd);
 		}
 
-		var typeCount = {};
-		var typeComboCount = {};
-		var baseFormes = {};
-		var uberCount = 0;
-		var puCount = 0;
-		var teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
+		let typeCount = {};
+		let typeComboCount = {};
+		let baseFormes = {};
+		let uberCount = 0;
+		let puCount = 0;
+		let teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
 
 		while (pokemonPool.length && pokemonLeft < 6) {
-			var template = this.getTemplate(this.sampleNoReplace(pokemonPool));
+			let template = this.getTemplate(this.sampleNoReplace(pokemonPool));
 			if (!template.exists) continue;
 
 			// Limit to one of each species (Species Clause)
@@ -2053,7 +2056,7 @@ exports.BattleScripts = {
 			// Useless in Random Battle without greatly lowering the levels of everything else
 			if (template.species === 'Unown') continue;
 
-			var tier = template.tier;
+			let tier = template.tier;
 			switch (tier) {
 			case 'LC':
 			case 'LC Uber':
@@ -2112,9 +2115,9 @@ exports.BattleScripts = {
 			}
 
 			// Limit 2 of any type
-			var types = template.types;
-			var skip = false;
-			for (var t = 0; t < types.length; t++) {
+			let types = template.types;
+			let skip = false;
+			for (let t = 0; t < types.length; t++) {
 				if (typeCount[types[t]] > 1 && this.random(5) >= 1) {
 					skip = true;
 					break;
@@ -2136,13 +2139,13 @@ exports.BattleScripts = {
 				}
 			}
 
-			var set = this.randomSet(template, pokemon.length, teamDetails);
+			let set = this.randomSet(template, pokemon.length, teamDetails);
 
 			// Illusion shouldn't be on the last pokemon of the team
 			if (set.ability === 'Illusion' && pokemonLeft > 4) continue;
 
 			// Limit 1 of any type combination
-			var typeCombo = types.join();
+			let typeCombo = types.join();
 			if (set.ability === 'Drought' || set.ability === 'Drizzle') {
 				// Drought and Drizzle don't count towards the type combo limit
 				typeCombo = set.ability;
@@ -2150,8 +2153,8 @@ exports.BattleScripts = {
 			if (typeCombo in typeComboCount) continue;
 
 			// Limit the number of Megas to one
-			var forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
-			var isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
+			let forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
+			let isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
 			if (isMegaSet && teamDetails.megaCount > 0) continue;
 
 			// Okay, the set passes, add it to our team
@@ -2161,7 +2164,7 @@ exports.BattleScripts = {
 			pokemonLeft++;
 
 			// Increment type counters
-			for (var t = 0; t < types.length; t++) {
+			for (let t = 0; t < types.length; t++) {
 				if (types[t] in typeCount) {
 					typeCount[types[t]]++;
 				} else {
@@ -2188,32 +2191,32 @@ exports.BattleScripts = {
 		return pokemon;
 	},
 	randomDoublesTeam: function (side) {
-		var pokemonLeft = 0;
-		var pokemon = [];
+		let pokemonLeft = 0;
+		let pokemon = [];
 
-		var pokemonPool = [];
-		for (var id in this.data.FormatsData) {
-			var template = this.getTemplate(id);
+		let pokemonPool = [];
+		for (let id in this.data.FormatsData) {
+			let template = this.getTemplate(id);
 			if (!template.isMega && !template.isPrimal && !template.isNonstandard && template.randomBattleMoves) {
 				pokemonPool.push(id);
 			}
 		}
 
 		// PotD stuff
-		var potd;
+		let potd;
 		if (Config.potd && 'Rule:potd' in this.getBanlistTable(this.getFormat())) {
 			potd = this.getTemplate(Config.potd);
 		}
 
-		var typeCount = {};
-		var typeComboCount = {};
-		var baseFormes = {};
-		var uberCount = 0;
-		var puCount = 0;
-		var megaCount = 0;
+		let typeCount = {};
+		let typeComboCount = {};
+		let baseFormes = {};
+		let uberCount = 0;
+		let puCount = 0;
+		let megaCount = 0;
 
 		while (pokemonPool.length && pokemonLeft < 6) {
-			var template = this.getTemplate(this.sampleNoReplace(pokemonPool));
+			let template = this.getTemplate(this.sampleNoReplace(pokemonPool));
 			if (!template.exists) continue;
 
 			// Limit to one of each species (Species Clause)
@@ -2222,7 +2225,7 @@ exports.BattleScripts = {
 			// Not available on ORAS
 			if (template.species === 'Pichu-Spiky-eared') continue;
 
-			var tier = template.tier;
+			let tier = template.tier;
 			switch (tier) {
 			case 'LC':
 			case 'LC Uber':
@@ -2281,9 +2284,9 @@ exports.BattleScripts = {
 			}
 
 			// Limit 2 of any type
-			var types = template.types;
-			var skip = false;
-			for (var t = 0; t < types.length; t++) {
+			let types = template.types;
+			let skip = false;
+			for (let t = 0; t < types.length; t++) {
 				if (typeCount[types[t]] > 1 && this.random(5) >= 1) {
 					skip = true;
 					break;
@@ -2300,13 +2303,13 @@ exports.BattleScripts = {
 				}
 			}
 
-			var set = this.randomDoublesSet(template, pokemon.length, megaCount);
+			let set = this.randomDoublesSet(template, pokemon.length, megaCount);
 
 			// Illusion shouldn't be on the last pokemon of the team
 			if (set.ability === 'Illusion' && pokemonLeft > 4) continue;
 
 			// Limit 1 of any type combination
-			var typeCombo = types.join();
+			let typeCombo = types.join();
 			if (set.ability === 'Drought' || set.ability === 'Drizzle') {
 				// Drought and Drizzle don't count towards the type combo limit
 				typeCombo = set.ability;
@@ -2314,8 +2317,8 @@ exports.BattleScripts = {
 			if (typeCombo in typeComboCount) continue;
 
 			// Limit the number of Megas to one
-			var forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
-			var isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
+			let forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
+			let isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
 			if (isMegaSet && megaCount > 0) continue;
 
 			// Okay, the set passes, add it to our team
@@ -2325,7 +2328,7 @@ exports.BattleScripts = {
 			pokemonLeft++;
 
 			// Increment type counters
-			for (var t = 0; t < types.length; t++) {
+			for (let t = 0; t < types.length; t++) {
 				if (types[t] in typeCount) {
 					typeCount[types[t]]++;
 				} else {
@@ -2348,14 +2351,14 @@ exports.BattleScripts = {
 		return pokemon;
 	},
 	randomDoublesSet: function (template, slot, noMega) {
-		var baseTemplate = (template = this.getTemplate(template));
-		var name = template.name;
+		let baseTemplate = (template = this.getTemplate(template));
+		let name = template.name;
 
 		if (!template.exists || (!template.randomDoubleBattleMoves && !template.randomBattleMoves && !template.learnset)) {
 			template = this.getTemplate('unown');
 
-			var stack = 'Template incompatible with random battles: ' + name;
-			var fakeErr = {stack: stack};
+			let stack = 'Template incompatible with random battles: ' + name;
+			let fakeErr = {stack: stack};
 			require('../crashlogger.js')(fakeErr, 'The doubles randbat set generator');
 		}
 
@@ -2381,13 +2384,13 @@ exports.BattleScripts = {
 			template = this.getTemplate(template.otherFormes[0]);
 		}
 
-		var movePool = (template.randomDoubleBattleMoves || template.randomBattleMoves);
+		let movePool = (template.randomDoubleBattleMoves || template.randomBattleMoves);
 		movePool = movePool ? movePool.slice() : Object.keys(template.learnset);
 
-		var moves = [];
-		var ability = '';
-		var item = '';
-		var evs = {
+		let moves = [];
+		let ability = '';
+		let item = '';
+		let evs = {
 			hp: 0,
 			atk: 0,
 			def: 0,
@@ -2395,7 +2398,7 @@ exports.BattleScripts = {
 			spd: 0,
 			spe: 0
 		};
-		var ivs = {
+		let ivs = {
 			hp: 31,
 			atk: 31,
 			def: 31,
@@ -2403,12 +2406,12 @@ exports.BattleScripts = {
 			spd: 31,
 			spe: 31
 		};
-		var hasType = {};
+		let hasType = {};
 		hasType[template.types[0]] = true;
 		if (template.types[1]) {
 			hasType[template.types[1]] = true;
 		}
-		var hasAbility = {};
+		let hasAbility = {};
 		hasAbility[template.abilities[0]] = true;
 		if (template.abilities[1]) {
 			hasAbility[template.abilities[1]] = true;
@@ -2416,31 +2419,31 @@ exports.BattleScripts = {
 		if (template.abilities['H']) {
 			hasAbility[template.abilities['H']] = true;
 		}
-		var availableHP = 0;
-		for (var i = 0, len = movePool.length; i < len; i++) {
+		let availableHP = 0;
+		for (let i = 0, len = movePool.length; i < len; i++) {
 			if (movePool[i].substr(0, 11) === 'hiddenpower') availableHP++;
 		}
 
 		// These moves can be used even if we aren't setting up to use them:
-		var SetupException = {
+		let SetupException = {
 			dracometeor:1, leafstorm:1, overheat:1,
 			extremespeed:1, suckerpunch:1, superpower:1
 		};
-		var counterAbilities = {
+		let counterAbilities = {
 			'Adaptability':1, 'Blaze':1, 'Contrary':1, 'Hustle':1, 'Iron Fist':1, 'Overgrow':1,
 			'Skill Link':1, 'Swarm':1, 'Torrent':1
 		};
 		// -ate Abilities
-		var ateAbilities = {
+		let ateAbilities = {
 			'Aerilate':1, 'Pixilate':1, 'Refrigerate':1
 		};
 
-		var hasMove, counter;
+		let hasMove, counter;
 
 		do {
 			// Keep track of all moves we have:
 			hasMove = {};
-			for (var k = 0; k < moves.length; k++) {
+			for (let k = 0; k < moves.length; k++) {
 				if (moves[k].substr(0, 11) === 'hiddenpower') {
 					hasMove['hiddenpower'] = true;
 				} else {
@@ -2450,7 +2453,7 @@ exports.BattleScripts = {
 
 			// Choose next 4 moves from learnset/viable moves and add them to moves list:
 			while (moves.length < 4 && movePool.length) {
-				var moveid = toId(this.sampleNoReplace(movePool));
+				let moveid = toId(this.sampleNoReplace(movePool));
 				if (moveid.substr(0, 11) === 'hiddenpower') {
 					availableHP--;
 					if (hasMove['hiddenpower']) continue;
@@ -2464,11 +2467,11 @@ exports.BattleScripts = {
 			counter = this.queryMoves(moves, hasType, hasAbility);
 
 			// Iterate through the moves again, this time to cull them:
-			for (var k = 0; k < moves.length; k++) {
-				var moveid = moves[k];
-				var move = this.getMove(moveid);
-				var rejected = false;
-				var isSetup = false;
+			for (let k = 0; k < moves.length; k++) {
+				let moveid = moves[k];
+				let move = this.getMove(moveid);
+				let rejected = false;
+				let isSetup = false;
 
 				switch (moveid) {
 				// not very useful without their supporting moves
@@ -2509,10 +2512,14 @@ exports.BattleScripts = {
 				case 'seismictoss': case 'nightshade': case 'superfang':
 					if (counter.setupType) rejected = true;
 					break;
-				case 'rapidspin': case 'perishsong': case 'magiccoat': case 'spikes': case 'toxicspikes':
+				case 'rapidspin': case 'magiccoat': case 'spikes': case 'toxicspikes':
 					if (counter.setupType) rejected = true;
 					break;
 				case 'uturn': case 'voltswitch':
+					if (counter.setupType || hasMove['agility'] || hasMove['rockpolish'] || hasMove['magnetrise']) rejected = true;
+					break;
+				case 'perishsong':
+					if (hasMove['roar'] || hasMove['whirlwind'] || hasMove['haze']) rejected = true;
 					if (counter.setupType || hasMove['agility'] || hasMove['rockpolish'] || hasMove['magnetrise']) rejected = true;
 					break;
 				case 'relicsong':
@@ -2657,9 +2664,6 @@ exports.BattleScripts = {
 				case 'softboiled': case 'roost':
 					if (hasMove['wish'] || hasMove['recover']) rejected = true;
 					break;
-				case 'perishsong':
-					if (hasMove['roar'] || hasMove['whirlwind'] || hasMove['haze']) rejected = true;
-					break;
 				case 'roar':
 					// Whirlwind outclasses Roar because Soundproof
 					if (hasMove['whirlwind'] || hasMove['dragontail'] || hasMove['haze'] || hasMove['circlethrow']) rejected = true;
@@ -2668,7 +2672,7 @@ exports.BattleScripts = {
 					if (hasMove['uturn'] || hasMove['voltswitch'] || hasMove['pursuit']) rejected = true;
 					break;
 				case 'fakeout':
-					if (hasMove['trick'] || hasMove['switcheroo'])  rejected = true;
+					if (hasMove['trick'] || hasMove['switcheroo']) rejected = true;
 					break;
 				case 'feint':
 					if (hasMove['fakeout']) rejected = true;
@@ -2743,8 +2747,8 @@ exports.BattleScripts = {
 
 				// Handle HP IVs
 				if (move.id === 'hiddenpower') {
-					var HPivs = this.getType(move.type).HPivs;
-					for (var iv in HPivs) {
+					let HPivs = this.getType(move.type).HPivs;
+					for (let iv in HPivs) {
 						ivs[iv] = HPivs[iv];
 					}
 				}
@@ -2755,16 +2759,16 @@ exports.BattleScripts = {
 					// A set shouldn't have no attacking moves
 					moves.splice(this.random(moves.length), 1);
 				} else if (counter.damagingMoves.length === 1) {
-					var damagingid = counter.damagingMoves[0].id;
+					let damagingid = counter.damagingMoves[0].id;
 					// Night Shade, Seismic Toss, etc. don't count:
 					if (!counter.damagingMoves[0].damage && (movePool.length - availableHP || availableHP && (damagingid === 'hiddenpower' || !hasMove['hiddenpower']))) {
-						var replace = false;
+						let replace = false;
 						if (damagingid in {counter:1, focuspunch:1, mirrorcoat:1, suckerpunch:1} || (damagingid === 'hiddenpower' && !counter.stab)) {
 							// Unacceptable as the only attacking move
 							replace = true;
 						} else {
 							if (!counter.stab) {
-								var damagingType = counter.damagingMoves[0].type;
+								let damagingType = counter.damagingMoves[0].type;
 								if (damagingType === 'Fairy') {
 									// Mono-Fairy is acceptable for Psychic types
 									if (!hasType['Psychic']) replace = true;
@@ -2784,11 +2788,11 @@ exports.BattleScripts = {
 					}
 				} else if (counter.damagingMoves.length === 2 && !counter.stab) {
 					// If you have two attacks, neither is STAB, and the combo isn't Ice/Electric or Ghost/Fighting, reject one of them at random.
-					var type1 = counter.damagingMoves[0].type, type2 = counter.damagingMoves[1].type;
-					var typeCombo = [type1, type2].sort().join('/');
+					let type1 = counter.damagingMoves[0].type, type2 = counter.damagingMoves[1].type;
+					let typeCombo = [type1, type2].sort().join('/');
 					if (typeCombo !== 'Electric/Ice' && typeCombo !== 'Fighting/Ghost') {
-						var rejectableMoves = [];
-						var baseDiff = movePool.length - availableHP;
+						let rejectableMoves = [];
+						let baseDiff = movePool.length - availableHP;
 						if (baseDiff || availableHP && (!hasMove['hiddenpower'] || counter.damagingMoves[0].id === 'hiddenpower')) {
 							rejectableMoves.push(counter.damagingMoveIndex[counter.damagingMoves[0].id]);
 						}
@@ -2802,9 +2806,9 @@ exports.BattleScripts = {
 				} else if (!counter.stab || ((hasAbility['Aerilate'] || hasAbility['Pixilate'] || hasAbility['Refrigerate']) && !counter['ate'])) {
 					// If you have three or more attacks, and none of them are STAB, reject one of them at random.
 					// Alternatively, if you have an -ate ability and no Normal moves, reject an attack move at random.
-					var rejectableMoves = [];
-					var baseDiff = movePool.length - availableHP;
-					for (var l = 0; l < counter.damagingMoves.length; l++) {
+					let rejectableMoves = [];
+					let baseDiff = movePool.length - availableHP;
+					for (let l = 0; l < counter.damagingMoves.length; l++) {
 						if (baseDiff || availableHP && (!hasMove['hiddenpower'] || counter.damagingMoves[l].id === 'hiddenpower')) {
 							rejectableMoves.push(counter.damagingMoveIndex[counter.damagingMoves[l].id]);
 						}
@@ -2818,7 +2822,7 @@ exports.BattleScripts = {
 
 		// any moveset modification goes here
 		//moves[0] = 'safeguard';
-		var changedMove = false;
+		let changedMove = false;
 		if (template.requiredItem && template.requiredItem.slice(-5) === 'Drive' && !hasMove['technoblast']) {
 			delete hasMove[this.getMove(moves[3]).id];
 			moves[3] = 'technoblast';
@@ -2853,13 +2857,13 @@ exports.BattleScripts = {
 			};
 		}
 
-		var abilities = Object.values(baseTemplate.abilities).sort(function (a, b) {
+		let abilities = Object.values(baseTemplate.abilities).sort(function (a, b) {
 			return this.getAbility(b).rating - this.getAbility(a).rating;
 		}.bind(this));
-		var ability0 = this.getAbility(abilities[0]);
-		var ability1 = this.getAbility(abilities[1]);
-		var ability2 = this.getAbility(abilities[2]);
-		var ability = ability0.name;
+		let ability0 = this.getAbility(abilities[0]);
+		let ability1 = this.getAbility(abilities[1]);
+		let ability2 = this.getAbility(abilities[2]);
+		ability = ability0.name;
 		if (abilities[1]) {
 			if (abilities[2] && ability2.rating === ability1.rating) {
 				if (this.random(2)) ability1 = ability2;
@@ -2870,7 +2874,7 @@ exports.BattleScripts = {
 				if (!this.random(3)) ability = ability1.name;
 			}
 
-			var rejectAbility = false;
+			let rejectAbility = false;
 			if (ability in counterAbilities) {
 				rejectAbility = !counter[toId(ability)];
 			} else if (ability in ateAbilities) {
@@ -2940,7 +2944,7 @@ exports.BattleScripts = {
 				// Might as well give it Pickup just in case
 				ability = 'Pickup';
 			} else if (template.id === 'aurorus' && ability === 'Snow Warning' && hasMove['hypervoice']) {
-				for (var i = 0; i < moves.length; i++) {
+				for (let i = 0; i < moves.length; i++) {
 					if (moves[i] === 'hypervoice') {
 						moves[i] = 'blizzard';
 						counter['ate'] = 0;
@@ -3009,7 +3013,7 @@ exports.BattleScripts = {
 		} else if (template.species === 'Unown') {
 			item = 'Choice Specs';
 		} else if (hasMove['trick'] || hasMove['switcheroo']) {
-			var randomNum = this.random(2);
+			let randomNum = this.random(2);
 			if (counter.Physical >= 3 && (template.baseStats.spe >= 95 || randomNum)) {
 				item = 'Choice Band';
 			} else if (counter.Special >= 3 && (template.baseStats.spe >= 95 || randomNum)) {
@@ -3078,8 +3082,8 @@ exports.BattleScripts = {
 				item = 'Sitrus Berry';
 			} else {
 				item = 'Red Card';
-				for (var m in moves) {
-					var move = this.getMove(moves[m]);
+				for (let m in moves) {
+					let move = this.getMove(moves[m]);
 					if (hasType[move.type] && move.basePower >= 90) {
 						item = move.type + ' Gem';
 						break;
@@ -3092,7 +3096,7 @@ exports.BattleScripts = {
 			item = hasMove['drainpunch'] ? 'Flame Orb' : 'Toxic Orb';
 			if ((hasMove['return'] || hasMove['hyperfang']) && !hasMove['facade']) {
 				// lol no
-				for (var j = 0; j < moves.length; j++) {
+				for (let j = 0; j < moves.length; j++) {
 					if (moves[j] === 'Return' || moves[j] === 'Hyper Fang') {
 						moves[j] = 'Facade';
 						break;
@@ -3161,10 +3165,10 @@ exports.BattleScripts = {
 
 		// We choose level based on BST. Min level is 70, max level is 99. 600+ BST is 70, less than 300 is 99. Calculate with those values.
 		// Every 10.34 BST adds a level from 70 up to 99. Results are floored. Uses the Mega's stats if holding a Mega Stone
-		var bst = template.baseStats.hp + template.baseStats.atk + template.baseStats.def + template.baseStats.spa + template.baseStats.spd + template.baseStats.spe;
+		let bst = template.baseStats.hp + template.baseStats.atk + template.baseStats.def + template.baseStats.spa + template.baseStats.spd + template.baseStats.spe;
 		// Adjust levels of mons based on abilities (Pure Power, Sheer Force, etc.) and also Eviolite
 		// For the stat boosted, treat the Pokemon's base stat as if it were multiplied by the boost. (Actual effective base stats are higher.)
-		var templateAbility = (baseTemplate === template ? ability : template.abilities[0]);
+		let templateAbility = (baseTemplate === template ? ability : template.abilities[0]);
 		if (templateAbility === 'Huge Power' || templateAbility === 'Pure Power') {
 			bst += template.baseStats.atk;
 		} else if (templateAbility === 'Parental Bond') {
@@ -3178,7 +3182,7 @@ exports.BattleScripts = {
 		if (item === 'Eviolite') {
 			bst += 0.5 * (template.baseStats.def + template.baseStats.spd);
 		}
-		var level = 70 + Math.floor(((600 - this.clampIntRange(bst, 300, 600)) / 10.34));
+		let level = 70 + Math.floor(((600 - this.clampIntRange(bst, 300, 600)) / 10.34));
 
 		return {
 			name: name,
@@ -3191,100 +3195,138 @@ exports.BattleScripts = {
 			shiny: !this.random(template.id === 'missingno' ? 4 : 1024)
 		};
 	},
-	randomSpoopyTeam: function () {
-		var pool = [
-			'ekans', 'arbok', 'golbat', 'parasect', 'muk', 'gengar', 'marowak', 'weezing', 'tangela', 'mr. mime', 'ditto',
-			'kabutops', 'noctowl', 'ariados', 'crobat', 'umbreon', 'murkrow', 'misdreavus', 'gligar', 'granbull', 'sneasel',
-			'houndoom', 'mightyena', 'dustox', 'shiftry', 'shedinja', 'exploud', 'sableye', 'mawile', 'swalot', 'carvanha',
-			'sharpedo', 'cacturne', 'seviper', 'lunatone', 'claydol', 'shuppet', 'banette', 'duskull', 'dusclops', 'absol',
-			'snorunt', 'glalie', 'drifloon', 'drifblim', 'mismagius', 'honchkrow', 'skuntank', 'spiritomb', 'drapion',
-			'toxicroak', 'weavile', 'tangrowth', 'gliscor', 'dusknoir', 'froslass', 'rotom', 'rotomwash', 'rotomheat',
-			'rotommow', 'purrloin', 'liepard', 'swoobat', 'whirlipede', 'scolipede', 'basculin', 'krookodile', 'sigilyph',
-			'yamask', 'cofagrigus', 'garbodor', 'zorua', 'zoroark', 'gothita', 'gothorita', 'gothitelle', 'frillish',
-			'jellicent', 'joltik', 'galvantula', 'elgyem', 'beheeyem', 'litwick', 'lampent', 'chandelure', 'golurk',
-			'zweilous', 'hydreigon', 'volcarona', 'espurr', 'meowstic', 'honedge', 'doublade', 'aegislash', 'malamar',
-			'phantump', 'trevenant', 'pumpkaboo', 'gourgeist', 'noibat', 'noivern', 'magikarp', 'farfetchd', 'machamp'
+	randomSeasonalHeroTeam: function () {
+		let teams = [
+			['Wolverine', 'Professor X', 'Cyclops', 'Nightcrawler', 'Phoenix', 'Emma Frost', 'Storm', 'Iceman'],
+			['Magneto', 'Mystique', 'Quicksilver', 'Scarlet Witch', 'Blob', 'Pyro', 'Sabretooth', 'Juggernaut', 'Toad'],
+			['Captain America', 'Hulk', 'Iron Man', 'Hawkeye', 'Black Widow', 'Thor', 'Nick Fury', 'Vision'],
+			['Starlord', 'Gamora', 'Groot', 'Rocket Raccoon', 'Drax the Destroyer', 'Nova'],
+			['Batman', 'Superman', 'Aquaman', 'Wonder Woman', 'Green Lantern', 'The Flash', 'Green Arrow', 'Firestorm'],
+			['Robin', 'Starfire', 'Cyborg', 'Beast Boy', 'Raven', 'Jinx', 'Terra', 'Blue Beetle'],
+			['Mr. Fantastic', 'Invisible Woman', 'Thing', 'Human Torch', 'Spiderman', 'Ant-Man'],
+			['Baymax', 'Honey Lemon', 'GoGo Tomago', 'Wasabi-no-Ginger', 'Fredzilla', 'Silver Samurai', 'Sunfire'],
+			['Joker', 'Deadshot', 'Harley Quinn', 'Boomerang', 'Killer Croc', 'Enchantress'],
+			['Poison Ivy', 'Bane', 'Scarecrow', 'Two-Face', 'Penguin', 'Mr. Freeze', 'Catwoman']
 		];
-		var team = [];
+		let mons = {
+			'Wolverine': {species: 'excadrill', ability: 'Regenerator', item: 'lifeorb', gender: 'M'},
+			'Professor X': {species: 'beheeyem', moves: ['psystrike', 'thunderbolt', 'calmmind', 'aurasphere', 'signalbeam'], gender: 'M'},
+			'Cyclops': {species: 'sigilyph', moves: ['icebeam', 'psybeam', 'signalbeam', 'chargebeam'], item: 'lifeorb',
+				ability: 'tintedlens', gender: 'M'},
+			'Nightcrawler': {species: 'sableye', gender: 'M'}, 'Phoenix': {species: 'Ho-oh', gender: 'F'},
+			'Emma Frost': {species: 'dianciemega', gender: 'F'}, 'Storm': {species: 'tornadus', gender: 'F'},
+			'Iceman': {species: 'regice', moves: ['freezedry', 'thunderbolt', 'focusblast', 'thunderwave'], gender: 'M'},
+			'Magneto': {species: 'magnezone', required: 'flashcannon', gender: 'M'}, 'Quicksilver': {species: 'lucario', gender: 'M', required: 'extremespeed'}, 'Scarlet Witch': {species: 'delphox', gender: 'F'},
+			'Blob': {species: 'snorlax', gender: 'M'}, 'Pyro': {species: 'magmortar', gender: 'M'}, 'Juggernaut': {species: 'conkeldurr', gender: 'M'}, 'Toad': {species: 'poliwrath', gender: 'M'},
+			'Mystique': {species: 'mew', moves: ['knockoff', 'zenheadbutt', 'stormthrow', 'acrobatics', 'fakeout'], ability: 'Illusion', gender: 'F'},
+			'Sabretooth': {species: 'zangoose', ability: 'Tough Claws', item: 'lifeorb',
+				moves: ['swordsdance', 'quickattack', 'doubleedge', 'closecombat', 'knockoff'], gender: 'M'},
+			'Captain America': {species: 'braviary', gender: 'M'}, 'Hulk': {species: 'machamp', shiny: true, gender: 'M'},
+			'Iron Man': {species: 'magmortar', moves: ['fireblast', 'flashcannon', 'thunderbolt', 'energyball', 'focusblast', 'substitute'], gender: 'M'},
+			'Hawkeye': {species: 'gliscor', item: 'flyinggem', moves: ['thousandarrows', 'acrobatics', 'stoneedge', 'knockoff'], ability: 'hypercutter', gender: 'M'},
+			'Black Widow': {species: 'greninja', gender: 'F', shiny: true}, 'Thor': {species: 'ampharosmega', gender: (this.random(10) ? 'M' : 'F')}, 'Nick Fury': {species: 'primeape', gender: 'M'},
+			'Vision': {species: 'genesectshock', shiny: true}, 'Starlord': {species: 'medicham', required: 'teeterdance', gender: 'M'},
+			'Groot': {species: 'trevenant', moves: ['hornleech', 'shadowforce', 'hammerarm', 'icepunch'], item: 'assaultvest', gender: 'N'},
+			'Rocket Raccoon': {species: 'linoone', gender: 'M'}, 'Gamora': {species: 'gardevoirmega', gender: 'F'},
+			'Drax the Destroyer': {species: 'throh', gender: 'M'}, 'Nova': {species: 'electivire', gender: 'M'}, 'Batman': {species: 'crobat', gender: 'M'},
+			'Superman': {species: 'deoxys', gender: 'M'}, 'Aquaman': {species: 'samurott', gender: 'M'}, 'Wonder Woman': {species: 'lopunnymega', gender: 'F'},
+			'Green Lantern': {species: 'reuniclus', moves: ['psyshock', 'shadowball', 'aurasphere', 'recover'], gender: 'M'}, 'The Flash': {species: 'blaziken', gender: 'M'},
+			'Green Arrow': {species: 'sceptilemega', moves: ['dragonpulse', 'thousandarrows', 'seedflare', 'flashcannon'], gender: 'M'},
+			'Firestorm': {species: 'infernape', gender: 'M'}, 'Robin': {species: 'talonflame', gender: 'M'}, 'Starfire': {species: 'latias', gender: 'F'},
+			'Cyborg': {species: 'golurk', gender: 'M'}, 'Raven': {species: 'absolmega', gender: 'F'}, 'Jinx': {species: 'mismagius', gender: 'F'},
+			'Terra': {species: 'nidoqueen', gender: 'F'}, 'Blue Beetle': {species: 'heracross', gender: 'M'}, 'Beast Boy': {species: 'virizion', gender: 'M'},
+			'Mr. Fantastic': {species: 'zygarde', gender: 'M'}, 'Invisible Woman': {species: 'cresselia', gender: 'F'}, 'Thing': {species: 'regirock', gender: 'M'},
+			'Human Torch': {species: 'typhlosion', gender: 'M'}, 'Spiderman': {species: 'Ariados', gender: 'M'}, 'Ant-Man': {species: 'durant', gender: 'M'},
+			'Baymax': {species: 'regigigas'}, 'Honey Lemon': {species: 'goodra', gender: 'F'}, 'GoGo Tomago': {species: 'heliolisk', gender: 'F'},
+			'Wasabi-no-Ginger': {species: 'gallademega', gender: 'M'}, 'Fredzilla': {species: 'tyrantrum', gender: 'M'}, 'Silver Samurai': {species: 'cobalion', gender: 'M'},
+			'Sunfire': {species: 'charizardmegay', gender: 'M'}, 'Joker': {species: 'mrmime', gender: 'M'}, 'Boomerang': {species: 'marowak', gender: 'M'},
+			'Deadshot': {species: 'kingdra', ability: 'No Guard', item: 'scopelens', moves: ['dracometeor', 'hydropump', 'searingshot', 'aurasphere'], gender: 'M'},
+			'Harley Quinn': {species: 'lopunny', gender: 'F'}, 'Killer Croc': {species: 'krookodile', gender: 'M'}, 'Enchantress': {species: 'mesprit', gender: 'F'},
+			'Bane': {species: 'metagross', gender: 'M'}, 'Scarecrow': {species: 'cacturne', moves: ['gunkshot', 'seedbomb', 'knockoff', 'drainpunch'], shiny: true, gender: 'M'},
+			'Penguin': {species: 'empoleon', gender: 'M'}, 'Two-Face': {species: 'zweilous', gender: 'M'}, 'Mr. Freeze': {species: 'beartic', gender: 'M'}, 'Catwoman': {species: 'persian', gender: 'F'},
+			'Poison Ivy': {species: 'roserade', gender: 'F'}
+		};
 
-		for (var i = 0; i < 6; i++) {
-			var mon = this.sampleNoReplace(pool);
-			var template = this.getTemplate(mon);
-			if (mon === 'pumpkaboo' || mon === 'gourgeist') {
-				var forme = this.random(4);
-				if (forme > 0) {
-					mon = template.otherFormes[forme - 1];
-					template = this.getTemplate(mon);
-				}
-			}
-			var set = this.randomSet(template, i, {megaCount: 1});
-			set.species = mon;
-			if (mon === 'magikarp') {
-				set.name = 'ayy lmao';
-				set.item = 'powerherb';
-				set.ability = 'primordialsea';
-				set.moves = ['hyperbeam', 'geomancy', 'originpulse', 'aquaring', 'trickortreat'];
-			} else {
-				if (mon === 'golurk') {
-					set.name = 'Spoopy Skilenton';
-				} else if (mon === 'farfetchd') {
-					set.name = 'Le Toucan of Luck';
-				} else if (mon === 'machamp') {
-					set.name = 'John Cena';
-				} else if (mon === 'espurr') {
-					set.name = 'Devourer of Souls';
-				}
-				set.moves[4] = 'trickortreat';
-				if (set.item === 'Assault Vest') {
-					set.item = 'Leftovers';
-				}
-				if (set.item === 'Choice Band' || set.item === 'Choice Specs') {
-					set.item = 'Life Orb';
-				}
-			}
-			team.push(set);
+		if (!this.seasonal) this.seasonal = {};
+
+		let teamDetails = {megaCount: 1, stealthRock: 0, hazardClear: 0};
+		let sides = Object.keys(teams);
+		let side;
+		while (side === undefined || this.seasonal.side === side) {
+			// You can't have both players have the same squad
+			side = this.sampleNoReplace(sides);
+		}
+		if (this.seasonal.side === undefined) this.seasonal.side = side;
+
+		let heroes = teams[side];
+		let pokemonTeam = [];
+
+		for (let i = 0; i < 6; i++) {
+			let hero = this.sampleNoReplace(heroes);
+			let heroTemplate = mons[hero];
+
+			let template = {};
+			if (heroTemplate.moves) template.randomBattleMoves = heroTemplate.moves;
+			if (heroTemplate.required) template.requiredMove = heroTemplate.required;
+			Object.merge(template, this.getTemplate(heroTemplate.species), false);
+
+			let pokemon = this.randomSet(template, i, teamDetails);
+
+			if (heroTemplate.ability) pokemon.ability = heroTemplate.ability;
+			if (heroTemplate.gender) pokemon.gender = heroTemplate.gender;
+			if (heroTemplate.item) pokemon.item = heroTemplate.item;
+			pokemon.species = pokemon.name;
+			pokemon.name = hero;
+			pokemon.shiny = !!heroTemplate.shiny;
+
+			pokemonTeam.push(pokemon);
+
+			if (pokemon.ability === 'Snow Warning') teamDetails['hail'] = 1;
+			if (pokemon.ability === 'Drizzle' || pokemon.moves.indexOf('raindance') >= 0) teamDetails['rain'] = 1;
+			if (pokemon.moves.indexOf('stealthrock') >= 0) teamDetails.stealthRock++;
+			if (pokemon.moves.indexOf('defog') >= 0 || pokemon.moves.indexOf('rapidspin') >= 0) teamDetails.hazardClear++;
 		}
 
-		return team;
+		return pokemonTeam;
 	},
 	randomFactorySets: require('./factory-sets.json'),
 	randomFactorySet: function (template, slot, teamData, tier) {
-		var speciesId = toId(template.species);
-		var flags = this.randomFactorySets[tier][speciesId].flags;
-		var setList = this.randomFactorySets[tier][speciesId].sets;
-		var effectivePool, priorityPool;
+		let speciesId = toId(template.species);
+		let flags = this.randomFactorySets[tier][speciesId].flags;
+		let setList = this.randomFactorySets[tier][speciesId].sets;
+		let effectivePool, priorityPool;
 
-		var itemsMax = {'choicespecs':1, 'choiceband':1, 'choicescarf':1};
-		var movesMax = {'rapidspin':1, 'batonpass':1, 'stealthrock':1, 'defog':1, 'spikes':1, 'toxicspikes':1};
-		var requiredMoves = {'stealthrock': 'hazardSet', 'rapidspin': 'hazardClear', 'defog': 'hazardClear'};
-		var weatherAbilitiesRequire = {
+		let itemsMax = {'choicespecs':1, 'choiceband':1, 'choicescarf':1};
+		let movesMax = {'rapidspin':1, 'batonpass':1, 'stealthrock':1, 'defog':1, 'spikes':1, 'toxicspikes':1};
+		let requiredMoves = {'stealthrock': 'hazardSet', 'rapidspin': 'hazardClear', 'defog': 'hazardClear'};
+		let weatherAbilitiesRequire = {
 			'hydration': 'raindance', 'swiftswim': 'raindance',
 			'leafguard': 'sunnyday', 'solarpower': 'sunnyday', 'chlorophyll': 'sunnyday',
 			'sandforce': 'sandstorm', 'sandrush': 'sandstorm', 'sandveil': 'sandstorm',
 			'snowcloak': 'hail'
 		};
-		var weatherAbilitiesSet = {'drizzle':1, 'drought':1, 'snowwarning':1, 'sandstream':1};
+		let weatherAbilitiesSet = {'drizzle':1, 'drought':1, 'snowwarning':1, 'sandstream':1};
 
 		// Build a pool of eligible sets, given the team partners
 		// Also keep track of sets with moves the team requires
 		effectivePool = [];
 		priorityPool = [];
-		for (var i = 0, l = setList.length; i < l; i++) {
-			var curSet = setList[i];
-			var itemData = this.getItem(curSet.item);
+		for (let i = 0, l = setList.length; i < l; i++) {
+			let curSet = setList[i];
+			let itemData = this.getItem(curSet.item);
 			if (teamData.megaCount > 0 && itemData.megaStone) continue; // reject 2+ mega stones
 			if (itemsMax[itemData.id] && teamData.has[itemData.id] >= itemsMax[itemData.id]) continue;
 
-			var abilityData = this.getAbility(curSet.ability);
+			let abilityData = this.getAbility(curSet.ability);
 			if (weatherAbilitiesRequire[abilityData.id] && teamData.weather !== weatherAbilitiesRequire[abilityData.id]) continue;
 			if (teamData.weather && weatherAbilitiesSet[abilityData.id]) continue; // reject 2+ weather setters
 
-			var reject = false;
-			var hasRequiredMove = false;
-			var curSetVariants = [];
-			for (var j = 0, m = curSet.moves.length; j < m; j++) {
-				var variantIndex = this.random(curSet.moves[j].length);
-				var moveId = toId(curSet.moves[j][variantIndex]);
+			let reject = false;
+			let hasRequiredMove = false;
+			let curSetVariants = [];
+			for (let j = 0, m = curSet.moves.length; j < m; j++) {
+				let variantIndex = this.random(curSet.moves[j].length);
+				let moveId = toId(curSet.moves[j][variantIndex]);
 				if (movesMax[moveId] && teamData.has[moveId] >= movesMax[moveId]) {
 					reject = true;
 					break;
@@ -3302,15 +3344,15 @@ exports.BattleScripts = {
 
 		if (!effectivePool.length) {
 			if (!teamData.forceResult) return false;
-			for (var i = 0; i < setList.length; i++) {
+			for (let i = 0; i < setList.length; i++) {
 				effectivePool.push({set: setList[i]});
 			}
 		}
 
-		var setData = effectivePool[this.random(effectivePool.length)];
-		var moves = [];
-		for (var i = 0; i < setData.set.moves.length; i++) {
-			var moveSlot = setData.set.moves[i];
+		let setData = effectivePool[this.random(effectivePool.length)];
+		let moves = [];
+		for (let i = 0; i < setData.set.moves.length; i++) {
+			let moveSlot = setData.set.moves[i];
 			moves.push(setData.moveVariants ? moveSlot[setData.moveVariants[i]] : moveSlot[this.random(moveSlot.length)]);
 		}
 
@@ -3331,26 +3373,26 @@ exports.BattleScripts = {
 	},
 	randomFactoryTeam: function (side, depth) {
 		if (!depth) depth = 0;
-		var forceResult = (depth >= 4);
+		let forceResult = (depth >= 4);
 
-		var availableTiers = ['Uber', 'OU', 'UU', 'RU', 'NU'];
-		var chosenTier;
+		let availableTiers = ['Uber', 'OU', 'UU', 'RU', 'NU', 'PU'];
+		let chosenTier;
 
-		var currentSeed = this.seed.slice();
+		let currentSeed = this.seed.slice();
 		this.seed = this.startingSeed.slice();
 		chosenTier = availableTiers[this.random(availableTiers.length)];
 		this.seed = currentSeed;
 
-		var pokemonLeft = 0;
-		var pokemon = [];
+		let pokemonLeft = 0;
+		let pokemon = [];
 
-		var pokemonPool = Object.keys(this.randomFactorySets[chosenTier]);
+		let pokemonPool = Object.keys(this.randomFactorySets[chosenTier]);
 
-		var teamData = {typeCount: {}, typeComboCount: {}, baseFormes: {}, megaCount: 0, has: {}, forceResult: forceResult, weaknesses: {}, resistances: {}};
-		var requiredMoveFamilies = {'hazardSet': 1, 'hazardClear':1};
-		var requiredMoves = {'stealthrock': 'hazardSet', 'rapidspin': 'hazardClear', 'defog': 'hazardClear'};
-		var weatherAbilitiesSet = {'drizzle': 'raindance', 'drought': 'sunnyday', 'snowwarning': 'hail', 'sandstream': 'sandstorm'};
-		var resistanceAbilities = {
+		let teamData = {typeCount: {}, typeComboCount: {}, baseFormes: {}, megaCount: 0, has: {}, forceResult: forceResult, weaknesses: {}, resistances: {}};
+		let requiredMoveFamilies = {'hazardSet': 1, 'hazardClear':1};
+		let requiredMoves = {'stealthrock': 'hazardSet', 'rapidspin': 'hazardClear', 'defog': 'hazardClear'};
+		let weatherAbilitiesSet = {'drizzle': 'raindance', 'drought': 'sunnyday', 'snowwarning': 'hail', 'sandstream': 'sandstorm'};
+		let resistanceAbilities = {
 			'dryskin': ['Water'], 'waterabsorb': ['Water'], 'stormdrain': ['Water'],
 			'flashfire': ['Fire'], 'heatproof': ['Fire'],
 			'lightningrod': ['Electric'], 'motordrive': ['Electric'], 'voltabsorb': ['Electric'],
@@ -3360,10 +3402,10 @@ exports.BattleScripts = {
 		};
 
 		while (pokemonPool.length && pokemonLeft < 6) {
-			var template = this.getTemplate(this.sampleNoReplace(pokemonPool));
+			let template = this.getTemplate(this.sampleNoReplace(pokemonPool));
 			if (!template.exists) continue;
 
-			var speciesFlags = this.randomFactorySets[chosenTier][template.speciesid].flags;
+			let speciesFlags = this.randomFactorySets[chosenTier][template.speciesid].flags;
 
 			// Limit to one of each species (Species Clause)
 			if (teamData.baseFormes[template.baseSpecies]) continue;
@@ -3372,9 +3414,9 @@ exports.BattleScripts = {
 			if (teamData.megaCount >= 1 && speciesFlags.megaOnly) continue;
 
 			// Limit 2 of any type
-			var types = template.types;
-			var skip = false;
-			for (var t = 0; t < types.length; t++) {
+			let types = template.types;
+			let skip = false;
+			for (let t = 0; t < types.length; t++) {
 				if (teamData.typeCount[types[t]] > 1 && this.random(5)) {
 					skip = true;
 					break;
@@ -3382,11 +3424,11 @@ exports.BattleScripts = {
 			}
 			if (skip) continue;
 
-			var set = this.randomFactorySet(template, pokemon.length, teamData, chosenTier);
+			let set = this.randomFactorySet(template, pokemon.length, teamData, chosenTier);
 			if (!set) continue;
 
 			// Limit 1 of any type combination
-			var typeCombo = types.slice().sort().join();
+			let typeCombo = types.slice().sort().join();
 			if (set.ability === 'Drought' || set.ability === 'Drizzle') {
 				// Drought and Drizzle don't count towards the type combo limit
 				typeCombo = set.ability;
@@ -3398,7 +3440,7 @@ exports.BattleScripts = {
 			pokemonLeft++;
 
 			// Now that our Pokemon has passed all checks, we can update team data:
-			for (var t = 0; t < types.length; t++) {
+			for (let t = 0; t < types.length; t++) {
 				if (types[t] in teamData.typeCount) {
 					teamData.typeCount[types[t]]++;
 				} else {
@@ -3409,7 +3451,7 @@ exports.BattleScripts = {
 
 			teamData.baseFormes[template.baseSpecies] = 1;
 
-			var itemData = this.getItem(set.item);
+			let itemData = this.getItem(set.item);
 			if (itemData.megaStone) teamData.megaCount++;
 			if (itemData.id in teamData.has) {
 				teamData.has[itemData.id]++;
@@ -3417,13 +3459,13 @@ exports.BattleScripts = {
 				teamData.has[itemData.id] = 1;
 			}
 
-			var abilityData = this.getAbility(set.ability);
+			let abilityData = this.getAbility(set.ability);
 			if (abilityData.id in weatherAbilitiesSet) {
 				teamData.weather = weatherAbilitiesSet[abilityData.id];
 			}
 
-			for (var m = 0; m < set.moves.length; m++) {
-				var moveId = toId(set.moves[m]);
+			for (let m = 0; m < set.moves.length; m++) {
+				let moveId = toId(set.moves[m]);
 				if (moveId in teamData.has) {
 					teamData.has[moveId]++;
 				} else {
@@ -3434,7 +3476,7 @@ exports.BattleScripts = {
 				}
 			}
 
-			for (var typeName in this.data.TypeChart) {
+			for (let typeName in this.data.TypeChart) {
 				// Cover any major weakness (3+) with at least one resistance
 				if (teamData.resistances[typeName] >= 1) continue;
 				if (resistanceAbilities[abilityData.id] && resistanceAbilities[abilityData.id].indexOf(typeName) >= 0 || !this.getImmunity(typeName, types)) {
@@ -3443,7 +3485,7 @@ exports.BattleScripts = {
 					if (teamData.resistances[typeName] >= 1) teamData.weaknesses[typeName] = 0;
 					continue;
 				}
-				var typeMod = this.getEffectiveness(typeName, types);
+				let typeMod = this.getEffectiveness(typeName, types);
 				if (typeMod < 0) {
 					teamData.resistances[typeName] = (teamData.resistances[typeName] || 0) + 1;
 					if (teamData.resistances[typeName] >= 1) teamData.weaknesses[typeName] = 0;
@@ -3456,10 +3498,10 @@ exports.BattleScripts = {
 
 		// Quality control
 		if (!teamData.forceResult) {
-			for (var requiredFamily in requiredMoveFamilies) {
+			for (let requiredFamily in requiredMoveFamilies) {
 				if (!teamData.has[requiredFamily]) return this.randomFactoryTeam(side, ++depth);
 			}
-			for (var type in teamData.weaknesses) {
+			for (let type in teamData.weaknesses) {
 				if (teamData.weaknesses[type] >= 3) return this.randomFactoryTeam(side, ++depth);
 			}
 		}
@@ -3467,15 +3509,15 @@ exports.BattleScripts = {
 		return pokemon;
 	},
 	randomMonotypeTeam: function (side) {
-		var pokemonLeft = 0;
-		var pokemon = [];
-		var typePool = Object.keys(this.data.TypeChart);
-		var type = typePool[this.random(typePool.length)];
+		let pokemonLeft = 0;
+		let pokemon = [];
+		let typePool = Object.keys(this.data.TypeChart);
+		let type = typePool[this.random(typePool.length)];
 
-		var pokemonPool = [];
-		for (var id in this.data.FormatsData) {
-			var template = this.getTemplate(id);
-			var types = template.types;
+		let pokemonPool = [];
+		for (let id in this.data.FormatsData) {
+			let template = this.getTemplate(id);
+			let types = template.types;
 			if (template.baseSpecies === 'Castform') types = ['Normal'];
 			if (template.speciesid === 'meloettapirouette') types = ['Normal', 'Psychic'];
 			if (types.indexOf(type) >= 0 && !template.isMega && !template.isPrimal && !template.isNonstandard && template.randomBattleMoves) {
@@ -3483,13 +3525,13 @@ exports.BattleScripts = {
 			}
 		}
 
-		var baseFormes = {};
-		var uberCount = 0;
-		var puCount = 0;
-		var megaCount = 0;
+		let baseFormes = {};
+		let uberCount = 0;
+		let puCount = 0;
+		let megaCount = 0;
 
 		while (pokemonPool.length && pokemonLeft < 6) {
-			var template = this.getTemplate(this.sampleNoReplace(pokemonPool));
+			let template = this.getTemplate(this.sampleNoReplace(pokemonPool));
 			if (!template.exists) continue;
 
 			// Limit to one of each species (Species Clause)
@@ -3498,7 +3540,7 @@ exports.BattleScripts = {
 			// Not available on ORAS
 			if (template.species === 'Pichu-Spiky-eared') continue;
 
-			var tier = template.tier;
+			let tier = template.tier;
 			switch (tier) {
 			case 'LC':
 			case 'LC Uber':
@@ -3556,14 +3598,14 @@ exports.BattleScripts = {
 				if (template.species !== 'Pikachu' && this.random(30) >= 1) continue;
 			}
 
-			var set = this.randomSet(template, pokemon.length, megaCount);
+			let set = this.randomSet(template, pokemon.length, megaCount);
 
 			// Illusion shouldn't be on the last pokemon of the team
 			if (set.ability === 'Illusion' && pokemonLeft > 4) continue;
 
 			// Limit the number of Megas to one
-			var forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
-			var isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
+			let forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
+			let isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
 			if (isMegaSet && megaCount > 0) continue;
 
 			// Okay, the set passes, add it to our team
@@ -3586,26 +3628,26 @@ exports.BattleScripts = {
 		return pokemon;
 	},
 	randomNoPotDTeam: function (side) {
-		var pokemonLeft = 0;
-		var pokemon = [];
+		let pokemonLeft = 0;
+		let pokemon = [];
 
-		var pokemonPool = [];
-		for (var id in this.data.FormatsData) {
-			var template = this.getTemplate(id);
+		let pokemonPool = [];
+		for (let id in this.data.FormatsData) {
+			let template = this.getTemplate(id);
 			if (!template.isMega && !template.isPrimal && !template.isNonstandard && template.randomBattleMoves) {
 				pokemonPool.push(id);
 			}
 		}
 
-		var typeCount = {};
-		var typeComboCount = {};
-		var baseFormes = {};
-		var uberCount = 0;
-		var puCount = 0;
-		var teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
+		let typeCount = {};
+		let typeComboCount = {};
+		let baseFormes = {};
+		let uberCount = 0;
+		let puCount = 0;
+		let teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
 
 		while (pokemonPool.length && pokemonLeft < 6) {
-			var template = this.getTemplate(this.sampleNoReplace(pokemonPool));
+			let template = this.getTemplate(this.sampleNoReplace(pokemonPool));
 			if (!template.exists) continue;
 
 			// Limit to one of each species (Species Clause)
@@ -3617,7 +3659,7 @@ exports.BattleScripts = {
 			// Useless in Random Battle without greatly lowering the levels of everything else
 			if (template.species === 'Unown') continue;
 
-			var tier = template.tier;
+			let tier = template.tier;
 			switch (tier) {
 			case 'LC':
 			case 'LC Uber':
@@ -3676,9 +3718,9 @@ exports.BattleScripts = {
 			}
 
 			// Limit 2 of any type
-			var types = template.types;
-			var skip = false;
-			for (var t = 0; t < types.length; t++) {
+			let types = template.types;
+			let skip = false;
+			for (let t = 0; t < types.length; t++) {
 				if (typeCount[types[t]] > 1 && this.random(5) >= 1) {
 					skip = true;
 					break;
@@ -3686,13 +3728,13 @@ exports.BattleScripts = {
 			}
 			if (skip) continue;
 
-			var set = this.randomSet(template, pokemon.length, teamDetails);
+			let set = this.randomSet(template, pokemon.length, teamDetails);
 
 			// Illusion shouldn't be on the last pokemon of the team
 			if (set.ability === 'Illusion' && pokemonLeft > 4) continue;
 
 			// Limit 1 of any type combination
-			var typeCombo = types.join();
+			let typeCombo = types.join();
 			if (set.ability === 'Drought' || set.ability === 'Drizzle') {
 				// Drought and Drizzle don't count towards the type combo limit
 				typeCombo = set.ability;
@@ -3700,8 +3742,8 @@ exports.BattleScripts = {
 			if (typeCombo in typeComboCount) continue;
 
 			// Limit the number of Megas to one
-			var forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
-			var isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
+			let forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
+			let isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
 			if (isMegaSet && teamDetails.megaCount > 0) continue;
 
 			// Okay, the set passes, add it to our team
@@ -3711,7 +3753,7 @@ exports.BattleScripts = {
 			pokemonLeft++;
 
 			// Increment type counters
-			for (var t = 0; t < types.length; t++) {
+			for (let t = 0; t < types.length; t++) {
 				if (types[t] in typeCount) {
 					typeCount[types[t]]++;
 				} else {
@@ -3738,19 +3780,19 @@ exports.BattleScripts = {
 		return pokemon;
 	},
 	randomUberTeam: function (side) {
-		var pokemonLeft = 0;
-		var pokemon = [];
+		let pokemonLeft = 0;
+		let pokemon = [];
 
-		var pokemonPool = ['aegislash', 'arceus', 'arceusbug', 'arceusdark', 'arceusdragon', 'arceuselectric', 'arceusfairy', 'arceusfighting', 'arceusfire', 'arceusflying', 'arceusghost', 'arceusgrass', 'arceusground', 'arceusice', 'arceuspoison', 'arceuspsychic', 'arceusrock', 'arceussteel', 'arceuswater', 'blaziken', 'darkrai', 'deoxys', 'deoxysattack', 'deoxysdefense', 'deoxysspeed', 'dialga', 'genesect', 'gengar', 'giratina', 'giratinaorigin', 'greninja', 'groudon', 'hooh', 'kangaskhan', 'kyogre', 'kyuremwhite', 'landorus', 'lucario', 'lugia', 'mawile', 'mewtwo', 'palkia', 'rayquaza', 'reshiram', 'salamence', 'shayminsky', 'xerneas', 'yveltal', 'zekrom'];
+		let pokemonPool = ['aegislash', 'arceus', 'arceusbug', 'arceusdark', 'arceusdragon', 'arceuselectric', 'arceusfairy', 'arceusfighting', 'arceusfire', 'arceusflying', 'arceusghost', 'arceusgrass', 'arceusground', 'arceusice', 'arceuspoison', 'arceuspsychic', 'arceusrock', 'arceussteel', 'arceuswater', 'blaziken', 'darkrai', 'deoxys', 'deoxysattack', 'deoxysdefense', 'deoxysspeed', 'dialga', 'genesect', 'gengar', 'giratina', 'giratinaorigin', 'greninja', 'groudon', 'hooh', 'kangaskhan', 'kyogre', 'kyuremwhite', 'landorus', 'lucario', 'lugia', 'mawile', 'mewtwo', 'palkia', 'rayquaza', 'reshiram', 'salamence', 'shayminsky', 'xerneas', 'yveltal', 'zekrom'];
 
-		var typeCount = {};
-		var typeComboCount = {};
-		var baseFormes = {};
-		var puCount = 0;
-		var teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
+		let typeCount = {};
+		let typeComboCount = {};
+		let baseFormes = {};
+		let puCount = 0;
+		let teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
 
 		while (pokemonPool.length && pokemonLeft < 6) {
-			var template = this.getTemplate(this.sampleNoReplace(pokemonPool));
+			let template = this.getTemplate(this.sampleNoReplace(pokemonPool));
 			if (!template.exists) continue;
 
 			// Limit to one of each species (Species Clause)
@@ -3762,7 +3804,7 @@ exports.BattleScripts = {
 			// Useless in Random Battle without greatly lowering the levels of everything else
 			if (template.species === 'Unown') continue;
 
-			var tier = template.tier;
+			let tier = template.tier;
 			switch (tier) {
 			case 'LC':
 			case 'LC Uber':
@@ -3817,9 +3859,9 @@ exports.BattleScripts = {
 			}
 
 			// Limit 2 of any type
-			var types = template.types;
-			var skip = false;
-			for (var t = 0; t < types.length; t++) {
+			let types = template.types;
+			let skip = false;
+			for (let t = 0; t < types.length; t++) {
 				if (typeCount[types[t]] > 1 && this.random(5) >= 1) {
 					skip = true;
 					break;
@@ -3827,13 +3869,13 @@ exports.BattleScripts = {
 			}
 			if (skip) continue;
 
-			var set = this.randomSet(template, pokemon.length, teamDetails);
+			let set = this.randomSet(template, pokemon.length, teamDetails);
 
 			// Illusion shouldn't be on the last pokemon of the team
 			if (set.ability === 'Illusion' && pokemonLeft > 4) continue;
 
 			// Limit 1 of any type combination
-			var typeCombo = types.join();
+			let typeCombo = types.join();
 			if (set.ability === 'Drought' || set.ability === 'Drizzle') {
 				// Drought and Drizzle don't count towards the type combo limit
 				typeCombo = set.ability;
@@ -3841,8 +3883,8 @@ exports.BattleScripts = {
 			if (typeCombo in typeComboCount) continue;
 
 			// Limit the number of Megas to one
-			var forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
-			var isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
+			let forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
+			let isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
 			if (isMegaSet && teamDetails.megaCount > 0) continue;
 
 			// Okay, the set passes, add it to our team
@@ -3852,7 +3894,7 @@ exports.BattleScripts = {
 			pokemonLeft++;
 
 			// Increment type counters
-			for (var t = 0; t < types.length; t++) {
+			for (let t = 0; t < types.length; t++) {
 				if (types[t] in typeCount) {
 					typeCount[types[t]]++;
 				} else {
@@ -3877,20 +3919,20 @@ exports.BattleScripts = {
 		return pokemon;
 	},
 	randomHighTierTeam: function (side) {
-		var pokemonLeft = 0;
-		var pokemon = [];
+		let pokemonLeft = 0;
+		let pokemon = [];
 
-		var pokemonPool = ['altaria', 'azumarill', 'bisharp', 'breloom', 'celebi', 'chansey', 'charizard', 'clefable', 'conkeldurr', 'diancie', 'dragonite', 'excadrill', 'ferrothorn', 'gallade', 'garchomp', 'gardevoir', 'gengar', 'gliscor', 'gothitelle', 'gyarados', 'heatran', 'jirachi', 'keldeo', 'kyuremblack', 'landorustherian', 'latias', 'latios', 'lopunny', 'magnezone', 'mamoswine', 'manaphy', 'mandibuzz', 'manectric', 'metagross', 'mew', 'raikou', 'rotomwash', 'sableye', 'scizor', 'skarmory', 'slowbro', 'starmie', 'sylveon', 'talonflame', 'thundurus', 'tyranitar', 'venusaur', 'zapdos', 'crawdaunt', 'diggersby', 'hawlucha', 'klefki', 'medicham', 'scolipede', 'serperior', 'smeargle', 'staraptor', 'terrakion', 'thundurustherian', 'togekiss', 'tornadustherian', 'venomoth', 'victini', 'volcarona', 'weavile', 'zygarde', 'absol', 'aerodactyl', 'aggron', 'alakazam', 'ampharos', 'arcanine', 'azelf', 'beedrill', 'blastoise', 'blissey', 'chandelure', 'chesnaught', 'cloyster', 'crobat', 'darmanitan', 'donphan', 'empoleon', 'entei', 'espeon', 'florges', 'forretress', 'galvantula', 'gligar', 'goodra', 'haxorus', 'heracross', 'hippowdon', 'honchkrow', 'hydreigon', 'infernape', 'kingdra', 'krookodile', 'lucario', 'machamp', 'mienshao', 'milotic', 'nidoking', 'nidoqueen', 'pidgeot', 'pinsir', 'porygonz', 'porygon2', 'roserade', 'rotomheat', 'salamence', 'sceptile', 'sharpedo', 'shaymin', 'snorlax', 'suicune', 'swampert', 'tentacruel', 'toxicroak', 'trevenant', 'umbreon', 'vaporeon', 'dragalge', 'froslass', 'houndoom', 'kyurem', 'shuckle', 'tornadus', 'yanmega', 'zoroark', 'heliolisk', 'slurpuff', 'abomasnow', 'doublade', 'cresselia', 'slowking', 'whimsicott', 'moltres', 'pangoro', 'feraligatr', 'noivern', 'hoopa', 'hoopaunbound'];
+		let pokemonPool = ['altaria', 'azumarill', 'bisharp', 'breloom', 'celebi', 'chansey', 'charizard', 'clefable', 'conkeldurr', 'diancie', 'dragonite', 'excadrill', 'ferrothorn', 'gallade', 'garchomp', 'gardevoir', 'gengar', 'gliscor', 'gothitelle', 'gyarados', 'heatran', 'jirachi', 'keldeo', 'kyuremblack', 'landorustherian', 'latias', 'latios', 'lopunny', 'magnezone', 'mamoswine', 'manaphy', 'mandibuzz', 'manectric', 'metagross', 'mew', 'raikou', 'rotomwash', 'sableye', 'scizor', 'skarmory', 'slowbro', 'starmie', 'sylveon', 'talonflame', 'thundurus', 'tyranitar', 'venusaur', 'zapdos', 'crawdaunt', 'diggersby', 'hawlucha', 'klefki', 'medicham', 'scolipede', 'serperior', 'smeargle', 'staraptor', 'terrakion', 'thundurustherian', 'togekiss', 'tornadustherian', 'venomoth', 'victini', 'volcarona', 'weavile', 'zygarde', 'absol', 'aerodactyl', 'aggron', 'alakazam', 'ampharos', 'arcanine', 'azelf', 'beedrill', 'blastoise', 'blissey', 'chandelure', 'chesnaught', 'cloyster', 'crobat', 'darmanitan', 'donphan', 'empoleon', 'entei', 'espeon', 'florges', 'forretress', 'galvantula', 'gligar', 'goodra', 'haxorus', 'heracross', 'hippowdon', 'honchkrow', 'hydreigon', 'infernape', 'kingdra', 'krookodile', 'lucario', 'machamp', 'mienshao', 'milotic', 'nidoking', 'nidoqueen', 'pidgeot', 'pinsir', 'porygonz', 'porygon2', 'roserade', 'rotomheat', 'salamence', 'sceptile', 'sharpedo', 'shaymin', 'snorlax', 'suicune', 'swampert', 'tentacruel', 'toxicroak', 'trevenant', 'umbreon', 'vaporeon', 'dragalge', 'froslass', 'houndoom', 'kyurem', 'shuckle', 'tornadus', 'yanmega', 'zoroark', 'heliolisk', 'slurpuff', 'abomasnow', 'doublade', 'cresselia', 'slowking', 'whimsicott', 'moltres', 'pangoro', 'feraligatr', 'noivern', 'hoopa', 'hoopaunbound'];
 
-		var typeCount = {};
-		var typeComboCount = {};
-		var baseFormes = {};
-		var uberCount = 0;
-		var puCount = 0;
-		var teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
+		let typeCount = {};
+		let typeComboCount = {};
+		let baseFormes = {};
+		let uberCount = 0;
+		let puCount = 0;
+		let teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
 
 		while (pokemonPool.length && pokemonLeft < 6) {
-			var template = this.getTemplate(this.sampleNoReplace(pokemonPool));
+			let template = this.getTemplate(this.sampleNoReplace(pokemonPool));
 			if (!template.exists) continue;
 
 			// Limit to one of each species (Species Clause)
@@ -3902,7 +3944,7 @@ exports.BattleScripts = {
 			// Useless in Random Battle without greatly lowering the levels of everything else
 			if (template.species === 'Unown') continue;
 
-			var tier = template.tier;
+			let tier = template.tier;
 			switch (tier) {
 			case 'LC':
 			case 'LC Uber':
@@ -3961,9 +4003,9 @@ exports.BattleScripts = {
 			}
 
 			// Limit 2 of any type
-			var types = template.types;
-			var skip = false;
-			for (var t = 0; t < types.length; t++) {
+			let types = template.types;
+			let skip = false;
+			for (let t = 0; t < types.length; t++) {
 				if (typeCount[types[t]] > 1 && this.random(5) >= 1) {
 					skip = true;
 					break;
@@ -3971,13 +4013,13 @@ exports.BattleScripts = {
 			}
 			if (skip) continue;
 
-			var set = this.randomSet(template, pokemon.length, teamDetails);
+			let set = this.randomSet(template, pokemon.length, teamDetails);
 
 			// Illusion shouldn't be on the last pokemon of the team
 			if (set.ability === 'Illusion' && pokemonLeft > 4) continue;
 
 			// Limit 1 of any type combination
-			var typeCombo = types.join();
+			let typeCombo = types.join();
 			if (set.ability === 'Drought' || set.ability === 'Drizzle') {
 				// Drought and Drizzle don't count towards the type combo limit
 				typeCombo = set.ability;
@@ -3985,8 +4027,8 @@ exports.BattleScripts = {
 			if (typeCombo in typeComboCount) continue;
 
 			// Limit the number of Megas to one
-			var forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
-			var isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
+			let forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
+			let isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
 			if (isMegaSet && teamDetails.megaCount > 0) continue;
 
 			// Okay, the set passes, add it to our team
@@ -3996,7 +4038,7 @@ exports.BattleScripts = {
 			pokemonLeft++;
 
 			// Increment type counters
-			for (var t = 0; t < types.length; t++) {
+			for (let t = 0; t < types.length; t++) {
 				if (types[t] in typeCount) {
 					typeCount[types[t]]++;
 				} else {
@@ -4023,20 +4065,20 @@ exports.BattleScripts = {
 		return pokemon;
 	},
 	randomLowTierTeam: function (side) {
-		var pokemonLeft = 0;
-		var pokemon = [];
+		let pokemonLeft = 0;
+		let pokemon = [];
 
-		var pokemonPool = ['accelgor', 'alomomola', 'ambipom', 'amoonguss', 'aromatisse', 'banette', 'braviary', 'bronzong', 'cinccino', 'clawitzer', 'cobalion', 'cofagrigus', 'delphox', 'drapion', 'druddigon', 'dugtrio', 'durant', 'eelektross', 'emboar', 'escavalier', 'exploud', 'fletchinder', 'gastrodon', 'glalie', 'golbat', 'hitmonchan', 'hitmonlee', 'hitmontop', 'houndoom', 'jellicent', 'jolteon', 'kabutops', 'magneton', 'medicham', 'meloetta', 'omastar', 'registeel', 'reuniclus', 'rhyperior', 'rotommow', 'shiftry', 'skuntank', 'spiritomb', 'tangrowth', 'tyrantrum', 'combusken', 'sigilyph', 'arbok', 'archeops', 'ariados', 'armaldo', 'articuno', 'audino', 'aurorus', 'avalugg', 'barbaracle', 'basculin', 'basculinbluestriped', 'bastiodon', 'beartic', 'beautifly', 'beheeyem', 'bellossom', 'bibarel', 'bouffalant', 'butterfree', 'cacturne', 'camerupt', 'carbink', 'carnivine', 'carracosta', 'castformsunny', 'castformrainy', 'chatot', 'cherrim', 'chimecho', 'claydol', 'corsola', 'cradily', 'crustle', 'cryogonal', 'dedenne', 'delcatty', 'delibird', 'dewgong', 'ditto', 'dodrio', 'dragonair', 'drifblim', 'dunsparce', 'duosion', 'dusclops', 'dusknoir', 'dustox', 'electivire', 'electrode', 'emolga', 'exeggutor', 'farfetchd', 'fearow', 'ferroseed', 'flareon', 'floatzel', 'floette', 'fraxure', 'frogadier', 'furfrou', 'furret', 'gabite', 'garbodor', 'gigalith', 'girafarig', 'glaceon', 'gogoat', 'golduck', 'golem', 'golurk', 'gorebyss', 'gourgeist', 'gourgeistlarge', 'gourgeistsmall', 'gourgeistsuper', 'granbull', 'grumpig', 'gurdurr', 'hariyama', 'haunter', 'heatmor', 'huntail', 'hypno', 'illumise', 'jumpluff', 'jynx', 'kadabra', 'kangaskhan', 'kecleon', 'kingler', 'klinklang', 'kricketune', 'lampent', 'lanturn', 'lapras', 'leafeon', 'leavanny', 'ledian', 'lickilicky', 'liepard', 'lilligant', 'linoone', 'ludicolo', 'lumineon', 'lunatone', 'luvdisc', 'luxray', 'machoke', 'magcargo', 'magmortar', 'malamar', 'mantine', 'maractus', 'marowak', 'masquerain', 'mawile', 'meganium', 'meowsticf', 'meowstic', 'mesprit', 'metang', 'mightyena', 'miltank', 'minun', 'misdreavus', 'mismagius', 'mothim', 'mrmime', 'muk', 'murkrow', 'musharna', 'ninetales', 'ninjask', 'noctowl', 'octillery', 'pachirisu', 'parasect', 'pelipper', 'persian', 'phione', 'pikachu', 'pikachucosplay', 'pikachurockstar', 'pikachubelle', 'pikachupopstar', 'pikachuphd', 'pikachulibre', 'piloswine', 'plusle', 'politoed', 'poliwrath', 'primeape', 'probopass', 'purugly', 'pyroar', 'quagsire', 'quilladin', 'qwilfish', 'raichu', 'rampardos', 'rapidash', 'raticate', 'regice', 'regigigas', 'regirock', 'relicanth', 'rhydon', 'roselia', 'rotom', 'rotomfan', 'rotomfrost', 'samurott', 'sandslash', 'sawk', 'sawsbuck', 'scyther', 'seadra', 'seaking', 'seismitoad', 'seviper', 'shedinja', 'shelgon', 'simipour', 'simisage', 'simisear', 'slaking', 'sliggoo', 'sneasel', 'solrock', 'spinda', 'stantler', 'steelix', 'stoutland', 'stunfisk', 'sudowoodo', 'sunflora', 'swalot', 'swanna', 'swellow', 'swoobat', 'tangela', 'tauros', 'throh', 'togetic', 'torkoal', 'torterra', 'tropius', 'typhlosion', 'unfezant', 'unown', 'ursaring', 'uxie', 'vanilluxe', 'vespiquen', 'victreebel', 'vigoroth', 'vileplume', 'virizion', 'vivillon', 'volbeat', 'wailord', 'walrein', 'watchog', 'weezing', 'whiscash', 'wigglytuff', 'wobbuffet', 'wormadam', 'wormadamsandy', 'wormadamtrash', 'xatu', 'zangoose', 'zebstrika', 'scrafty', 'gallade', 'flygon', 'pinsir', 'pawniard'];
+		let pokemonPool = ['accelgor', 'alomomola', 'ambipom', 'amoonguss', 'aromatisse', 'banette', 'braviary', 'bronzong', 'cinccino', 'clawitzer', 'cobalion', 'cofagrigus', 'delphox', 'drapion', 'druddigon', 'dugtrio', 'durant', 'eelektross', 'emboar', 'escavalier', 'exploud', 'fletchinder', 'gastrodon', 'glalie', 'golbat', 'hitmonchan', 'hitmonlee', 'hitmontop', 'houndoom', 'jellicent', 'jolteon', 'kabutops', 'magneton', 'medicham', 'meloetta', 'omastar', 'registeel', 'reuniclus', 'rhyperior', 'rotommow', 'shiftry', 'skuntank', 'spiritomb', 'tangrowth', 'tyrantrum', 'combusken', 'sigilyph', 'arbok', 'archeops', 'ariados', 'armaldo', 'articuno', 'audino', 'aurorus', 'avalugg', 'barbaracle', 'basculin', 'basculinbluestriped', 'bastiodon', 'beartic', 'beautifly', 'beheeyem', 'bellossom', 'bibarel', 'bouffalant', 'butterfree', 'cacturne', 'camerupt', 'carbink', 'carnivine', 'carracosta', 'castformsunny', 'castformrainy', 'chatot', 'cherrim', 'chimecho', 'claydol', 'corsola', 'cradily', 'crustle', 'cryogonal', 'dedenne', 'delcatty', 'delibird', 'dewgong', 'ditto', 'dodrio', 'dragonair', 'drifblim', 'dunsparce', 'duosion', 'dusclops', 'dusknoir', 'dustox', 'electivire', 'electrode', 'emolga', 'exeggutor', 'farfetchd', 'fearow', 'ferroseed', 'flareon', 'floatzel', 'floette', 'fraxure', 'frogadier', 'furfrou', 'furret', 'gabite', 'garbodor', 'gigalith', 'girafarig', 'glaceon', 'gogoat', 'golduck', 'golem', 'golurk', 'gorebyss', 'gourgeist', 'gourgeistlarge', 'gourgeistsmall', 'gourgeistsuper', 'granbull', 'grumpig', 'gurdurr', 'hariyama', 'haunter', 'heatmor', 'huntail', 'hypno', 'illumise', 'jumpluff', 'jynx', 'kadabra', 'kangaskhan', 'kecleon', 'kingler', 'klinklang', 'kricketune', 'lampent', 'lanturn', 'lapras', 'leafeon', 'leavanny', 'ledian', 'lickilicky', 'liepard', 'lilligant', 'linoone', 'ludicolo', 'lumineon', 'lunatone', 'luvdisc', 'luxray', 'machoke', 'magcargo', 'magmortar', 'malamar', 'mantine', 'maractus', 'marowak', 'masquerain', 'mawile', 'meganium', 'meowsticf', 'meowstic', 'mesprit', 'metang', 'mightyena', 'miltank', 'minun', 'misdreavus', 'mismagius', 'mothim', 'mrmime', 'muk', 'murkrow', 'musharna', 'ninetales', 'ninjask', 'noctowl', 'octillery', 'pachirisu', 'parasect', 'pelipper', 'persian', 'phione', 'pikachu', 'pikachucosplay', 'pikachurockstar', 'pikachubelle', 'pikachupopstar', 'pikachuphd', 'pikachulibre', 'piloswine', 'plusle', 'politoed', 'poliwrath', 'primeape', 'probopass', 'purugly', 'pyroar', 'quagsire', 'quilladin', 'qwilfish', 'raichu', 'rampardos', 'rapidash', 'raticate', 'regice', 'regigigas', 'regirock', 'relicanth', 'rhydon', 'roselia', 'rotom', 'rotomfan', 'rotomfrost', 'samurott', 'sandslash', 'sawk', 'sawsbuck', 'scyther', 'seadra', 'seaking', 'seismitoad', 'seviper', 'shedinja', 'shelgon', 'simipour', 'simisage', 'simisear', 'slaking', 'sliggoo', 'sneasel', 'solrock', 'spinda', 'stantler', 'steelix', 'stoutland', 'stunfisk', 'sudowoodo', 'sunflora', 'swalot', 'swanna', 'swellow', 'swoobat', 'tangela', 'tauros', 'throh', 'togetic', 'torkoal', 'torterra', 'tropius', 'typhlosion', 'unfezant', 'unown', 'ursaring', 'uxie', 'vanilluxe', 'vespiquen', 'victreebel', 'vigoroth', 'vileplume', 'virizion', 'vivillon', 'volbeat', 'wailord', 'walrein', 'watchog', 'weezing', 'whiscash', 'wigglytuff', 'wobbuffet', 'wormadam', 'wormadamsandy', 'wormadamtrash', 'xatu', 'zangoose', 'zebstrika', 'scrafty', 'gallade', 'flygon', 'pinsir', 'pawniard'];
 
-		var typeCount = {};
-		var typeComboCount = {};
-		var baseFormes = {};
-		var uberCount = 0;
-		var puCount = 0;
-		var teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
+		let typeCount = {};
+		let typeComboCount = {};
+		let baseFormes = {};
+		let uberCount = 0;
+		let puCount = 0;
+		let teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
 
 		while (pokemonPool.length && pokemonLeft < 6) {
-			var template = this.getTemplate(this.sampleNoReplace(pokemonPool));
+			let template = this.getTemplate(this.sampleNoReplace(pokemonPool));
 			if (!template.exists) continue;
 
 			// Limit to one of each species (Species Clause)
@@ -4048,7 +4090,7 @@ exports.BattleScripts = {
 			// Useless in Random Battle without greatly lowering the levels of everything else
 			if (template.species === 'Unown') continue;
 
-			var tier = template.tier;
+			let tier = template.tier;
 			switch (tier) {
 			case 'LC':
 			case 'LC Uber':
@@ -4107,9 +4149,9 @@ exports.BattleScripts = {
 			}
 
 			// Limit 2 of any type
-			var types = template.types;
-			var skip = false;
-			for (var t = 0; t < types.length; t++) {
+			let types = template.types;
+			let skip = false;
+			for (let t = 0; t < types.length; t++) {
 				if (typeCount[types[t]] > 1 && this.random(5) >= 1) {
 					skip = true;
 					break;
@@ -4117,7 +4159,7 @@ exports.BattleScripts = {
 			}
 			if (skip) continue;
 
-			var set = this.randomSet(template, pokemon.length, teamDetails);
+			let set = this.randomSet(template, pokemon.length, teamDetails);
 
 			if (template.id === 'wobbuffet') {
 				set.species = 'Wobbuffet';
@@ -4134,7 +4176,7 @@ exports.BattleScripts = {
 			if (set.ability === 'Illusion' && pokemonLeft > 4) continue;
 
 			// Limit 1 of any type combination
-			var typeCombo = types.join();
+			let typeCombo = types.join();
 			if (set.ability === 'Drought' || set.ability === 'Drizzle') {
 				// Drought and Drizzle don't count towards the type combo limit
 				typeCombo = set.ability;
@@ -4142,8 +4184,8 @@ exports.BattleScripts = {
 			if (typeCombo in typeComboCount) continue;
 
 			// Limit the number of Megas to one
-			var forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
-			var isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
+			let forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
+			let isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
 			if (isMegaSet && teamDetails.megaCount > 0) continue;
 
 			// Okay, the set passes, add it to our team
@@ -4153,7 +4195,7 @@ exports.BattleScripts = {
 			pokemonLeft++;
 
 			// Increment type counters
-			for (var t = 0; t < types.length; t++) {
+			for (let t = 0; t < types.length; t++) {
 				if (types[t] in typeCount) {
 					typeCount[types[t]]++;
 				} else {
@@ -4180,20 +4222,20 @@ exports.BattleScripts = {
 		return pokemon;
 	},
 	randomLCTeam: function (side) {
-		var pokemonLeft = 0;
-		var pokemon = [];
+		let pokemonLeft = 0;
+		let pokemon = [];
 
-		var pokemonPool = ['abra', 'aipom', 'amaura', 'anorith', 'archen', 'aron', 'axew', 'azurill', 'bagon', 'baltoy', 'barboach', 'beldum', 'bellsprout', 'bergmite', 'bidoof', 'binacle', 'blitzle', 'bonsly', 'bronzor', 'budew', 'buizel', 'bulbasaur', 'buneary', 'bunnelby', 'burmy', 'cacnea', 'carvanha', 'caterpie', 'charmander', 'cherubi', 'chespin', 'chikorita', 'chimchar', 'chinchou', 'chingling', 'clamperl', 'clauncher', 'cleffa', 'combee', 'corphish', 'cottonee', 'cranidos', 'croagunk', 'cubchoo', 'cubone', 'cyndaquil', 'darumaka', 'deerling', 'deino', 'diglett', 'doduo', 'dratini', 'drifloon', 'drilbur', 'drowzee', 'ducklett', 'duskull', 'dwebble', 'eevee', 'ekans', 'electrike', 'elekid', 'elgyem', 'espurr', 'exeggcute', 'feebas', 'fennekin', 'ferroseed', 'finneon', 'flabebe', 'fletchling', 'foongus', 'frillish', 'froakie', 'gastly', 'geodude', 'gible', 'glameow', 'goldeen', 'golett', 'goomy', 'gothita', 'grimer', 'growlithe', 'gulpin', 'happiny', 'helioptile', 'hippopotas', 'honedge', 'hoothoot', 'hoppip', 'horsea', 'houndour', 'igglybuff', 'inkay', 'joltik', 'kabuto', 'karrablast', 'klink', 'koffing', 'krabby', 'kricketot', 'larvesta', 'larvitar', 'ledyba', 'lickitung', 'lileep', 'lillipup', 'litleo', 'litwick', 'lotad', 'machop', 'magby', 'magikarp', 'magnemite', 'makuhita', 'mankey', 'mantyke', 'mareep', 'meowth', 'mienfoo', 'mimejr', 'minccino', 'mudkip', 'munchlax', 'munna', 'natu', 'nidoranf', 'nidoranm', 'nincada', 'noibat', 'nosepass', 'numel', 'oddish', 'omanyte', 'onix', 'oshawott', 'pancham', 'panpour', 'pansage', 'pansear', 'paras', 'patrat', 'pawniard', 'petilil', 'phanpy', 'phantump', 'pichu', 'pidgey', 'pidove', 'pineco', 'piplup', 'poliwag', 'ponyta', 'poochyena', 'porygon', 'psyduck', 'pumpkaboo', 'pumpkaboolarge', 'pumpkaboosmall', 'pumpkaboosuper', 'purrloin', 'ralts', 'rattata', 'remoraid', 'rhyhorn', 'riolu', 'roggenrola', 'rufflet', 'sandile', 'sandshrew', 'scatterbug', 'scraggy', 'seedot', 'seel', 'sentret', 'sewaddle', 'shellder', 'shellos', 'shelmet', 'shieldon', 'shinx', 'shroomish', 'shuppet', 'skiddo', 'skitty', 'skorupi', 'skrelp', 'slakoth', 'slowpoke', 'slugma', 'smoochum', 'snivy', 'snorunt', 'snover', 'snubbull', 'solosis', 'spearow', 'spheal', 'spinarak', 'spoink', 'spritzee', 'squirtle', 'starly', 'staryu', 'stunky', 'sunkern', 'surskit', 'swablu', 'swinub', 'taillow', 'teddiursa', 'tentacool', 'tepig', 'timburr', 'tirtouga', 'togepi', 'torchic', 'totodile', 'trapinch', 'treecko', 'trubbish', 'turtwig', 'tympole', 'tynamo', 'tyrogue', 'tyrunt', 'vanillite', 'venipede', 'venonat', 'voltorb', 'vullaby', 'wailmer', 'weedle', 'whismur', 'wingull', 'woobat', 'wooper', 'wurmple', 'wynaut', 'yamask', 'zigzagoon', 'zorua', 'zubat'];
+		let pokemonPool = ['abra', 'aipom', 'amaura', 'anorith', 'archen', 'aron', 'axew', 'azurill', 'bagon', 'baltoy', 'barboach', 'beldum', 'bellsprout', 'bergmite', 'bidoof', 'binacle', 'blitzle', 'bonsly', 'bronzor', 'budew', 'buizel', 'bulbasaur', 'buneary', 'bunnelby', 'burmy', 'cacnea', 'carvanha', 'caterpie', 'charmander', 'cherubi', 'chespin', 'chikorita', 'chimchar', 'chinchou', 'chingling', 'clamperl', 'clauncher', 'cleffa', 'combee', 'corphish', 'cottonee', 'cranidos', 'croagunk', 'cubchoo', 'cubone', 'cyndaquil', 'darumaka', 'deerling', 'deino', 'diglett', 'doduo', 'dratini', 'drifloon', 'drilbur', 'drowzee', 'ducklett', 'duskull', 'dwebble', 'eevee', 'ekans', 'electrike', 'elekid', 'elgyem', 'espurr', 'exeggcute', 'feebas', 'fennekin', 'ferroseed', 'finneon', 'flabebe', 'fletchling', 'foongus', 'frillish', 'froakie', 'gastly', 'geodude', 'gible', 'glameow', 'goldeen', 'golett', 'goomy', 'gothita', 'grimer', 'growlithe', 'gulpin', 'happiny', 'helioptile', 'hippopotas', 'honedge', 'hoothoot', 'hoppip', 'horsea', 'houndour', 'igglybuff', 'inkay', 'joltik', 'kabuto', 'karrablast', 'klink', 'koffing', 'krabby', 'kricketot', 'larvesta', 'larvitar', 'ledyba', 'lickitung', 'lileep', 'lillipup', 'litleo', 'litwick', 'lotad', 'machop', 'magby', 'magikarp', 'magnemite', 'makuhita', 'mankey', 'mantyke', 'mareep', 'meowth', 'mienfoo', 'mimejr', 'minccino', 'mudkip', 'munchlax', 'munna', 'natu', 'nidoranf', 'nidoranm', 'nincada', 'noibat', 'nosepass', 'numel', 'oddish', 'omanyte', 'onix', 'oshawott', 'pancham', 'panpour', 'pansage', 'pansear', 'paras', 'patrat', 'pawniard', 'petilil', 'phanpy', 'phantump', 'pichu', 'pidgey', 'pidove', 'pineco', 'piplup', 'poliwag', 'ponyta', 'poochyena', 'porygon', 'psyduck', 'pumpkaboo', 'pumpkaboolarge', 'pumpkaboosmall', 'pumpkaboosuper', 'purrloin', 'ralts', 'rattata', 'remoraid', 'rhyhorn', 'riolu', 'roggenrola', 'rufflet', 'sandile', 'sandshrew', 'scatterbug', 'scraggy', 'seedot', 'seel', 'sentret', 'sewaddle', 'shellder', 'shellos', 'shelmet', 'shieldon', 'shinx', 'shroomish', 'shuppet', 'skiddo', 'skitty', 'skorupi', 'skrelp', 'slakoth', 'slowpoke', 'slugma', 'smoochum', 'snivy', 'snorunt', 'snover', 'snubbull', 'solosis', 'spearow', 'spheal', 'spinarak', 'spoink', 'spritzee', 'squirtle', 'starly', 'staryu', 'stunky', 'sunkern', 'surskit', 'swablu', 'swinub', 'taillow', 'teddiursa', 'tentacool', 'tepig', 'timburr', 'tirtouga', 'togepi', 'torchic', 'totodile', 'trapinch', 'treecko', 'trubbish', 'turtwig', 'tympole', 'tynamo', 'tyrogue', 'tyrunt', 'vanillite', 'venipede', 'venonat', 'voltorb', 'vullaby', 'wailmer', 'weedle', 'whismur', 'wingull', 'woobat', 'wooper', 'wurmple', 'wynaut', 'yamask', 'zigzagoon', 'zorua', 'zubat'];
 
-		var typeCount = {};
-		var typeComboCount = {};
-		var baseFormes = {};
-		var uberCount = 0;
-		var puCount = 0;
-		var teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
+		let typeCount = {};
+		let typeComboCount = {};
+		let baseFormes = {};
+		let uberCount = 0;
+		let puCount = 0;
+		let teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
 
 		while (pokemonPool.length && pokemonLeft < 6) {
-			var template = this.getTemplate(this.sampleNoReplace(pokemonPool));
+			let template = this.getTemplate(this.sampleNoReplace(pokemonPool));
 			if (!template.exists) continue;
 
 			// Limit to one of each species (Species Clause)
@@ -4205,7 +4247,7 @@ exports.BattleScripts = {
 			// Useless in Random Battle without greatly lowering the levels of everything else
 			if (template.species === 'Unown') continue;
 
-			var tier = template.tier;
+			let tier = template.tier;
 			switch (tier) {
 			case 'NFE':
 				if (puCount > 1) continue;
@@ -4262,9 +4304,9 @@ exports.BattleScripts = {
 			}
 
 			// Limit 2 of any type
-			var types = template.types;
-			var skip = false;
-			for (var t = 0; t < types.length; t++) {
+			let types = template.types;
+			let skip = false;
+			for (let t = 0; t < types.length; t++) {
 				if (typeCount[types[t]] > 1 && this.random(5) >= 1) {
 					skip = true;
 					break;
@@ -4272,7 +4314,7 @@ exports.BattleScripts = {
 			}
 			if (skip) continue;
 
-			var set = this.randomSet(template, pokemon.length, teamDetails);
+			let set = this.randomSet(template, pokemon.length, teamDetails);
 
 			set.level = 5;
 
@@ -4280,7 +4322,7 @@ exports.BattleScripts = {
 			if (set.ability === 'Illusion' && pokemonLeft > 4) continue;
 
 			// Limit 1 of any type combination
-			var typeCombo = types.join();
+			let typeCombo = types.join();
 			if (set.ability === 'Drought' || set.ability === 'Drizzle') {
 				// Drought and Drizzle don't count towards the type combo limit
 				typeCombo = set.ability;
@@ -4288,8 +4330,8 @@ exports.BattleScripts = {
 			if (typeCombo in typeComboCount) continue;
 
 			// Limit the number of Megas to one
-			var forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
-			var isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
+			let forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
+			let isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
 			if (isMegaSet && teamDetails.megaCount > 0) continue;
 
 			// Okay, the set passes, add it to our team
@@ -4299,7 +4341,7 @@ exports.BattleScripts = {
 			pokemonLeft++;
 
 			// Increment type counters
-			for (var t = 0; t < types.length; t++) {
+			for (let t = 0; t < types.length; t++) {
 				if (types[t] in typeCount) {
 					typeCount[types[t]]++;
 				} else {
@@ -4326,18 +4368,18 @@ exports.BattleScripts = {
 		return pokemon;
 	},
 	randomGenerationalTeam: function (side) {
-		var pokemonLeft = 0;
-		var pokemon = [];
+		let pokemonLeft = 0;
+		let pokemon = [];
 
-		var kantoPool = ['venusaur', 'charizard', 'blastoise', 'butterfree', 'beedrill', 'pidgeot', 'raticate', 'fearow', 'arbok', 'raichu', 'sandslash', 'nidoqueen', 'nidoking', 'clefable', 'ninetales', 'wigglytuff', 'golbat', 'vileplume', 'parasect', 'venomoth', 'dugtrio', 'persian', 'golduck', 'primeape', 'arcanine', 'poliwrath', 'alakazam', 'machamp', 'victreebel', 'tentacruel', 'golem', 'rapidash', 'slowbro', 'magneton', 'farfetchd', 'dodrio', 'dewgong', 'muk', 'cloyster', 'gengar', 'onix', 'hypno', 'kingler', 'electrode', 'exeggutor', 'marowak', 'hitmonlee', 'hitmonchan', 'lickitung', 'weezing', 'rhydon', 'chansey', 'tangela', 'kangaskhan', 'seadra', 'seaking', 'starmie', 'mrmime', 'scyther', 'jynx', 'electabuzz', 'magmar', 'pinsir', 'tauros', 'gyarados', 'lapras', 'ditto', 'vaporeon', 'jolteon', 'flareon', 'porygon', 'omastar', 'kabutops', 'aerodactyl', 'snorlax', 'articuno', 'zapdos', 'moltres', 'dragonite', 'mewtwo', 'mew'];
-		var johtoPool = ['meganium', 'typhlosion', 'feraligatr', 'furret', 'noctowl', 'ledian', 'ariados', 'crobat', 'lanturn', 'togetic', 'xatu', 'ampharos', 'bellossom', 'azumarill', 'sudowoodo', 'politoed', 'jumpluff', 'aipom', 'sunflora', 'yanma', 'quagsire', 'espeon', 'umbreon', 'murkrow', 'slowking', 'misdreavus', 'unown', 'wobbuffet', 'girafarig', 'forretress', 'dunsparce', 'gligar', 'steelix', 'granbull', 'qwilfish', 'scizor', 'shuckle', 'heracross', 'sneasel', 'ursaring', 'magcargo', 'piloswine', 'corsola', 'octillery', 'delibird', 'mantine', 'skarmory', 'houndoom', 'kingdra', 'donphan', 'porygon2', 'stantler', 'smeargle', 'hitmontop', 'miltank', 'blissey', 'raikou', 'entei', 'suicune', 'tyranitar', 'lugia', 'hooh', 'celebi'];
-		var hoennPool = ['sceptile', 'blaziken', 'swampert', 'mightyena', 'linoone', 'beautifly', 'dustox', 'ludicolo', 'shiftry', 'swellow', 'pelipper', 'gardevoir', 'masquerain', 'breloom', 'slaking', 'ninjask', 'shedinja', 'exploud', 'hariyama', 'nosepass', 'delcatty', 'sableye', 'mawile', 'aggron', 'medicham', 'manectric', 'plusle', 'minun', 'volbeat', 'illumise', 'roselia', 'swalot', 'sharpedo', 'wailord', 'camerupt', 'torkoal', 'grumpig', 'spinda', 'flygon', 'cacturne', 'altaria', 'zangoose', 'seviper', 'lunatone', 'solrock', 'whiscash', 'crawdaunt', 'claydol', 'cradily', 'armaldo', 'milotic', 'castformsunny', 'castformrainy', 'kecleon', 'banette', 'dusclops', 'tropius', 'chimecho', 'absol', 'glalie', 'walrein', 'huntail', 'gorebyss', 'relicanth', 'luvdisc', 'salamence', 'metagross', 'regirock', 'regice', 'registeel', 'latias', 'latios', 'kyogre', 'groudon', 'rayquaza', 'jirachi', 'deoxys', 'deoxysattack', 'deoxysdefense', 'deoxysspeed'];
-		var sinnohPool = ['torterra', 'infernape', 'empoleon', 'staraptor', 'bibarel', 'kricketune', 'luxray', 'roserade', 'rampardos', 'bastiodon', 'wormadam', 'wormadamsandy', 'wormadamtrash', 'mothim', 'vespiquen', 'pachirisu', 'floatzel', 'cherrim', 'gastrodon', 'ambipom', 'drifblim', 'lopunny', 'mismagius', 'honchkrow', 'purugly', 'skuntank', 'bronzong', 'chatot', 'spiritomb', 'garchomp', 'lucario', 'hippowdon', 'drapion', 'toxicroak', 'carnivine', 'lumineon', 'abomasnow', 'weavile', 'magnezone', 'lickilicky', 'rhyperior', 'tangrowth', 'electivire', 'magmortar', 'togekiss', 'yanmega', 'leafeon', 'glaceon', 'gliscor', 'mamoswine', 'porygonz', 'gallade', 'probopass', 'dusknoir', 'froslass', 'rotom', 'rotomheat', 'rotomwash', 'rotomfrost', 'rotomfan', 'rotommow', 'uxie', 'mesprit', 'azelf', 'dialga', 'palkia', 'heatran', 'regigigas', 'giratina', 'giratinaorigin', 'cresselia', 'phione', 'manaphy', 'darkrai', 'shaymin', 'shayminsky', 'arceus', 'arceusbug', 'arceusdark', 'arceusdragon', 'arceuselectric', 'arceusfairy', 'arceusfighting', 'arceusfire', 'arceusflying', 'arceusghost', 'arceusgrass', 'arceusground', 'arceusice', 'arceuspoison', 'arceuspsychic', 'arceusrock', 'arceussteel', 'arceuswater'];
-		var unovaPool = ['victini', 'serperior', 'emboar', 'samurott', 'watchog', 'stoutland', 'liepard', 'simisage', 'simisear', 'simipour', 'musharna', 'unfezant', 'zebstrika', 'gigalith', 'swoobat', 'excadrill', 'audino', 'conkeldurr', 'seismitoad', 'throh', 'sawk', 'leavanny', 'scolipede', 'whimsicott', 'lilligant', 'basculin', 'basculinbluestriped', 'krookodile', 'darmanitan', 'maractus', 'crustle', 'scrafty', 'sigilyph', 'cofagrigus', 'carracosta', 'archeops', 'garbodor', 'zoroark', 'cinccino', 'gothitelle', 'reuniclus', 'swanna', 'vanilluxe', 'sawsbuck', 'emolga', 'escavalier', 'amoonguss', 'jellicent', 'alomomola', 'galvantula', 'ferrothorn', 'klinklang', 'eelektross', 'beheeyem', 'chandelure', 'haxorus', 'beartic', 'cryogonal', 'accelgor', 'stunfisk', 'mienshao', 'druddigon', 'golurk', 'bisharp', 'bouffalant', 'braviary', 'mandibuzz', 'heatmor', 'durant', 'hydreigon', 'volcarona', 'cobalion', 'terrakion', 'virizion', 'tornadus', 'tornadustherian', 'thundurus', 'thundurustherian', 'reshiram', 'zekrom', 'landorus', 'landorustherian', 'kyurem', 'kyuremwhite', 'kyuremblack', 'keldeo', 'meloetta', 'genesect'];
-		var kalosPool = ['chesnaught', 'delphox', 'greninja', 'diggersby', 'talonflame', 'vivillon', 'pyroar', 'florges', 'gogoat', 'pangoro', 'furfrou', 'meowstic', 'meowsticf', 'aegislash', 'aromatisse', 'slurpuff', 'malamar', 'barbaracle', 'dragalge', 'clawitzer', 'heliolisk', 'tyrantrum', 'aurorus', 'sylveon', 'hawlucha', 'dedenne', 'carbink', 'goodra', 'klefki', 'trevenant', 'gourgeist', 'gourgeistsmall', 'gourgeistlarge', 'gourgeistsuper', 'avalugg', 'noivern', 'xerneas', 'yveltal', 'zygarde', 'diancie', 'hoopa', 'hoopaunbound'];
+		let kantoPool = ['venusaur', 'charizard', 'blastoise', 'butterfree', 'beedrill', 'pidgeot', 'raticate', 'fearow', 'arbok', 'raichu', 'sandslash', 'nidoqueen', 'nidoking', 'clefable', 'ninetales', 'wigglytuff', 'golbat', 'vileplume', 'parasect', 'venomoth', 'dugtrio', 'persian', 'golduck', 'primeape', 'arcanine', 'poliwrath', 'alakazam', 'machamp', 'victreebel', 'tentacruel', 'golem', 'rapidash', 'slowbro', 'magneton', 'farfetchd', 'dodrio', 'dewgong', 'muk', 'cloyster', 'gengar', 'onix', 'hypno', 'kingler', 'electrode', 'exeggutor', 'marowak', 'hitmonlee', 'hitmonchan', 'lickitung', 'weezing', 'rhydon', 'chansey', 'tangela', 'kangaskhan', 'seadra', 'seaking', 'starmie', 'mrmime', 'scyther', 'jynx', 'electabuzz', 'magmar', 'pinsir', 'tauros', 'gyarados', 'lapras', 'ditto', 'vaporeon', 'jolteon', 'flareon', 'porygon', 'omastar', 'kabutops', 'aerodactyl', 'snorlax', 'articuno', 'zapdos', 'moltres', 'dragonite', 'mewtwo', 'mew'];
+		let johtoPool = ['meganium', 'typhlosion', 'feraligatr', 'furret', 'noctowl', 'ledian', 'ariados', 'crobat', 'lanturn', 'togetic', 'xatu', 'ampharos', 'bellossom', 'azumarill', 'sudowoodo', 'politoed', 'jumpluff', 'aipom', 'sunflora', 'yanma', 'quagsire', 'espeon', 'umbreon', 'murkrow', 'slowking', 'misdreavus', 'unown', 'wobbuffet', 'girafarig', 'forretress', 'dunsparce', 'gligar', 'steelix', 'granbull', 'qwilfish', 'scizor', 'shuckle', 'heracross', 'sneasel', 'ursaring', 'magcargo', 'piloswine', 'corsola', 'octillery', 'delibird', 'mantine', 'skarmory', 'houndoom', 'kingdra', 'donphan', 'porygon2', 'stantler', 'smeargle', 'hitmontop', 'miltank', 'blissey', 'raikou', 'entei', 'suicune', 'tyranitar', 'lugia', 'hooh', 'celebi'];
+		let hoennPool = ['sceptile', 'blaziken', 'swampert', 'mightyena', 'linoone', 'beautifly', 'dustox', 'ludicolo', 'shiftry', 'swellow', 'pelipper', 'gardevoir', 'masquerain', 'breloom', 'slaking', 'ninjask', 'shedinja', 'exploud', 'hariyama', 'nosepass', 'delcatty', 'sableye', 'mawile', 'aggron', 'medicham', 'manectric', 'plusle', 'minun', 'volbeat', 'illumise', 'roselia', 'swalot', 'sharpedo', 'wailord', 'camerupt', 'torkoal', 'grumpig', 'spinda', 'flygon', 'cacturne', 'altaria', 'zangoose', 'seviper', 'lunatone', 'solrock', 'whiscash', 'crawdaunt', 'claydol', 'cradily', 'armaldo', 'milotic', 'castformsunny', 'castformrainy', 'kecleon', 'banette', 'dusclops', 'tropius', 'chimecho', 'absol', 'glalie', 'walrein', 'huntail', 'gorebyss', 'relicanth', 'luvdisc', 'salamence', 'metagross', 'regirock', 'regice', 'registeel', 'latias', 'latios', 'kyogre', 'groudon', 'rayquaza', 'jirachi', 'deoxys', 'deoxysattack', 'deoxysdefense', 'deoxysspeed'];
+		let sinnohPool = ['torterra', 'infernape', 'empoleon', 'staraptor', 'bibarel', 'kricketune', 'luxray', 'roserade', 'rampardos', 'bastiodon', 'wormadam', 'wormadamsandy', 'wormadamtrash', 'mothim', 'vespiquen', 'pachirisu', 'floatzel', 'cherrim', 'gastrodon', 'ambipom', 'drifblim', 'lopunny', 'mismagius', 'honchkrow', 'purugly', 'skuntank', 'bronzong', 'chatot', 'spiritomb', 'garchomp', 'lucario', 'hippowdon', 'drapion', 'toxicroak', 'carnivine', 'lumineon', 'abomasnow', 'weavile', 'magnezone', 'lickilicky', 'rhyperior', 'tangrowth', 'electivire', 'magmortar', 'togekiss', 'yanmega', 'leafeon', 'glaceon', 'gliscor', 'mamoswine', 'porygonz', 'gallade', 'probopass', 'dusknoir', 'froslass', 'rotom', 'rotomheat', 'rotomwash', 'rotomfrost', 'rotomfan', 'rotommow', 'uxie', 'mesprit', 'azelf', 'dialga', 'palkia', 'heatran', 'regigigas', 'giratina', 'giratinaorigin', 'cresselia', 'phione', 'manaphy', 'darkrai', 'shaymin', 'shayminsky', 'arceus', 'arceusbug', 'arceusdark', 'arceusdragon', 'arceuselectric', 'arceusfairy', 'arceusfighting', 'arceusfire', 'arceusflying', 'arceusghost', 'arceusgrass', 'arceusground', 'arceusice', 'arceuspoison', 'arceuspsychic', 'arceusrock', 'arceussteel', 'arceuswater'];
+		let unovaPool = ['victini', 'serperior', 'emboar', 'samurott', 'watchog', 'stoutland', 'liepard', 'simisage', 'simisear', 'simipour', 'musharna', 'unfezant', 'zebstrika', 'gigalith', 'swoobat', 'excadrill', 'audino', 'conkeldurr', 'seismitoad', 'throh', 'sawk', 'leavanny', 'scolipede', 'whimsicott', 'lilligant', 'basculin', 'basculinbluestriped', 'krookodile', 'darmanitan', 'maractus', 'crustle', 'scrafty', 'sigilyph', 'cofagrigus', 'carracosta', 'archeops', 'garbodor', 'zoroark', 'cinccino', 'gothitelle', 'reuniclus', 'swanna', 'vanilluxe', 'sawsbuck', 'emolga', 'escavalier', 'amoonguss', 'jellicent', 'alomomola', 'galvantula', 'ferrothorn', 'klinklang', 'eelektross', 'beheeyem', 'chandelure', 'haxorus', 'beartic', 'cryogonal', 'accelgor', 'stunfisk', 'mienshao', 'druddigon', 'golurk', 'bisharp', 'bouffalant', 'braviary', 'mandibuzz', 'heatmor', 'durant', 'hydreigon', 'volcarona', 'cobalion', 'terrakion', 'virizion', 'tornadus', 'tornadustherian', 'thundurus', 'thundurustherian', 'reshiram', 'zekrom', 'landorus', 'landorustherian', 'kyurem', 'kyuremwhite', 'kyuremblack', 'keldeo', 'meloetta', 'genesect'];
+		let kalosPool = ['chesnaught', 'delphox', 'greninja', 'diggersby', 'talonflame', 'vivillon', 'pyroar', 'florges', 'gogoat', 'pangoro', 'furfrou', 'meowstic', 'meowsticf', 'aegislash', 'aromatisse', 'slurpuff', 'malamar', 'barbaracle', 'dragalge', 'clawitzer', 'heliolisk', 'tyrantrum', 'aurorus', 'sylveon', 'hawlucha', 'dedenne', 'carbink', 'goodra', 'klefki', 'trevenant', 'gourgeist', 'gourgeistsmall', 'gourgeistlarge', 'gourgeistsuper', 'avalugg', 'noivern', 'xerneas', 'yveltal', 'zygarde', 'diancie', 'hoopa', 'hoopaunbound'];
 
-		var dice = this.random(6);
-		var pokemonPool = [];
+		let dice = this.random(6);
+		let pokemonPool = [];
 		if (dice < 1) {
 			pokemonPool = kantoPool;
 		} else if (dice < 2) {
@@ -4352,15 +4394,15 @@ exports.BattleScripts = {
 			pokemonPool = kalosPool;
 		}
 
-		var typeCount = {};
-		var typeComboCount = {};
-		var baseFormes = {};
-		var uberCount = 0;
-		var puCount = 0;
-		var teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
+		let typeCount = {};
+		let typeComboCount = {};
+		let baseFormes = {};
+		let uberCount = 0;
+		let puCount = 0;
+		let teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
 
 		while (pokemonPool.length && pokemonLeft < 6) {
-			var template = this.getTemplate(this.sampleNoReplace(pokemonPool));
+			let template = this.getTemplate(this.sampleNoReplace(pokemonPool));
 			if (!template.exists) continue;
 
 			// Limit to one of each species (Species Clause)
@@ -4372,7 +4414,7 @@ exports.BattleScripts = {
 			// Useless in Random Battle without greatly lowering the levels of everything else
 			if (template.species === 'Unown') continue;
 
-			var tier = template.tier;
+			let tier = template.tier;
 			switch (tier) {
 			case 'LC':
 			case 'LC Uber':
@@ -4431,9 +4473,9 @@ exports.BattleScripts = {
 			}
 
 			// Limit 2 of any type
-			var types = template.types;
-			var skip = false;
-			for (var t = 0; t < types.length; t++) {
+			let types = template.types;
+			let skip = false;
+			for (let t = 0; t < types.length; t++) {
 				if (typeCount[types[t]] > 1 && this.random(5) >= 1) {
 					skip = true;
 					break;
@@ -4441,13 +4483,13 @@ exports.BattleScripts = {
 			}
 			if (skip) continue;
 
-			var set = this.randomSet(template, pokemon.length, teamDetails);
+			let set = this.randomSet(template, pokemon.length, teamDetails);
 
 			// Illusion shouldn't be on the last pokemon of the team
 			if (set.ability === 'Illusion' && pokemonLeft > 4) continue;
 
 			// Limit 1 of any type combination
-			var typeCombo = types.join();
+			let typeCombo = types.join();
 			if (set.ability === 'Drought' || set.ability === 'Drizzle') {
 				// Drought and Drizzle don't count towards the type combo limit
 				typeCombo = set.ability;
@@ -4455,8 +4497,8 @@ exports.BattleScripts = {
 			if (typeCombo in typeComboCount) continue;
 
 			// Limit the number of Megas to one
-			var forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
-			var isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
+			let forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
+			let isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
 			if (isMegaSet && teamDetails.megaCount > 0) continue;
 
 			// Okay, the set passes, add it to our team
@@ -4466,7 +4508,7 @@ exports.BattleScripts = {
 			pokemonLeft++;
 
 			// Increment type counters
-			for (var t = 0; t < types.length; t++) {
+			for (let t = 0; t < types.length; t++) {
 				if (types[t] in typeCount) {
 					typeCount[types[t]]++;
 				} else {
@@ -4493,20 +4535,20 @@ exports.BattleScripts = {
 		return pokemon;
 	},
 	randomCommunityTeam: function (side) {
-		var pokemonLeft = 0;
-		var pokemon = [];
+		let pokemonLeft = 0;
+		let pokemon = [];
 
-		var pokemonPool = ['absol', 'aerodactyl', 'arcanine', 'archeops', 'aromatisse', 'azelf', 'bellossom', 'bidoof', 'blissey', 'castform', 'celebi', 'charizard', 'chesnaught', 'cofagrigus', 'cradily', 'cresselia', 'crobat', 'cyndaquil', 'darkrai', 'dragonite', 'emboar', 'espurr', 'feraligatr', 'gallade', 'galvantula', 'garchomp', 'gardevoir', 'gengar', 'golurk', 'gourgeist', 'greninja', 'heracross', 'hydreigon', 'igglybuff', 'infernape', 'jellicent', 'jigglypuff', 'jynx', 'lapras', 'latias', 'latios', 'liepard', 'ludicolo', 'magikarp', 'magneton', 'manectric', 'mantine', 'masquerain', 'mawile', 'meganium', 'metagross', 'metagrossmega', 'mew', 'mewtwo', 'milotic', 'mismagius', 'mudkip', 'nidoking', 'oddish', 'oshawott', 'pachirisu', 'pichu', 'pidgey', 'pikachu', 'porygon2', 'pumpkaboo', 'pupitar', 'raichu', 'reshiram', 'reuniclus', 'rhyperior', 'rotomfan', 'sableye', 'sandshrew', 'sandslash', 'sceptile', 'scolipede', 'scrafty', 'serperior', 'shaymin', 'skarmory', 'slowbro', 'snivy', 'spheal', 'staraptor', 'starmie', 'suicune', 'sylveon', 'tangela', 'togekiss', 'typhlosion', 'tyranitar', 'vaporeon', 'venusaur', 'victini', 'volcarona', 'vulpix', 'whimsicott', 'wigglytuff', 'zebstrika', 'zekrom'];
+		let pokemonPool = ['absol', 'aerodactyl', 'arcanine', 'archeops', 'aromatisse', 'azelf', 'bellossom', 'bidoof', 'blissey', 'castform', 'celebi', 'charizard', 'chesnaught', 'cofagrigus', 'cradily', 'cresselia', 'crobat', 'cyndaquil', 'darkrai', 'dragonite', 'emboar', 'espurr', 'feraligatr', 'gallade', 'galvantula', 'garchomp', 'gardevoir', 'gengar', 'golurk', 'gourgeist', 'greninja', 'heracross', 'hydreigon', 'igglybuff', 'infernape', 'jellicent', 'jigglypuff', 'jynx', 'lapras', 'latias', 'latios', 'liepard', 'ludicolo', 'magikarp', 'magneton', 'manectric', 'mantine', 'masquerain', 'mawile', 'meganium', 'metagross', 'metagrossmega', 'mew', 'mewtwo', 'milotic', 'mismagius', 'mudkip', 'nidoking', 'oddish', 'oshawott', 'pachirisu', 'pichu', 'pidgey', 'pikachu', 'porygon2', 'pumpkaboo', 'pupitar', 'raichu', 'reshiram', 'reuniclus', 'rhyperior', 'rotomfan', 'sableye', 'sandshrew', 'sandslash', 'sceptile', 'scolipede', 'scrafty', 'serperior', 'shaymin', 'skarmory', 'slowbro', 'snivy', 'spheal', 'staraptor', 'starmie', 'suicune', 'sylveon', 'tangela', 'togekiss', 'typhlosion', 'tyranitar', 'vaporeon', 'venusaur', 'victini', 'volcarona', 'vulpix', 'whimsicott', 'wigglytuff', 'zebstrika', 'zekrom'];
 
-		var typeCount = {};
-		var typeComboCount = {};
-		var baseFormes = {};
-		var uberCount = 0;
-		var puCount = 0;
-		var teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
+		let typeCount = {};
+		let typeComboCount = {};
+		let baseFormes = {};
+		let uberCount = 0;
+		let puCount = 0;
+		let teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
 
 		while (pokemonPool.length && pokemonLeft < 6) {
-			var template = this.getTemplate(this.sampleNoReplace(pokemonPool));
+			let template = this.getTemplate(this.sampleNoReplace(pokemonPool));
 			if (!template.exists) continue;
 
 			// Limit to one of each species (Species Clause)
@@ -4518,7 +4560,7 @@ exports.BattleScripts = {
 			// Useless in Random Battle without greatly lowering the levels of everything else
 			if (template.species === 'Unown') continue;
 
-			var tier = template.tier;
+			let tier = template.tier;
 			switch (tier) {
 			case 'LC':
 			case 'LC Uber':
@@ -4577,9 +4619,9 @@ exports.BattleScripts = {
 			}
 
 			// Limit 2 of any type
-			var types = template.types;
-			var skip = false;
-			for (var t = 0; t < types.length; t++) {
+			let types = template.types;
+			let skip = false;
+			for (let t = 0; t < types.length; t++) {
 				if (typeCount[types[t]] > 1 && this.random(5) >= 1) {
 					skip = true;
 					break;
@@ -4587,7 +4629,7 @@ exports.BattleScripts = {
 			}
 			if (skip) continue;
 
-			var set = this.randomSet(template, pokemon.length, teamDetails);
+			let set = this.randomSet(template, pokemon.length, teamDetails);
 
 			if (template.id === 'absol') {
 				set.species = 'Absol';
@@ -4597,7 +4639,7 @@ exports.BattleScripts = {
 				set.name = 'H.A.N.';
 			} else if (template.id === 'arcanine') {
 				set.species = 'Arcanine';
-				var dice = this.random(2);
+				let dice = this.random(2);
 				if (dice < 1) {
 					set.name = 'Aslan';
 				} else {
@@ -4645,7 +4687,7 @@ exports.BattleScripts = {
 				set.name = 'R.F.';
 			} else if (template.id === 'charizard') {
 				set.species = 'Charizard';
-				var dice = this.random(2);
+				let dice = this.random(2);
 				if (dice < 1) {
 					set.name = 'IndianCharizard#';
 				} else {
@@ -4714,7 +4756,7 @@ exports.BattleScripts = {
 				set.name = 'Synerjee';
 			} else if (template.id === 'garchomp') {
 				set.species = 'Garchomp';
-				var dice = this.random(2);
+				let dice = this.random(2);
 				if (dice < 1) {
 					set.name = 'Exile';
 				} else {
@@ -4836,7 +4878,7 @@ exports.BattleScripts = {
 				set.name = 'Dakota';
 			} else if (template.id === 'milotic') {
 				set.species = 'Milotic';
-				var dice = this.random(2);
+				let dice = this.random(2);
 				if (dice < 1) {
 					set.name = 'Dragon';
 				} else {
@@ -4963,7 +5005,7 @@ exports.BattleScripts = {
 				set.moves = ['Freeze-Dry', 'Surf', 'Yawn', 'Super Fang'];
 			} else if (template.id === 'staraptor') {
 				set.species = 'Staraptor';
-				var dice = this.random(2);
+				let dice = this.random(2);
 				if (dice < 1) {
 					set.name = 'BadPokemon';
 					set.item = 'Choice Band';
@@ -4990,7 +5032,7 @@ exports.BattleScripts = {
 				set.evs = {hp: 252, def: 252, spd: 4, spa: 0, atk: 0, spe: 0};
 			} else if (template.id === 'sylveon') {
 				set.species = 'Sylveon';
-				var dice = this.random(2);
+				let dice = this.random(2);
 				if (dice < 1) {
 					set.name = 'Harmonious Fusion';
 				} else {
@@ -5015,7 +5057,7 @@ exports.BattleScripts = {
 				set.name = 'dontstay96';
 			} else if (template.id === 'vaporeon') {
 				set.species = 'Vaporeon';
-				var dice = this.random(2);
+				let dice = this.random(2);
 				if (dice < 1) {
 					set.name = 'Eevee-kins';
 				} else {
@@ -5053,7 +5095,7 @@ exports.BattleScripts = {
 			if (set.ability === 'Illusion' && pokemonLeft > 4) continue;
 
 			// Limit 1 of any type combination
-			var typeCombo = types.join();
+			let typeCombo = types.join();
 			if (set.ability === 'Drought' || set.ability === 'Drizzle') {
 				// Drought and Drizzle don't count towards the type combo limit
 				typeCombo = set.ability;
@@ -5061,8 +5103,8 @@ exports.BattleScripts = {
 			if (typeCombo in typeComboCount) continue;
 
 			// Limit the number of Megas to one
-			var forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
-			var isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
+			let forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
+			let isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
 			if (isMegaSet && teamDetails.megaCount > 0) continue;
 
 			// Okay, the set passes, add it to our team
@@ -5072,7 +5114,7 @@ exports.BattleScripts = {
 			pokemonLeft++;
 
 			// Increment type counters
-			for (var t = 0; t < types.length; t++) {
+			for (let t = 0; t < types.length; t++) {
 				if (types[t] in typeCount) {
 					typeCount[types[t]]++;
 				} else {
@@ -5099,26 +5141,26 @@ exports.BattleScripts = {
 		return pokemon;
 	},
 	randomHalloweenTeam: function (side) {
-		var pokemonLeft = 0;
-		var pokemon = [];
+		let pokemonLeft = 0;
+		let pokemon = [];
 
-		var pokemonPool = [];
-		for (var id in this.data.FormatsData) {
-			var template = this.getTemplate(id);
+		let pokemonPool = [];
+		for (let id in this.data.FormatsData) {
+			let template = this.getTemplate(id);
 			if (!template.isMega && !template.isPrimal && !template.isNonstandard && template.randomBattleMoves) {
 				pokemonPool.push(id);
 			}
 		}
 
-		var typeCount = {};
-		var typeComboCount = {};
-		var baseFormes = {};
-		var uberCount = 0;
-		var puCount = 0;
-		var teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
+		let typeCount = {};
+		let typeComboCount = {};
+		let baseFormes = {};
+		let uberCount = 0;
+		let puCount = 0;
+		let teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
 
 		while (pokemonPool.length && pokemonLeft < 6) {
-			var template = this.getTemplate(this.sampleNoReplace(pokemonPool));
+			let template = this.getTemplate(this.sampleNoReplace(pokemonPool));
 			if (!template.exists) continue;
 
 			// Limit to one of each species (Species Clause)
@@ -5130,7 +5172,7 @@ exports.BattleScripts = {
 			// Useless in Random Battle without greatly lowering the levels of everything else
 			if (template.species === 'Unown') continue;
 
-			var tier = template.tier;
+			let tier = template.tier;
 			switch (tier) {
 			case 'LC':
 			case 'LC Uber':
@@ -5189,9 +5231,9 @@ exports.BattleScripts = {
 			}
 
 			// Limit 2 of any type
-			var types = template.types;
-			var skip = false;
-			for (var t = 0; t < types.length; t++) {
+			let types = template.types;
+			let skip = false;
+			for (let t = 0; t < types.length; t++) {
 				if (typeCount[types[t]] > 1 && this.random(5) >= 1) {
 					skip = true;
 					break;
@@ -5199,8 +5241,8 @@ exports.BattleScripts = {
 			}
 			if (skip) continue;
 
-			var halloweenList = ['aegislash', 'arceusghost', 'banette', 'chandelure', 'cofagrigus', 'doublade', 'drifblim', 'drifloon', 'dusclops', 'dusknoir', 'duskull', 'frillish', 'froslass', 'gastly', 'gengar', 'giratina', 'giratinaorigin', 'golett', 'golurk', 'gourgeist', 'gourgeistlarge', 'gourgeistsmall', 'gourgeistsuper', 'haunter', 'honedge', 'hoopa', 'jellicent', 'lampent', 'litwick', 'misdreavus', 'mismagius', 'phantump', 'pumpkaboo', 'pumpkaboolarge', 'pumpkaboosmall', 'pumpkaboosuper', 'rotom', 'sableye', 'shedinja', 'shuppet', 'spiritomb', 'trevenant', 'yamask', 'absol', 'arceusdark', 'bisharp', 'cacturne', 'carvanha', 'crawdaunt', 'darkrai', 'deino', 'drapion', 'greninja', 'honchkrow', 'hoopaunbound', 'houndoom', 'houndour', 'hydreigon', 'inkay', 'krokorok', 'krookodile', 'liepard', 'malamar', 'mandibuzz', 'mightyena', 'murkrow', 'nuzleaf', 'pangoro', 'pawniard', 'poochyena', 'purrloin', 'sandile', 'scrafty', 'scraggy', 'sharpedo', 'shiftry', 'skuntank', 'sneasel', 'stunky', 'tyranitar', 'umbreon', 'vullaby', 'weavile', 'yveltal', 'zoroark', 'zorua', 'zweilous', 'abra', 'alakazam', 'arceuspsychic', 'baltoy', 'beheeyem', 'claydol', 'cresselia', 'delphox', 'deoxys', 'deoxysattack', 'deoxysdefense', 'deoxysspeed', 'drowzee', 'elgyem', 'espurr', 'girafarig', 'gothita', 'gothitelle', 'gothorita', 'grumpig', 'hypno', 'jynx', 'kadabra', 'lunatone', 'meowstic', 'meowsticf', 'mewtwo', 'mimejr', 'mrmime', 'natu', 'sigilyph', 'smoochum', 'solrock', 'swoobat', 'unown', 'woobat', 'xatu', 'arbok', 'ariados', 'beedrill', 'crobat', 'drapion', 'dustox', 'ekans', 'garbodor', 'golbat', 'grimer', 'koffing', 'muk', 'scolipede', 'seviper', 'skorupi', 'spinarak', 'tentacruel', 'trubbish', 'venipede', 'venomoth', 'venonat', 'weezing', 'whirlipede', 'zubat', 'noibat', 'noivern', 'joltik', 'galvantula']
-			var halloweenPokemon = halloweenList[Math.floor(Math.random()*halloweenList.length)];
+			let halloweenList = ['aegislash', 'arceusghost', 'banette', 'chandelure', 'cofagrigus', 'doublade', 'drifblim', 'drifloon', 'dusclops', 'dusknoir', 'duskull', 'frillish', 'froslass', 'gastly', 'gengar', 'giratina', 'giratinaorigin', 'golett', 'golurk', 'gourgeist', 'gourgeistlarge', 'gourgeistsmall', 'gourgeistsuper', 'haunter', 'honedge', 'hoopa', 'jellicent', 'lampent', 'litwick', 'misdreavus', 'mismagius', 'phantump', 'pumpkaboo', 'pumpkaboolarge', 'pumpkaboosmall', 'pumpkaboosuper', 'rotom', 'sableye', 'shedinja', 'shuppet', 'spiritomb', 'trevenant', 'yamask', 'absol', 'arceusdark', 'bisharp', 'cacturne', 'carvanha', 'crawdaunt', 'darkrai', 'deino', 'drapion', 'greninja', 'honchkrow', 'hoopaunbound', 'houndoom', 'houndour', 'hydreigon', 'inkay', 'krokorok', 'krookodile', 'liepard', 'malamar', 'mandibuzz', 'mightyena', 'murkrow', 'nuzleaf', 'pangoro', 'pawniard', 'poochyena', 'purrloin', 'sandile', 'scrafty', 'scraggy', 'sharpedo', 'shiftry', 'skuntank', 'sneasel', 'stunky', 'tyranitar', 'umbreon', 'vullaby', 'weavile', 'yveltal', 'zoroark', 'zorua', 'zweilous', 'abra', 'alakazam', 'arceuspsychic', 'baltoy', 'beheeyem', 'claydol', 'cresselia', 'delphox', 'deoxys', 'deoxysattack', 'deoxysdefense', 'deoxysspeed', 'drowzee', 'elgyem', 'espurr', 'girafarig', 'gothita', 'gothitelle', 'gothorita', 'grumpig', 'hypno', 'jynx', 'kadabra', 'lunatone', 'meowstic', 'meowsticf', 'mewtwo', 'mimejr', 'mrmime', 'natu', 'sigilyph', 'smoochum', 'solrock', 'swoobat', 'unown', 'woobat', 'xatu', 'arbok', 'ariados', 'beedrill', 'crobat', 'drapion', 'dustox', 'ekans', 'garbodor', 'golbat', 'grimer', 'koffing', 'muk', 'scolipede', 'seviper', 'skorupi', 'spinarak', 'tentacruel', 'trubbish', 'venipede', 'venomoth', 'venonat', 'weezing', 'whirlipede', 'zubat', 'noibat', 'noivern', 'joltik', 'galvantula']
+			let halloweenPokemon = halloweenList[Math.floor(Math.random()*halloweenList.length)];
 			if (pokemon.length === 0) {
 				template = halloweenPokemon;
 			}
@@ -5211,7 +5253,7 @@ exports.BattleScripts = {
 				template = halloweenPokemon;
 			}
 
-			var set = this.randomSet(template, pokemon.length, teamDetails);
+			let set = this.randomSet(template, pokemon.length, teamDetails);
 
 			set.moves[4] = 'Trick-o-Treat';
 
@@ -5219,7 +5261,7 @@ exports.BattleScripts = {
 			if (set.ability === 'Illusion' && pokemonLeft > 4) continue;
 
 			// Limit 1 of any type combination
-			var typeCombo = types.join();
+			let typeCombo = types.join();
 			if (set.ability === 'Drought' || set.ability === 'Drizzle') {
 				// Drought and Drizzle don't count towards the type combo limit
 				typeCombo = set.ability;
@@ -5227,8 +5269,8 @@ exports.BattleScripts = {
 			if (typeCombo in typeComboCount) continue;
 
 			// Limit the number of Megas to one
-			var forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
-			var isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
+			let forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
+			let isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
 			if (isMegaSet && teamDetails.megaCount > 0) continue;
 
 			// Okay, the set passes, add it to our team
@@ -5238,7 +5280,7 @@ exports.BattleScripts = {
 			pokemonLeft++;
 
 			// Increment type counters
-			for (var t = 0; t < types.length; t++) {
+			for (let t = 0; t < types.length; t++) {
 				if (types[t] in typeCount) {
 					typeCount[types[t]]++;
 				} else {
@@ -5266,25 +5308,25 @@ exports.BattleScripts = {
 	},
 	randomSummerSendoffSets: require('./summer-send-off-sets.json'),
 	randomSummerSendoffSet: function (template, slot, teamOwner) {
-		var speciesId = toId(template.species);
-		var setList = this.randomSummerSendoffSets[teamOwner][speciesId].sets;
-		var effectivePool = [];
+		let speciesId = toId(template.species);
+		let setList = this.randomSummerSendoffSets[teamOwner][speciesId].sets;
+		let effectivePool = [];
 
-		for (var i = 0, l = setList.length; i < l; i++) {
-			var curSet = setList[i];
-			var curSetVariants = [];
-			for (var j = 0, m = curSet.moves.length; j < m; j++) {
-				var variantIndex = this.random(curSet.moves[j].length);
-				curSetVariants.push(variantIndex);
+		for (let i = 0, l = setList.length; i < l; i++) {
+			let curSet = setList[i];
+			let curSetletiants = [];
+			for (let j = 0, m = curSet.moves.length; j < m; j++) {
+				let letiantIndex = this.random(curSet.moves[j].length);
+				curSetletiants.push(letiantIndex);
 			}
-			effectivePool.push({set: curSet, moveVariants: curSetVariants});
+			effectivePool.push({set: curSet, moveletiants: curSetletiants});
 		}
 
-		var setData = effectivePool[this.random(effectivePool.length)];
-		var moves = [];
-		for (var i = 0; i < setData.set.moves.length; i++) {
-			var moveSlot = setData.set.moves[i];
-			moves.push(setData.moveVariants ? moveSlot[setData.moveVariants[i]] : moveSlot[this.random(moveSlot.length)]);
+		let setData = effectivePool[this.random(effectivePool.length)];
+		let moves = [];
+		for (let i = 0; i < setData.set.moves.length; i++) {
+			let moveSlot = setData.set.moves[i];
+			moves.push(setData.moveletiants ? moveSlot[setData.moveletiants[i]] : moveSlot[this.random(moveSlot.length)]);
 		}
 
 		return {
@@ -5303,20 +5345,20 @@ exports.BattleScripts = {
 		};
 	},
 	randomSummerSendoffTeam: function () {
-		var availableTeams = ['Chase', 'AmourPearlShipper', 'Nah', 'static', 'gio7sm', 'LegendaryGaming', 'Archy', 'punkysaur'];
-		var chosenTeam;
+		let availableTeams = ['Chase', 'AmourPearlShipper', 'Nah', 'static', 'gio7sm', 'LegendaryGaming', 'Archy', 'punkysaur'];
+		let chosenTeam;
 		chosenTeam = availableTeams[this.random(availableTeams.length)];
 
-		var pokemonLeft = 0;
-		var pokemon = [];
+		let pokemonLeft = 0;
+		let pokemon = [];
 
-		var pokemonPool = Object.keys(this.randomSummerSendoffSets[chosenTeam]);
+		let pokemonPool = Object.keys(this.randomSummerSendoffSets[chosenTeam]);
 
 		while (pokemonPool.length && pokemonLeft < 6) {
-			var template = this.getTemplate(this.sampleNoReplace(pokemonPool));
+			let template = this.getTemplate(this.sampleNoReplace(pokemonPool));
 			if (!template.exists) continue;
 
-			var set = this.randomSummerSendoffSet(template, pokemon.length, chosenTeam);
+			let set = this.randomSummerSendoffSet(template, pokemon.length, chosenTeam);
 			if (!set) continue;
 
 			pokemon.push(set);
@@ -5325,20 +5367,20 @@ exports.BattleScripts = {
 		return pokemon;
 	},
 	randomSpringTeam: function (side) {
-		var pokemonLeft = 0;
-		var pokemon = [];
+		let pokemonLeft = 0;
+		let pokemon = [];
 
-		var pokemonPool = ['amoonguss', 'arceusgrass', 'bayleef', 'bellossom', 'bellsprout', 'breloom', 'budew', 'bulbasaur', 'cacnea', 'cacturne', 'carnivine', 'celebi', 'cherrim', 'cherubi', 'chesnaught', 'chespin', 'chikorita', 'cottonee', 'cradily', 'deerling', 'exeggcute', 'exeggutor', 'ferroseed', 'ferrothorn', 'foongus', 'gloom', 'gogoat', 'gourgeist', 'gourgeistlarge', 'gourgeistsmall', 'gourgeistsuper', 'grotle', 'grovyle', 'hoppip', 'ivysaur', 'jumpluff', 'leafeon', 'leavanny', 'lileep', 'lilligant', 'lombre', 'lotad', 'ludicolo', 'maractus', 'meganium', 'nuzleaf', 'oddish', 'pansage', 'paras', 'parasect', 'petilil', 'phantump', 'pumpkaboo', 'pumpkaboolarge', 'pumpkaboosmall', 'pumpkaboosuper', 'quilladin', 'roselia', 'roserade', 'rotommow', 'sawsbuck', 'sceptile', 'seedot', 'serperior', 'servine', 'sewaddle', 'shaymin', 'shayminsky', 'shiftry', 'shroomish', 'simisage', 'skiddo', 'skiploom', 'snivy', 'sunflora', 'sunkern', 'swadloon', 'tangela', 'tangrowth', 'torterra', 'treecko', 'trevenant', 'tropius', 'turtwig', 'venusaur', 'victreebel', 'vileplume', 'virizion', 'weepinbell', 'whimsicott', 'wormadam', 'accelgor', 'anorith', 'arceusbug', 'ariados', 'armaldo', 'beautifly', 'beedrill', 'burmy', 'butterfree', 'cascoon', 'caterpie', 'combee', 'crustle', 'durant', 'dustox', 'dwebble', 'escavalier', 'forretress', 'galvantula', 'genesect', 'heracross', 'illumise', 'joltik', 'kakuna', 'karrablast', 'kricketot', 'kricketune', 'larvesta', 'ledian', 'ledyba', 'masquerain', 'metapod', 'mothim', 'nincada', 'ninjask', 'pineco', 'pinsir', 'scatterbug', 'scizor', 'scolipede', 'scyther', 'shedinja', 'shelmet', 'shuckle', 'silcoon', 'skorupi', 'spewpa', 'spinarak', 'surskit', 'venipede', 'venomoth', 'venonat', 'vespiquen', 'vivillon', 'volbeat', 'volcarona', 'weedle', 'whirlipede', 'wurmple', 'yanma', 'yanmega', 'altaria', 'arceusfairy', 'aromatisse', 'audino', 'azumarill', 'azurill', 'carbink', 'clefable', 'clefairy', 'cleffa', 'dedenne', 'diancie', 'flabebe', 'floette', 'florges', 'gardevoir', 'granbull', 'igglybuff', 'jigglypuff', 'kirlia', 'klefki', 'marill', 'mawile', 'mimejr', 'mrmime', 'ralts', 'slurpuff', 'snubbull', 'spritzee', 'swirlix', 'sylveon', 'togekiss', 'togepi', 'togetic', 'wigglytuff', 'xerneas', 'arceusflying', 'braviary', 'chatot', 'crobat', 'dodrio', 'doduo', 'drifblim', 'drifloon', 'ducklett', 'emolga', 'farfetchd', 'fearow', 'fletchinder', 'fletchling', 'gligar', 'gliscor', 'golbat', 'hawlucha', 'hooh', 'honchkrow', 'hoothoot', 'landorus', 'landorustherian', 'lugia', 'mandibuzz', 'moltres', 'murkrow', 'natu', 'noctowl', 'noibat', 'noivern', 'pelipper', 'pidgeot', 'pidgeotto', 'pidgey', 'pidove', 'rayquaza', 'rufflet', 'skarmory', 'spearow', 'staraptor', 'staravia', 'starly', 'swablu', 'swanna', 'swellow', 'swoobat', 'taillow', 'talonflame', 'thundurus', 'thundurustherian', 'tornadus', 'tornadustherian', 'tranquill', 'unfezant', 'vullaby', 'wingull', 'woobat', 'xatu', 'zapdos', 'zubat', 'nidoranf', 'nidorina', 'nidoranm', 'nidorino', 'sentret', 'whismur', 'plusle', 'minun', 'spinda', 'buneary', 'lopunny', 'victini', 'bunnelby', 'diggersby', 'rattata', 'raticate', 'pikachu', 'pikachucosplay', 'pikachurockstar', 'pikachubelle', 'pikachupopstar', 'pikachuphd', 'pikachulibre', 'pikachucosplay', 'pikachurockstar', 'pikachubelle', 'pikachupopstar', 'pikachuphd', 'pikachulibre', 'raichu', 'sandshrew', 'sandslash', 'diglett', 'dugtrio', 'cyndaquil', 'quilava', 'furret', 'pichu', 'zigzagoon', 'linoone', 'bidoof', 'bibarel', 'pachirisu', 'patrat', 'watchog', 'drilbur', 'excadrill', 'minccino', 'cinccino', 'kyogre', 'groudon'];
+		let pokemonPool = ['amoonguss', 'arceusgrass', 'bayleef', 'bellossom', 'bellsprout', 'breloom', 'budew', 'bulbasaur', 'cacnea', 'cacturne', 'carnivine', 'celebi', 'cherrim', 'cherubi', 'chesnaught', 'chespin', 'chikorita', 'cottonee', 'cradily', 'deerling', 'exeggcute', 'exeggutor', 'ferroseed', 'ferrothorn', 'foongus', 'gloom', 'gogoat', 'gourgeist', 'gourgeistlarge', 'gourgeistsmall', 'gourgeistsuper', 'grotle', 'grovyle', 'hoppip', 'ivysaur', 'jumpluff', 'leafeon', 'leavanny', 'lileep', 'lilligant', 'lombre', 'lotad', 'ludicolo', 'maractus', 'meganium', 'nuzleaf', 'oddish', 'pansage', 'paras', 'parasect', 'petilil', 'phantump', 'pumpkaboo', 'pumpkaboolarge', 'pumpkaboosmall', 'pumpkaboosuper', 'quilladin', 'roselia', 'roserade', 'rotommow', 'sawsbuck', 'sceptile', 'seedot', 'serperior', 'servine', 'sewaddle', 'shaymin', 'shayminsky', 'shiftry', 'shroomish', 'simisage', 'skiddo', 'skiploom', 'snivy', 'sunflora', 'sunkern', 'swadloon', 'tangela', 'tangrowth', 'torterra', 'treecko', 'trevenant', 'tropius', 'turtwig', 'venusaur', 'victreebel', 'vileplume', 'virizion', 'weepinbell', 'whimsicott', 'wormadam', 'accelgor', 'anorith', 'arceusbug', 'ariados', 'armaldo', 'beautifly', 'beedrill', 'burmy', 'butterfree', 'cascoon', 'caterpie', 'combee', 'crustle', 'durant', 'dustox', 'dwebble', 'escavalier', 'forretress', 'galvantula', 'genesect', 'heracross', 'illumise', 'joltik', 'kakuna', 'karrablast', 'kricketot', 'kricketune', 'larvesta', 'ledian', 'ledyba', 'masquerain', 'metapod', 'mothim', 'nincada', 'ninjask', 'pineco', 'pinsir', 'scatterbug', 'scizor', 'scolipede', 'scyther', 'shedinja', 'shelmet', 'shuckle', 'silcoon', 'skorupi', 'spewpa', 'spinarak', 'surskit', 'venipede', 'venomoth', 'venonat', 'vespiquen', 'vivillon', 'volbeat', 'volcarona', 'weedle', 'whirlipede', 'wurmple', 'yanma', 'yanmega', 'altaria', 'arceusfairy', 'aromatisse', 'audino', 'azumarill', 'azurill', 'carbink', 'clefable', 'clefairy', 'cleffa', 'dedenne', 'diancie', 'flabebe', 'floette', 'florges', 'gardevoir', 'granbull', 'igglybuff', 'jigglypuff', 'kirlia', 'klefki', 'marill', 'mawile', 'mimejr', 'mrmime', 'ralts', 'slurpuff', 'snubbull', 'spritzee', 'swirlix', 'sylveon', 'togekiss', 'togepi', 'togetic', 'wigglytuff', 'xerneas', 'arceusflying', 'braviary', 'chatot', 'crobat', 'dodrio', 'doduo', 'drifblim', 'drifloon', 'ducklett', 'emolga', 'farfetchd', 'fearow', 'fletchinder', 'fletchling', 'gligar', 'gliscor', 'golbat', 'hawlucha', 'hooh', 'honchkrow', 'hoothoot', 'landorus', 'landorustherian', 'lugia', 'mandibuzz', 'moltres', 'murkrow', 'natu', 'noctowl', 'noibat', 'noivern', 'pelipper', 'pidgeot', 'pidgeotto', 'pidgey', 'pidove', 'rayquaza', 'rufflet', 'skarmory', 'spearow', 'staraptor', 'staravia', 'starly', 'swablu', 'swanna', 'swellow', 'swoobat', 'taillow', 'talonflame', 'thundurus', 'thundurustherian', 'tornadus', 'tornadustherian', 'tranquill', 'unfezant', 'vullaby', 'wingull', 'woobat', 'xatu', 'zapdos', 'zubat', 'nidoranf', 'nidorina', 'nidoranm', 'nidorino', 'sentret', 'whismur', 'plusle', 'minun', 'spinda', 'buneary', 'lopunny', 'victini', 'bunnelby', 'diggersby', 'rattata', 'raticate', 'pikachu', 'pikachucosplay', 'pikachurockstar', 'pikachubelle', 'pikachupopstar', 'pikachuphd', 'pikachulibre', 'pikachucosplay', 'pikachurockstar', 'pikachubelle', 'pikachupopstar', 'pikachuphd', 'pikachulibre', 'raichu', 'sandshrew', 'sandslash', 'diglett', 'dugtrio', 'cyndaquil', 'quilava', 'furret', 'pichu', 'zigzagoon', 'linoone', 'bidoof', 'bibarel', 'pachirisu', 'patrat', 'watchog', 'drilbur', 'excadrill', 'minccino', 'cinccino', 'kyogre', 'groudon'];
 
-		var typeCount = {};
-		var typeComboCount = {};
-		var baseFormes = {};
-		var uberCount = 0;
-		var puCount = 0;
-		var teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
+		let typeCount = {};
+		let typeComboCount = {};
+		let baseFormes = {};
+		let uberCount = 0;
+		let puCount = 0;
+		let teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
 
 		while (pokemonPool.length && pokemonLeft < 6) {
-			var template = this.getTemplate(this.sampleNoReplace(pokemonPool));
+			let template = this.getTemplate(this.sampleNoReplace(pokemonPool));
 			if (!template.exists) continue;
 
 			// Limit to one of each species (Species Clause)
@@ -5350,7 +5392,7 @@ exports.BattleScripts = {
 			// Useless in Random Battle without greatly lowering the levels of everything else
 			if (template.species === 'Unown') continue;
 
-			var tier = template.tier;
+			let tier = template.tier;
 			switch (tier) {
 			case 'LC':
 			case 'LC Uber':
@@ -5409,9 +5451,9 @@ exports.BattleScripts = {
 			}
 
 			// Limit 2 of any type
-			var types = template.types;
-			var skip = false;
-			for (var t = 0; t < types.length; t++) {
+			let types = template.types;
+			let skip = false;
+			for (let t = 0; t < types.length; t++) {
 				if (typeCount[types[t]] > 1 && this.random(5) >= 1) {
 					skip = true;
 					break;
@@ -5423,13 +5465,13 @@ exports.BattleScripts = {
 				template = 'castform';
 			}
 
-			var set = this.randomSet(template, pokemon.length, teamDetails);
+			let set = this.randomSet(template, pokemon.length, teamDetails);
 
 			// Illusion shouldn't be on the last pokemon of the team
 			if (set.ability === 'Illusion' && pokemonLeft > 4) continue;
 
 			// Limit 1 of any type combination
-			var typeCombo = types.join();
+			let typeCombo = types.join();
 			if (set.ability === 'Drought' || set.ability === 'Drizzle') {
 				// Drought and Drizzle don't count towards the type combo limit
 				typeCombo = set.ability;
@@ -5437,8 +5479,8 @@ exports.BattleScripts = {
 			if (typeCombo in typeComboCount) continue;
 
 			// Limit the number of Megas to one
-			var forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
-			var isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
+			let forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
+			let isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
 			if (isMegaSet && teamDetails.megaCount > 0) continue;
 
 			// Okay, the set passes, add it to our team
@@ -5448,7 +5490,7 @@ exports.BattleScripts = {
 			pokemonLeft++;
 
 			// Increment type counters
-			for (var t = 0; t < types.length; t++) {
+			for (let t = 0; t < types.length; t++) {
 				if (types[t] in typeCount) {
 					typeCount[types[t]]++;
 				} else {
@@ -5475,20 +5517,20 @@ exports.BattleScripts = {
 		return pokemon;
 	},
 	randomOrbTeam: function (side) {
-		var pokemonLeft = 0;
-		var pokemon = [];
+		let pokemonLeft = 0;
+		let pokemon = [];
 
-		var pokemonPool = ['shellder', 'cloyster', 'gastly', 'voltorb', 'electrode', 'koffing', 'ditto', 'sunkern', 'unown', 'pineco', 'forretress', 'silcoon', 'cascoon', 'lunatone', 'solrock', 'castformsunny', 'castformrainy', 'shuppet', 'glalie', 'clamperl', 'bronzor', 'rotom', 'whirlipede', 'cottonee', 'solosis', 'duosion', 'ferroseed', 'cryogonal', 'shelmet', 'carbink', 'klefki', 'pumpkaboo', 'pumpkaboolarge', 'pumpkaboosmall', 'pumpkaboosuper', 'hoopa', 'goomy', 'chinchou', 'qwilfish', 'wailmer', 'spheal', 'tympole', 'geodude', 'magnemite', 'gulpin', 'spoink', 'chimecho', 'metang', 'drifloon', 'drifblim', 'magnezone', 'phione', 'swadloon', 'yamask', 'foongus', 'amoonguss', 'lampent', 'chandelure', 'spritzee', 'phantump', 'burmy', 'spiritomb', 'petilil', 'vanillite', 'litwick', 'spewpa', 'clefairy', 'mankey', 'primeape', 'gengar', 'chansey', 'cleffa', 'marill', 'azumarill', 'hoppip', 'skiploom', 'jumpluff', 'whismur', 'gible', 'palpitoad', 'quilladin', 'dedenne', 'oddish', 'poliwag', 'doduo', 'dodrio', 'exeggutor', 'tangela', 'seedot', 'shroomish', 'azurill', 'cherrim', 'roggenrola', 'swirlix', 'swinub', 'phanpy', 'donphan', 'shelgon', 'shaymin', 'munna', 'hoothoot', 'natu', 'woobat', 'tentacool', 'omanyte', 'omastar', 'jellicent', 'ferrothorn', 'magneton', 'exeggcute', 'weezing', 'cherubi', 'klink', 'klang', 'klinklang', 'jigglypuff', 'gloom', 'vileplume', 'venonat', 'poliwhirl', 'poliwrath', 'graveler', 'golem', 'igglybuff', 'togepi', 'blissey', 'cacnea', 'budew', 'chingling', 'happiny', 'tangrowth', 'musharna', 'darumaka', 'trubbish', 'kabuto', 'shuckle', 'dwebble', 'lanturn'];
+		let pokemonPool = ['shellder', 'cloyster', 'gastly', 'voltorb', 'electrode', 'koffing', 'ditto', 'sunkern', 'unown', 'pineco', 'forretress', 'silcoon', 'cascoon', 'lunatone', 'solrock', 'castformsunny', 'castformrainy', 'shuppet', 'glalie', 'clamperl', 'bronzor', 'rotom', 'whirlipede', 'cottonee', 'solosis', 'duosion', 'ferroseed', 'cryogonal', 'shelmet', 'carbink', 'klefki', 'pumpkaboo', 'pumpkaboolarge', 'pumpkaboosmall', 'pumpkaboosuper', 'hoopa', 'goomy', 'chinchou', 'qwilfish', 'wailmer', 'spheal', 'tympole', 'geodude', 'magnemite', 'gulpin', 'spoink', 'chimecho', 'metang', 'drifloon', 'drifblim', 'magnezone', 'phione', 'swadloon', 'yamask', 'foongus', 'amoonguss', 'lampent', 'chandelure', 'spritzee', 'phantump', 'burmy', 'spiritomb', 'petilil', 'vanillite', 'litwick', 'spewpa', 'clefairy', 'mankey', 'primeape', 'gengar', 'chansey', 'cleffa', 'marill', 'azumarill', 'hoppip', 'skiploom', 'jumpluff', 'whismur', 'gible', 'palpitoad', 'quilladin', 'dedenne', 'oddish', 'poliwag', 'doduo', 'dodrio', 'exeggutor', 'tangela', 'seedot', 'shroomish', 'azurill', 'cherrim', 'roggenrola', 'swirlix', 'swinub', 'phanpy', 'donphan', 'shelgon', 'shaymin', 'munna', 'hoothoot', 'natu', 'woobat', 'tentacool', 'omanyte', 'omastar', 'jellicent', 'ferrothorn', 'magneton', 'exeggcute', 'weezing', 'cherubi', 'klink', 'klang', 'klinklang', 'jigglypuff', 'gloom', 'vileplume', 'venonat', 'poliwhirl', 'poliwrath', 'graveler', 'golem', 'igglybuff', 'togepi', 'blissey', 'cacnea', 'budew', 'chingling', 'happiny', 'tangrowth', 'musharna', 'darumaka', 'trubbish', 'kabuto', 'shuckle', 'dwebble', 'lanturn'];
 
-		var typeCount = {};
-		var typeComboCount = {};
-		var baseFormes = {};
-		var uberCount = 0;
-		var puCount = 0;
-		var teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
+		let typeCount = {};
+		let typeComboCount = {};
+		let baseFormes = {};
+		let uberCount = 0;
+		let puCount = 0;
+		let teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
 
 		while (pokemonPool.length && pokemonLeft < 6) {
-			var template = this.getTemplate(this.sampleNoReplace(pokemonPool));
+			let template = this.getTemplate(this.sampleNoReplace(pokemonPool));
 			if (!template.exists) continue;
 
 			// Limit to one of each species (Species Clause)
@@ -5500,7 +5542,7 @@ exports.BattleScripts = {
 			// Useless in Random Battle without greatly lowering the levels of everything else
 			if (template.species === 'Unown') continue;
 
-			var tier = template.tier;
+			let tier = template.tier;
 			switch (tier) {
 			case 'LC':
 			case 'LC Uber':
@@ -5559,9 +5601,9 @@ exports.BattleScripts = {
 			}
 
 			// Limit 2 of any type
-			var types = template.types;
-			var skip = false;
-			for (var t = 0; t < types.length; t++) {
+			let types = template.types;
+			let skip = false;
+			for (let t = 0; t < types.length; t++) {
 				if (typeCount[types[t]] > 1 && this.random(5) >= 1) {
 					skip = true;
 					break;
@@ -5569,13 +5611,13 @@ exports.BattleScripts = {
 			}
 			if (skip) continue;
 
-			var set = this.randomSet(template, pokemon.length, teamDetails);
+			let set = this.randomSet(template, pokemon.length, teamDetails);
 
 			// Illusion shouldn't be on the last pokemon of the team
 			if (set.ability === 'Illusion' && pokemonLeft > 4) continue;
 
 			// Limit 1 of any type combination
-			var typeCombo = types.join();
+			let typeCombo = types.join();
 			if (set.ability === 'Drought' || set.ability === 'Drizzle') {
 				// Drought and Drizzle don't count towards the type combo limit
 				typeCombo = set.ability;
@@ -5583,8 +5625,8 @@ exports.BattleScripts = {
 			if (typeCombo in typeComboCount) continue;
 
 			// Limit the number of Megas to one
-			var forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
-			var isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
+			let forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
+			let isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
 			if (isMegaSet && teamDetails.megaCount > 0) continue;
 
 			// Okay, the set passes, add it to our team
@@ -5594,7 +5636,7 @@ exports.BattleScripts = {
 			pokemonLeft++;
 
 			// Increment type counters
-			for (var t = 0; t < types.length; t++) {
+			for (let t = 0; t < types.length; t++) {
 				if (types[t] in typeCount) {
 					typeCount[types[t]]++;
 				} else {
@@ -5621,20 +5663,20 @@ exports.BattleScripts = {
 		return pokemon;
 	},
 	randomHoennTeam: function (side) {
-		var pokemonLeft = 0;
-		var pokemon = [];
+		let pokemonLeft = 0;
+		let pokemon = [];
 
-		var pokemonPool = ['treecko', 'grovyle', 'sceptile', 'torchic', 'combusken', 'blaziken', 'mudkip', 'marshtomp', 'swampert', 'poochyena', 'mightyena', 'zigzagoon', 'linoone', 'wurmple', 'silcoon', 'beautifly', 'cascoon', 'dustox', 'lotad', 'lombre', 'ludicolo', 'seedot', 'nuzleaf', 'shiftry', 'taillow', 'swellow', 'wingull', 'pelipper', 'ralts', 'kirlia', 'gardevoir', 'surskit', 'masquerain', 'shroomish', 'breloom', 'slakoth', 'vigoroth', 'slaking', 'abra', 'kadabra', 'alakazam', 'nincada', 'ninjask', 'shedinja', 'whismur', 'loudred', 'exploud', 'makuhita', 'hariyama', 'goldeen', 'seaking', 'magikarp', 'gyarados', 'azurill', 'marill', 'azumarill', 'geodude', 'graveler', 'golem', 'nosepass', 'skitty', 'delcatty', 'zubat', 'golbat', 'crobat', 'tentacool', 'tentacruel', 'sableye', 'mawile', 'aron', 'lairon', 'aggron', 'machop', 'machoke', 'machamp', 'meditite', 'medicham', 'electrike', 'manectric', 'plusle', 'minun', 'magnemite', 'magneton', 'voltorb', 'electrode', 'volbeat', 'illumise', 'oddish', 'gloom', 'vileplume', 'bellossom', 'doduo', 'dodrio', 'roselia', 'gulpin', 'swalot', 'carvanha', 'sharpedo', 'wailmer', 'wailord', 'numel', 'camerupt', 'slugma', 'magcargo', 'torkoal', 'grimer', 'muk', 'koffing', 'weezing', 'spoink', 'grumpig', 'sandshrew', 'sandslash', 'spinda', 'skarmory', 'trapinch', 'vibrava', 'flygon', 'cacnea', 'cacturne', 'swablu', 'altaria', 'zangoose', 'seviper', 'lunatone', 'solrock', 'barboach', 'whiscash', 'corphish', 'crawdaunt', 'baltoy', 'claydol', 'lileep', 'cradily', 'anorith', 'armaldo', 'igglybuff', 'jigglypuff', 'wigglytuff', 'feebas', 'milotic', 'castformsunny', 'castformrainy', 'staryu', 'starmie', 'kecleon', 'shuppet', 'banette', 'duskull', 'dusclops', 'tropius', 'chimecho', 'absol', 'vulpix', 'ninetales', 'pichu', 'pikachu', 'pikachucosplay', 'pikachurockstar', 'pikachubelle', 'pikachupopstar', 'pikachuphd', 'pikachulibre', 'raichu', 'psyduck', 'golduck', 'wynaut', 'wobbuffet', 'natu', 'xatu', 'girafarig', 'phanpy', 'donphan', 'pinsir', 'heracross', 'rhyhorn', 'rhydon', 'snorunt', 'glalie', 'spheal', 'sealeo', 'walrein', 'clamperl', 'huntail', 'gorebyss', 'relicanth', 'corsola', 'chinchou', 'lanturn', 'luvdisc', 'horsea', 'seadra', 'kingdra', 'bagon', 'shelgon', 'salamence', 'beldum', 'metang', 'metagross', 'regirock', 'regice', 'registeel', 'latias', 'latios', 'kyogre', 'groudon', 'rayquaza', 'jirachi', 'deoxys', 'deoxysattack', 'deoxysdefense', 'deoxysspeed'];
+		let pokemonPool = ['treecko', 'grovyle', 'sceptile', 'torchic', 'combusken', 'blaziken', 'mudkip', 'marshtomp', 'swampert', 'poochyena', 'mightyena', 'zigzagoon', 'linoone', 'wurmple', 'silcoon', 'beautifly', 'cascoon', 'dustox', 'lotad', 'lombre', 'ludicolo', 'seedot', 'nuzleaf', 'shiftry', 'taillow', 'swellow', 'wingull', 'pelipper', 'ralts', 'kirlia', 'gardevoir', 'surskit', 'masquerain', 'shroomish', 'breloom', 'slakoth', 'vigoroth', 'slaking', 'abra', 'kadabra', 'alakazam', 'nincada', 'ninjask', 'shedinja', 'whismur', 'loudred', 'exploud', 'makuhita', 'hariyama', 'goldeen', 'seaking', 'magikarp', 'gyarados', 'azurill', 'marill', 'azumarill', 'geodude', 'graveler', 'golem', 'nosepass', 'skitty', 'delcatty', 'zubat', 'golbat', 'crobat', 'tentacool', 'tentacruel', 'sableye', 'mawile', 'aron', 'lairon', 'aggron', 'machop', 'machoke', 'machamp', 'meditite', 'medicham', 'electrike', 'manectric', 'plusle', 'minun', 'magnemite', 'magneton', 'voltorb', 'electrode', 'volbeat', 'illumise', 'oddish', 'gloom', 'vileplume', 'bellossom', 'doduo', 'dodrio', 'roselia', 'gulpin', 'swalot', 'carvanha', 'sharpedo', 'wailmer', 'wailord', 'numel', 'camerupt', 'slugma', 'magcargo', 'torkoal', 'grimer', 'muk', 'koffing', 'weezing', 'spoink', 'grumpig', 'sandshrew', 'sandslash', 'spinda', 'skarmory', 'trapinch', 'vibrava', 'flygon', 'cacnea', 'cacturne', 'swablu', 'altaria', 'zangoose', 'seviper', 'lunatone', 'solrock', 'barboach', 'whiscash', 'corphish', 'crawdaunt', 'baltoy', 'claydol', 'lileep', 'cradily', 'anorith', 'armaldo', 'igglybuff', 'jigglypuff', 'wigglytuff', 'feebas', 'milotic', 'castformsunny', 'castformrainy', 'staryu', 'starmie', 'kecleon', 'shuppet', 'banette', 'duskull', 'dusclops', 'tropius', 'chimecho', 'absol', 'vulpix', 'ninetales', 'pichu', 'pikachu', 'pikachucosplay', 'pikachurockstar', 'pikachubelle', 'pikachupopstar', 'pikachuphd', 'pikachulibre', 'raichu', 'psyduck', 'golduck', 'wynaut', 'wobbuffet', 'natu', 'xatu', 'girafarig', 'phanpy', 'donphan', 'pinsir', 'heracross', 'rhyhorn', 'rhydon', 'snorunt', 'glalie', 'spheal', 'sealeo', 'walrein', 'clamperl', 'huntail', 'gorebyss', 'relicanth', 'corsola', 'chinchou', 'lanturn', 'luvdisc', 'horsea', 'seadra', 'kingdra', 'bagon', 'shelgon', 'salamence', 'beldum', 'metang', 'metagross', 'regirock', 'regice', 'registeel', 'latias', 'latios', 'kyogre', 'groudon', 'rayquaza', 'jirachi', 'deoxys', 'deoxysattack', 'deoxysdefense', 'deoxysspeed'];
 
-		var typeCount = {};
-		var typeComboCount = {};
-		var baseFormes = {};
-		var uberCount = 0;
-		var puCount = 0;
-		var teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
+		let typeCount = {};
+		let typeComboCount = {};
+		let baseFormes = {};
+		let uberCount = 0;
+		let puCount = 0;
+		let teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
 
 		while (pokemonPool.length && pokemonLeft < 6) {
-			var template = this.getTemplate(this.sampleNoReplace(pokemonPool));
+			let template = this.getTemplate(this.sampleNoReplace(pokemonPool));
 			if (!template.exists) continue;
 
 			// Limit to one of each species (Species Clause)
@@ -5646,7 +5688,7 @@ exports.BattleScripts = {
 			// Useless in Random Battle without greatly lowering the levels of everything else
 			if (template.species === 'Unown') continue;
 
-			var tier = template.tier;
+			let tier = template.tier;
 			switch (tier) {
 			case 'LC':
 			case 'LC Uber':
@@ -5705,9 +5747,9 @@ exports.BattleScripts = {
 			}
 
 			// Limit 2 of any type
-			var types = template.types;
-			var skip = false;
-			for (var t = 0; t < types.length; t++) {
+			let types = template.types;
+			let skip = false;
+			for (let t = 0; t < types.length; t++) {
 				if (typeCount[types[t]] > 1 && this.random(5) >= 1) {
 					skip = true;
 					break;
@@ -5715,13 +5757,13 @@ exports.BattleScripts = {
 			}
 			if (skip) continue;
 
-			var set = this.randomSet(template, pokemon.length, teamDetails);
+			let set = this.randomSet(template, pokemon.length, teamDetails);
 
 			// Illusion shouldn't be on the last pokemon of the team
 			if (set.ability === 'Illusion' && pokemonLeft > 4) continue;
 
 			// Limit 1 of any type combination
-			var typeCombo = types.join();
+			let typeCombo = types.join();
 			if (set.ability === 'Drought' || set.ability === 'Drizzle') {
 				// Drought and Drizzle don't count towards the type combo limit
 				typeCombo = set.ability;
@@ -5729,8 +5771,8 @@ exports.BattleScripts = {
 			if (typeCombo in typeComboCount) continue;
 
 			// Limit the number of Megas to one
-			var forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
-			var isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
+			let forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
+			let isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
 			if (isMegaSet && teamDetails.megaCount > 0) continue;
 
 			// Okay, the set passes, add it to our team
@@ -5740,7 +5782,7 @@ exports.BattleScripts = {
 			pokemonLeft++;
 
 			// Increment type counters
-			for (var t = 0; t < types.length; t++) {
+			for (let t = 0; t < types.length; t++) {
 				if (types[t] in typeCount) {
 					typeCount[types[t]]++;
 				} else {
@@ -5767,8 +5809,8 @@ exports.BattleScripts = {
 		return pokemon;
 	},
 	randomHoennWeatherTeam: function (side) {
-		var pokemonLeft = 0;
-		var dice = this.random(100);
+		let pokemonLeft = 0;
+		let dice = this.random(100);
 		if (dice < 40) {
 			lead = 'groudon';
 		} else if (dice < 80) {
@@ -5776,11 +5818,11 @@ exports.BattleScripts = {
 		} else {
 			lead = 'rayquaza';
 		}
-		var pokemon = [this.randomSet(this.getTemplate(lead), 0)];
+		let pokemon = [this.randomSet(this.getTemplate(lead), 0)];
 
-		var groudonPool = ['torchic', 'combusken', 'blaziken', 'nincada', 'geodude', 'graveler', 'golem', 'nosepass', 'probopass', 'mawile', 'aron', 'lairon', 'aggron', 'numel', 'camerupt', 'slugma', 'magcargo', 'torkoal', 'sandshrew', 'sandslash', 'skarmory', 'trapinch', 'vibrava', 'flygon', 'lunatone', 'solrock', 'baltoy', 'claydol', 'anorith', 'armaldo', 'castformsunny', 'vulpix', 'ninetales', 'phanpy', 'dolphan', 'rhyhorn', 'rhydon', 'rhyperior', 'beldum', 'metang', 'metagross', 'regirock', 'registeel', 'jirachi'];
-		var kyogrePool = ['mudkip', 'marshtomp', 'swampert', 'lotad', 'lombre', 'ludicolo', 'wingull', 'pelipper', 'surskit', 'masquerain', 'goldeen', 'seaking', 'magikarp', 'gyarados', 'marill', 'azumarill', 'tentacool', 'tentacruel', 'carvanha', 'sharpedo', 'wailmer', 'wailord', 'barboach', 'whiscash', 'corphish', 'crawdaunt', 'lileep', 'cradily', 'feebas', 'milotic', 'castformrainy', 'staryu', 'starmie', 'psyduck', 'golduck', 'snorunt', 'glalie', 'spheal', 'sealeo', 'walrein', 'clamperl', 'huntail', 'gorebyss', 'relicanth', 'corsola', 'chinchou', 'lanturn', 'luvdisc', 'horsea', 'seadra', 'kingdra', 'regice'];
-		var rayquazaPool = ['beautifly', 'taillow', 'swellow', 'ninjask', 'zubat', 'golbat', 'crobat', 'electrike', 'manectric', 'plusle', 'minun', 'magnemite', 'magneton', 'magnezone', 'voltorb', 'electrode', 'doduo', 'dodrio', 'swablu', 'altaria', 'tropius', 'pichu', 'pikachu', 'pikachucosplay', 'pikachurockstar', 'pikachubelle', 'pikachupopstar', 'pikachuphd', 'pikachulibre', 'raichu', 'natu', 'xatu', 'bagon', 'shelgon', 'salamence', 'latias', 'latios'];
+		let groudonPool = ['torchic', 'combusken', 'blaziken', 'nincada', 'geodude', 'graveler', 'golem', 'nosepass', 'probopass', 'mawile', 'aron', 'lairon', 'aggron', 'numel', 'camerupt', 'slugma', 'magcargo', 'torkoal', 'sandshrew', 'sandslash', 'skarmory', 'trapinch', 'vibrava', 'flygon', 'lunatone', 'solrock', 'baltoy', 'claydol', 'anorith', 'armaldo', 'castformsunny', 'vulpix', 'ninetales', 'phanpy', 'dolphan', 'rhyhorn', 'rhydon', 'rhyperior', 'beldum', 'metang', 'metagross', 'regirock', 'registeel', 'jirachi'];
+		let kyogrePool = ['mudkip', 'marshtomp', 'swampert', 'lotad', 'lombre', 'ludicolo', 'wingull', 'pelipper', 'surskit', 'masquerain', 'goldeen', 'seaking', 'magikarp', 'gyarados', 'marill', 'azumarill', 'tentacool', 'tentacruel', 'carvanha', 'sharpedo', 'wailmer', 'wailord', 'barboach', 'whiscash', 'corphish', 'crawdaunt', 'lileep', 'cradily', 'feebas', 'milotic', 'castformrainy', 'staryu', 'starmie', 'psyduck', 'golduck', 'snorunt', 'glalie', 'spheal', 'sealeo', 'walrein', 'clamperl', 'huntail', 'gorebyss', 'relicanth', 'corsola', 'chinchou', 'lanturn', 'luvdisc', 'horsea', 'seadra', 'kingdra', 'regice'];
+		let rayquazaPool = ['beautifly', 'taillow', 'swellow', 'ninjask', 'zubat', 'golbat', 'crobat', 'electrike', 'manectric', 'plusle', 'minun', 'magnemite', 'magneton', 'magnezone', 'voltorb', 'electrode', 'doduo', 'dodrio', 'swablu', 'altaria', 'tropius', 'pichu', 'pikachu', 'pikachucosplay', 'pikachurockstar', 'pikachubelle', 'pikachupopstar', 'pikachuphd', 'pikachulibre', 'raichu', 'natu', 'xatu', 'bagon', 'shelgon', 'salamence', 'latias', 'latios'];
 
 		if (lead === 'groudon') {
 			pokemonPool = groudonPool;
@@ -5790,13 +5832,13 @@ exports.BattleScripts = {
 			pokemonPool = rayquazaPool;
 		}
 
-		var baseFormes = {};
-		var uberCount = 0;
-		var puCount = 0;
-		var teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
+		let baseFormes = {};
+		let uberCount = 0;
+		let puCount = 0;
+		let teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
 
 		while (pokemonPool.length && pokemonLeft < 6) {
-			var template = this.getTemplate(this.sampleNoReplace(pokemonPool));
+			let template = this.getTemplate(this.sampleNoReplace(pokemonPool));
 			if (!template.exists) continue;
 
 			// Limit to one of each species (Species Clause)
@@ -5808,7 +5850,7 @@ exports.BattleScripts = {
 			// Useless in Random Battle without greatly lowering the levels of everything else
 			if (template.species === 'Unown') continue;
 
-			var tier = template.tier;
+			let tier = template.tier;
 			switch (tier) {
 			case 'LC':
 			case 'LC Uber':
@@ -5866,14 +5908,14 @@ exports.BattleScripts = {
 				if (template.species !== 'Pikachu' && this.random(30) >= 1) continue;
 			}
 
-			var set = this.randomSet(template, pokemon.length, teamDetails);
+			let set = this.randomSet(template, pokemon.length, teamDetails);
 
 			// Illusion shouldn't be on the last pokemon of the team
 			if (set.ability === 'Illusion' && pokemonLeft > 4) continue;
 
 			// Limit the number of Megas to one
-			var forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
-			var isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
+			let forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
+			let isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
 			if (isMegaSet && teamDetails.megaCount > 0) continue;
 
 			// Okay, the set passes, add it to our team
@@ -5900,20 +5942,20 @@ exports.BattleScripts = {
 		return pokemon;
 	},
 	randomSmashBrosTeam: function (side) {
-		var pokemonLeft = 0;
-		var pokemon = [];
+		let pokemonLeft = 0;
+		let pokemon = [];
 
-		var pokemonPool = ['beedrill', 'blastoise', 'chansey', 'clefairy', 'goldeen', 'hitmonlee', 'koffing', 'meowth', 'mew', 'onix', 'snorlax', 'starmie', 'charmander', 'electrode', 'venusaur', 'porygon', 'articuno', 'bellossom', 'celebi', 'chikorita', 'clefairy', 'cyndaquil', 'entei', 'hooh', 'lugia', 'marill', 'moltres', 'porygon2', 'raikou', 'scizor', 'staryu', 'suicune', 'togepi', 'unown', 'weezing', 'wobbuffet', 'zapdos', 'groudon', 'deoxys', 'munchlax', 'piplup', 'bonsly', 'gardevoir', 'kyogre', 'torchic', 'metagross', 'manaphy', 'abomasnow', 'chespin', 'darkrai', 'dedenne', 'eevee', 'fennekin', 'fletchling', 'genesect', 'giratina', 'gogoat', 'inkay', 'keldeo', 'kyurem', 'latias', 'latios', 'meloetta', 'oshawott', 'palkia', 'snivy', 'spewpa', 'swirlix', 'victini', 'xerneas', 'zoroark'];
+		let pokemonPool = ['beedrill', 'blastoise', 'chansey', 'clefairy', 'goldeen', 'hitmonlee', 'koffing', 'meowth', 'mew', 'onix', 'snorlax', 'starmie', 'charmander', 'electrode', 'venusaur', 'porygon', 'articuno', 'bellossom', 'celebi', 'chikorita', 'clefairy', 'cyndaquil', 'entei', 'hooh', 'lugia', 'marill', 'moltres', 'porygon2', 'raikou', 'scizor', 'staryu', 'suicune', 'togepi', 'unown', 'weezing', 'wobbuffet', 'zapdos', 'groudon', 'deoxys', 'munchlax', 'piplup', 'bonsly', 'gardevoir', 'kyogre', 'torchic', 'metagross', 'manaphy', 'abomasnow', 'chespin', 'darkrai', 'dedenne', 'eevee', 'fennekin', 'fletchling', 'genesect', 'giratina', 'gogoat', 'inkay', 'keldeo', 'kyurem', 'latias', 'latios', 'meloetta', 'oshawott', 'palkia', 'snivy', 'spewpa', 'swirlix', 'victini', 'xerneas', 'zoroark'];
 
-		var typeCount = {};
-		var typeComboCount = {};
-		var baseFormes = {};
-		var uberCount = 0;
-		var puCount = 0;
-		var teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
+		let typeCount = {};
+		let typeComboCount = {};
+		let baseFormes = {};
+		let uberCount = 0;
+		let puCount = 0;
+		let teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
 
 		while (pokemonPool.length && pokemonLeft < 6) {
-			var template = this.getTemplate(this.sampleNoReplace(pokemonPool));
+			let template = this.getTemplate(this.sampleNoReplace(pokemonPool));
 			if (!template.exists) continue;
 
 			// Limit to one of each species (Species Clause)
@@ -5925,7 +5967,7 @@ exports.BattleScripts = {
 			// Useless in Random Battle without greatly lowering the levels of everything else
 			if (template.species === 'Unown') continue;
 
-			var tier = template.tier;
+			let tier = template.tier;
 			switch (tier) {
 			case 'LC':
 			case 'LC Uber':
@@ -5984,9 +6026,9 @@ exports.BattleScripts = {
 			}
 
 			// Limit 2 of any type
-			var types = template.types;
-			var skip = false;
-			for (var t = 0; t < types.length; t++) {
+			let types = template.types;
+			let skip = false;
+			for (let t = 0; t < types.length; t++) {
 				if (typeCount[types[t]] > 1 && this.random(5) >= 1) {
 					skip = true;
 					break;
@@ -5994,7 +6036,7 @@ exports.BattleScripts = {
 			}
 			if (skip) continue;
 
-			var dice = this.random(8);
+			let dice = this.random(8);
 			if (dice < 1) {
 				lead = 'pikachu';
 			} else if (dice < 2) {
@@ -6017,13 +6059,13 @@ exports.BattleScripts = {
 				template = lead;
 			}
 
-			var set = this.randomSet(template, pokemon.length, teamDetails);
+			let set = this.randomSet(template, pokemon.length, teamDetails);
 
 			// Illusion shouldn't be on the last pokemon of the team
 			if (set.ability === 'Illusion' && pokemonLeft > 4) continue;
 
 			// Limit 1 of any type combination
-			var typeCombo = types.join();
+			let typeCombo = types.join();
 			if (set.ability === 'Drought' || set.ability === 'Drizzle') {
 				// Drought and Drizzle don't count towards the type combo limit
 				typeCombo = set.ability;
@@ -6031,8 +6073,8 @@ exports.BattleScripts = {
 			if (typeCombo in typeComboCount) continue;
 
 			// Limit the number of Megas to one
-			var forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
-			var isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
+			let forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
+			let isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
 			if (isMegaSet && teamDetails.megaCount > 0) continue;
 
 			// Okay, the set passes, add it to our team
@@ -6042,7 +6084,7 @@ exports.BattleScripts = {
 			pokemonLeft++;
 
 			// Increment type counters
-			for (var t = 0; t < types.length; t++) {
+			for (let t = 0; t < types.length; t++) {
 				if (types[t] in typeCount) {
 					typeCount[types[t]]++;
 				} else {
@@ -6069,16 +6111,16 @@ exports.BattleScripts = {
 		return pokemon;
 	},
 	randomSeasonalWWTeam: function(side) {
-		var seasonalPokemonList = ['raichu', 'nidoqueen', 'nidoking', 'clefable', 'wigglytuff', 'rapidash', 'dewgong', 'cloyster', 'exeggutor', 'starmie', 'jynx', 'lapras', 'snorlax', 'articuno', 'azumarill', 'granbull', 'delibird', 'stantler', 'miltank', 'blissey', 'swalot', 'lunatone', 'castformsnowy', 'chimecho', 'glalie', 'walrein', 'regice', 'jirachi', 'bronzong', 'chatot', 'abomasnow', 'weavile', 'togekiss', 'glaceon', 'probopass', 'froslass', 'rotom-frost', 'uxie', 'mesprit', 'azelf', 'victini', 'vanilluxe', 'sawsbuck', 'beartic', 'cryogonal', 'chandelure'];
+		let seasonalPokemonList = ['raichu', 'nidoqueen', 'nidoking', 'clefable', 'wigglytuff', 'rapidash', 'dewgong', 'cloyster', 'exeggutor', 'starmie', 'jynx', 'lapras', 'snorlax', 'articuno', 'azumarill', 'granbull', 'delibird', 'stantler', 'miltank', 'blissey', 'swalot', 'lunatone', 'castformsnowy', 'chimecho', 'glalie', 'walrein', 'regice', 'jirachi', 'bronzong', 'chatot', 'abomasnow', 'weavile', 'togekiss', 'glaceon', 'probopass', 'froslass', 'rotom-frost', 'uxie', 'mesprit', 'azelf', 'victini', 'vanilluxe', 'sawsbuck', 'beartic', 'cryogonal', 'chandelure'];
 
-		var shouldHavePresent = {raichu:1,clefable:1,wigglytuff:1,azumarill:1,granbull:1,miltank:1,blissey:1,togekiss:1,delibird:1};
+		let shouldHavePresent = {raichu:1,clefable:1,wigglytuff:1,azumarill:1,granbull:1,miltank:1,blissey:1,togekiss:1,delibird:1};
 
 		seasonalPokemonList = seasonalPokemonList.randomize();
 
-		var team = [];
+		let team = [];
 
-		for (var i=0; i<6; i++) {
-			var template = this.getTemplate(seasonalPokemonList[i]);
+		for (let i=0; i<6; i++) {
+			let template = this.getTemplate(seasonalPokemonList[i]);
 
 			// we're gonna modify the default template
 			template = Object.clone(template, true);
@@ -6092,7 +6134,7 @@ exports.BattleScripts = {
 				template.abilities.DW = 'Flash Fire';
 			}
 
-			var set = this.randomSet(template, i);
+			let set = this.randomSet(template, i);
 
 			if (template.id in shouldHavePresent) set.moves[0] = 'Present';
 
@@ -6104,10 +6146,10 @@ exports.BattleScripts = {
 		return team;
 	},
 	randomSeasonalStaffTeam: function (side) {
-		var team = [];
-		var variant = this.random(2);
+		let team = [];
+		let letiant = this.random(2);
 		// Hardcoded sets of the available Pokémon.
-		var sets = {
+		let sets = {
 			// Admins.
 			'~Antar': {
 				species: 'Quilava', ability: 'Turboblaze', item: 'Eviolite', gender: 'M',
@@ -6146,8 +6188,8 @@ exports.BattleScripts = {
 				evs: {hp:252, def:4, spd:252}, nature: 'Sassy'
 			},
 			'~V4': {
-				species: 'Victini', ability: 'Desolate Land', item: (variant === 0 ? ['Life Orb', 'Charcoal', 'Leftovers'][this.random(3)] : ['Life Orb', 'Choice Scarf', 'Leftovers'][this.random(3)]), gender: 'M',
-				moves: (variant === 0 ? ['thousandarrows', 'bolt strike', 'shiftgear', 'dragonascent', 'closecombat', 'substitute'] : ['thousandarrows', 'bolt strike', 'dragonascent', 'closecombat']),
+				species: 'Victini', ability: 'Desolate Land', item: (letiant === 0 ? ['Life Orb', 'Charcoal', 'Leftovers'][this.random(3)] : ['Life Orb', 'Choice Scarf', 'Leftovers'][this.random(3)]), gender: 'M',
+				moves: (letiant === 0 ? ['thousandarrows', 'bolt strike', 'shiftgear', 'dragonascent', 'closecombat', 'substitute'] : ['thousandarrows', 'bolt strike', 'dragonascent', 'closecombat']),
 				baseSignatureMove: 'vcreate', signatureMove: "V-Generate",
 				evs: {hp:4, atk:252, spe:252}, nature: 'Jolly'
 			},
@@ -6208,13 +6250,13 @@ exports.BattleScripts = {
 				evs: {hp:252, atk:252, def:4}, nature: 'Serious'
 			},
 			'@AM': {
-				species: 'Tyranitar', ability: 'Adaptability', item: (variant === 1 ? 'Lum Berry' : 'Choice Scarf'), gender: 'M',
-				moves: (variant === 1 ? ['earthquake', 'diamondstorm', 'swordsdance', 'meanlook'] : ['knockoff', 'diamondstorm', 'earthquake']),
+				species: 'Tyranitar', ability: 'Adaptability', item: (letiant === 1 ? 'Lum Berry' : 'Choice Scarf'), gender: 'M',
+				moves: (letiant === 1 ? ['earthquake', 'diamondstorm', 'swordsdance', 'meanlook'] : ['knockoff', 'diamondstorm', 'earthquake']),
 				baseSignatureMove: 'pursuit', signatureMove: "Predator",
 				evs: {atk:252, def:4, spe: 252}, nature: 'Jolly'
 			},
 			'@antemortem': {
-				species: 'Clefable', ability: (variant === 1 ? 'Sheer Force' : 'Multiscale'), item: (variant === 1 ? 'Life Orb' : 'Leftovers'), gender: 'M',
+				species: 'Clefable', ability: (letiant === 1 ? 'Sheer Force' : 'Multiscale'), item: (letiant === 1 ? 'Life Orb' : 'Leftovers'), gender: 'M',
 				moves: ['earthpower', 'cosmicpower', 'recover', 'gigadrain'],
 				baseSignatureMove: 'drainingkiss', signatureMove: "Postmortem",
 				evs: {hp:252, spa:252, def:4}, nature: 'Modest'
@@ -6796,18 +6838,18 @@ exports.BattleScripts = {
 			}
 		};
 		// Generate the team randomly.
-		var pool = Object.keys(sets).randomize();
-		var ranks = {'~':'admins', '&':'leaders', '@':'mods', '%':'drivers', '+':'voices'};
-		var levels = {'~':99, '&':97, '@':96, '%':96, '+':95};
-		for (var i = 0; i < 6; i++) {
-			var rank = pool[i].charAt(0);
-			var set = sets[pool[i]];
+		let pool = Object.keys(sets).randomize();
+		let ranks = {'~':'admins', '&':'leaders', '@':'mods', '%':'drivers', '+':'voices'};
+		let levels = {'~':99, '&':97, '@':96, '%':96, '+':95};
+		for (let i = 0; i < 6; i++) {
+			let rank = pool[i].charAt(0);
+			let set = sets[pool[i]];
 			set.level = levels[rank];
 			set.name = pool[i];
 			if (!set.ivs) {
 				set.ivs = {hp:31, atk:31, def:31, spa:31, spd:31, spe:31};
 			} else {
-				for (var iv in {hp:31, atk:31, def:31, spa:31, spd:31, spe:31}) {
+				for (let iv in {hp:31, atk:31, def:31, spa:31, spd:31, spe:31}) {
 					set.ivs[iv] = set.ivs[iv] ? set.ivs[iv] : 31;
 				}
 			}
@@ -6819,7 +6861,7 @@ exports.BattleScripts = {
 
 		// Check for Illusion.
 		if (team[5].name === '&Slayer95') {
-			var temp = team[4];
+			let temp = team[4];
 			team[4] = team[5];
 			team[5] = temp;
 		}
@@ -6827,26 +6869,26 @@ exports.BattleScripts = {
 		return team;
 	},
 	randomSwagPlayTeam: function (side) {
-		var pokemonLeft = 0;
-		var pokemon = [];
+		let pokemonLeft = 0;
+		let pokemon = [];
 
-		var pokemonPool = [];
-		for (var id in this.data.FormatsData) {
-			var template = this.getTemplate(id);
+		let pokemonPool = [];
+		for (let id in this.data.FormatsData) {
+			let template = this.getTemplate(id);
 			if (!template.isMega && !template.isPrimal && !template.isNonstandard && template.randomBattleMoves) {
 				pokemonPool.push(id);
 			}
 		}
 
-		var typeCount = {};
-		var typeComboCount = {};
-		var baseFormes = {};
-		var uberCount = 0;
-		var puCount = 0;
-		var teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
+		let typeCount = {};
+		let typeComboCount = {};
+		let baseFormes = {};
+		let uberCount = 0;
+		let puCount = 0;
+		let teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
 
 		while (pokemonPool.length && pokemonLeft < 6) {
-			var template = this.getTemplate(this.sampleNoReplace(pokemonPool));
+			let template = this.getTemplate(this.sampleNoReplace(pokemonPool));
 			if (!template.exists) continue;
 
 			// Limit to one of each species (Species Clause)
@@ -6858,7 +6900,7 @@ exports.BattleScripts = {
 			// Useless in Random Battle without greatly lowering the levels of everything else
 			if (template.species === 'Unown') continue;
 
-			var tier = template.tier;
+			let tier = template.tier;
 			switch (tier) {
 			case 'LC':
 			case 'LC Uber':
@@ -6917,9 +6959,9 @@ exports.BattleScripts = {
 			}
 
 			// Limit 2 of any type
-			var types = template.types;
-			var skip = false;
-			for (var t = 0; t < types.length; t++) {
+			let types = template.types;
+			let skip = false;
+			for (let t = 0; t < types.length; t++) {
 				if (typeCount[types[t]] > 1 && this.random(5) >= 1) {
 					skip = true;
 					break;
@@ -6927,7 +6969,7 @@ exports.BattleScripts = {
 			}
 			if (skip) continue;
 
-			var dice = this.random(8);
+			let dice = this.random(8);
 			if (dice < 1) {
 				lead = 'banette';
 			} else if (dice < 2) {
@@ -6950,13 +6992,13 @@ exports.BattleScripts = {
 				template = lead;
 			}
 
-			var set = this.randomSet(template, pokemon.length, teamDetails);
+			let set = this.randomSet(template, pokemon.length, teamDetails);
 
 			// Illusion shouldn't be on the last pokemon of the team
 			if (set.ability === 'Illusion' && pokemonLeft > 4) continue;
 
 			// Limit 1 of any type combination
-			var typeCombo = types.join();
+			let typeCombo = types.join();
 			if (set.ability === 'Drought' || set.ability === 'Drizzle') {
 				// Drought and Drizzle don't count towards the type combo limit
 				typeCombo = set.ability;
@@ -6964,8 +7006,8 @@ exports.BattleScripts = {
 			if (typeCombo in typeComboCount) continue;
 
 			// Limit the number of Megas to one
-			var forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
-			var isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
+			let forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
+			let isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
 			if (isMegaSet && teamDetails.megaCount > 0) continue;
 
 			// Okay, the set passes, add it to our team
@@ -6975,7 +7017,7 @@ exports.BattleScripts = {
 			pokemonLeft++;
 
 			// Increment type counters
-			for (var t = 0; t < types.length; t++) {
+			for (let t = 0; t < types.length; t++) {
 				if (types[t] in typeCount) {
 					typeCount[types[t]]++;
 				} else {
@@ -7002,26 +7044,26 @@ exports.BattleScripts = {
 		return pokemon;
 	},
 	randomMetronomeTeam: function (side) {
-		var pokemonLeft = 0;
-		var pokemon = [];
+		let pokemonLeft = 0;
+		let pokemon = [];
 
-		var pokemonPool = [];
-		for (var id in this.data.FormatsData) {
-			var template = this.getTemplate(id);
+		let pokemonPool = [];
+		for (let id in this.data.FormatsData) {
+			let template = this.getTemplate(id);
 			if (!template.isMega && !template.isPrimal && !template.isNonstandard && template.randomBattleMoves) {
 				pokemonPool.push(id);
 			}
 		}
 
-		var typeCount = {};
-		var typeComboCount = {};
-		var baseFormes = {};
-		var uberCount = 0;
-		var puCount = 0;
-		var teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
+		let typeCount = {};
+		let typeComboCount = {};
+		let baseFormes = {};
+		let uberCount = 0;
+		let puCount = 0;
+		let teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
 
 		while (pokemonPool.length && pokemonLeft < 6) {
-			var template = this.getTemplate(this.sampleNoReplace(pokemonPool));
+			let template = this.getTemplate(this.sampleNoReplace(pokemonPool));
 			if (!template.exists) continue;
 
 			// Limit to one of each species (Species Clause)
@@ -7036,7 +7078,7 @@ exports.BattleScripts = {
 			// Ban Shedinja from Metronome Random
 			if (template.species === 'Shedinja') continue;
 
-			var tier = template.tier;
+			let tier = template.tier;
 			switch (tier) {
 			case 'LC':
 			case 'LC Uber':
@@ -7095,9 +7137,9 @@ exports.BattleScripts = {
 			}
 
 			// Limit 2 of any type
-			var types = template.types;
-			var skip = false;
-			for (var t = 0; t < types.length; t++) {
+			let types = template.types;
+			let skip = false;
+			for (let t = 0; t < types.length; t++) {
 				if (typeCount[types[t]] > 1 && this.random(5) >= 1) {
 					skip = true;
 					break;
@@ -7105,7 +7147,7 @@ exports.BattleScripts = {
 			}
 			if (skip) continue;
 
-			var set = this.randomSet(template, pokemon.length, teamDetails);
+			let set = this.randomSet(template, pokemon.length, teamDetails);
 
 			set.moves = ['Metronome'];
 
@@ -7117,7 +7159,7 @@ exports.BattleScripts = {
 			if (set.ability === 'Illusion' && pokemonLeft > 4) continue;
 
 			// Limit 1 of any type combination
-			var typeCombo = types.join();
+			let typeCombo = types.join();
 			if (set.ability === 'Drought' || set.ability === 'Drizzle') {
 				// Drought and Drizzle don't count towards the type combo limit
 				typeCombo = set.ability;
@@ -7125,8 +7167,8 @@ exports.BattleScripts = {
 			if (typeCombo in typeComboCount) continue;
 
 			// Limit the number of Megas to one
-			var forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
-			var isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
+			let forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
+			let isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
 			if (isMegaSet && teamDetails.megaCount > 0) continue;
 
 			// Okay, the set passes, add it to our team
@@ -7136,7 +7178,7 @@ exports.BattleScripts = {
 			pokemonLeft++;
 
 			// Increment type counters
-			for (var t = 0; t < types.length; t++) {
+			for (let t = 0; t < types.length; t++) {
 				if (types[t] in typeCount) {
 					typeCount[types[t]]++;
 				} else {
