@@ -601,14 +601,14 @@ exports.Formats = [
 				this.add('c|@Steamroll|I wasn\'t aware we were starting. Allow me...');
 				this.p2.pokemon[0].isLead = true;
 			}
-			// This variable saves the status of a spammy conversation to be played, so it's only played once.
+			// This letiable saves the status of a spammy conversation to be played, so it's only played once.
 			this.convoPlayed = false;
 
 			// This code here is used for the renaming of moves showing properly on client.
-			var globalRenamedMoves = {
+			let globalRenamedMoves = {
 				'defog': "Defrog"
 			};
-			var customRenamedMoves = {
+			let customRenamedMoves = {
 				"cathy": {
 					'kingsshield': "Heavy Dosage of Fun",
 					'calmmind': "Surplus of Humour",
@@ -620,25 +620,25 @@ exports.Formats = [
 					'hyperbeam': "/ban"
 				}
 			};
-			var allPokemon = this.p1.pokemon.concat(this.p2.pokemon);
+			let allPokemon = this.p1.pokemon.concat(this.p2.pokemon);
 
-			for (var i = 0, len = allPokemon.length; i < len; i++) {
-				var pokemon = allPokemon[i];
-				var last = pokemon.moves.length - 1;
+			for (let i = 0, len = allPokemon.length; i < len; i++) {
+				let pokemon = allPokemon[i];
+				let last = pokemon.moves.length - 1;
 				if (pokemon.moves[last]) {
 					pokemon.moves[last] = toId(pokemon.set.signatureMove);
 					pokemon.moveset[last].move = pokemon.set.signatureMove;
 					pokemon.baseMoveset[last].move = pokemon.set.signatureMove;
 				}
-				for (var j = 0; j < pokemon.moveset.length; j++) {
-					var moveData = pokemon.moveset[j];
+				for (let j = 0; j < pokemon.moveset.length; j++) {
+					let moveData = pokemon.moveset[j];
 					if (globalRenamedMoves[moveData.id]) {
 						pokemon.moves[j] = toId(pokemon.set.signatureMove);
 						moveData.move = globalRenamedMoves[moveData.id];
 						pokemon.baseMoveset[j].move = globalRenamedMoves[moveData.id];
 					}
 
-					var customRenamedSet = customRenamedMoves[toId(pokemon.name)];
+					let customRenamedSet = customRenamedMoves[toId(pokemon.name)];
 					if (customRenamedSet && customRenamedSet[moveData.id]) {
 						pokemon.moves[j] = toId(pokemon.set.signatureMove);
 						moveData.move = customRenamedSet[moveData.id];
@@ -668,7 +668,7 @@ exports.Formats = [
 		},
 		// Hacks for megas changed abilities. This allow for their changed abilities.
 		onUpdate: function (pokemon) {
-			var name = toId(pokemon.name);
+			let name = toId(pokemon.name);
 
 			if (pokemon.template.isMega) {
 				if (name === 'theimmortal' && pokemon.getAbility().id === 'megalauncher') {
@@ -703,7 +703,7 @@ exports.Formats = [
 		// Here we treat many things, read comments inside for information.
 		onSwitchInPriority: 1,
 		onSwitchIn: function (pokemon) {
-			var name = toId(pokemon.illusion ? pokemon.illusion.name : pokemon.name);
+			let name = toId(pokemon.illusion ? pokemon.illusion.name : pokemon.name);
 			// No OP pls. Balance stuff, changing them upon switch in. Wonder Guard gets curse to minimise their turns out.
 			if (pokemon.getAbility().id === 'wonderguard') {
 				pokemon.addVolatile('curse', pokemon);
@@ -741,7 +741,7 @@ exports.Formats = [
 
 			// Add here more hacky stuff for mega abilities.
 			// This happens when the mega switches in, as opposed to mega-evolving on the turn.
-			var oldAbility = pokemon.ability;
+			let oldAbility = pokemon.ability;
 			if (pokemon.template.isMega) {
 				if (name === 'theimmortal' && pokemon.getAbility().id !== 'cloudnine') {
 					pokemon.setAbility('cloudnine'); // Announced ability.
@@ -805,9 +805,9 @@ exports.Formats = [
 			}
 
 			// Edgy switch-in sentences go here.
-			// Sentences vary in style and how they are presented, so each Pokémon has its own way of sending them.
-			var sentences = [];
-			var sentence = '';
+			// Sentences lety in style and how they are presented, so each Pokémon has its own way of sending them.
+			let sentences = [];
+			let sentence = '';
 
 			// Admins.
 			if (name === 'antar') {
@@ -829,7 +829,7 @@ exports.Formats = [
 				this.add('c|~Jasmine|' + sentence);
 			}
 			if (name === 'joim') {
-				var dice = this.random(4);
+				let dice = this.random(4);
 				if (dice === 1) {
 					// Fullscreen toucan!
 					this.add('-message', '░░░░░░░░▄▄▄▀▀▀▄▄███▄');
@@ -932,7 +932,7 @@ exports.Formats = [
 			if (name === 'audiosurfer') {
 				pokemon.phraseIndex = this.random(3);
 				if (pokemon.phraseIndex === 2) {
-					var singers = ['Waxahatchee', 'Speedy Ortiz', 'Sufjan Stevens', 'Kendrick Lamar'];
+					let singers = ['Waxahatchee', 'Speedy Ortiz', 'Sufjan Stevens', 'Kendrick Lamar'];
 					this.add('c|@Audiosurfer|Have you heard the new ' + singers[this.random(4)] + ' song?');
 				} else if (pokemon.phraseIndex === 1) {
 					this.add('c|@Audiosurfer|If you were worth playing you wouldn\'t be on the ladder.');
@@ -1113,7 +1113,7 @@ exports.Formats = [
 				this.add('c|@rekeri|Get Rekeri\'d :]');
 			}
 			if (name === 'relados') {
-				var italians = {'haunter': 1, 'test2017': 1, 'uselesstrainer': 1};
+				let italians = {'haunter': 1, 'test2017': 1, 'uselesstrainer': 1};
 				if (toId(pokemon.side.foe.active[0].name) in italians) {
 					this.add('c|@Relados|lol italians');
 				} else {
@@ -1164,8 +1164,8 @@ exports.Formats = [
 				this.add('c|@Temporaryanonymous|' + sentences[this.random(3)]);
 			}
 			if (name === 'test2017') {
-				var quacks = '';
-				var count = 0;
+				let quacks = '';
+				let count = 0;
 				do {
 					count++;
 					quacks = quacks + 'QUACK!';
@@ -1192,9 +1192,9 @@ exports.Formats = [
 				this.add('c|@WaterBomb|Get off my lawn! *shakes cane*');
 			}
 			if (name === 'xfix') {
-				var hazards = {stealthrock: 1, spikes: 1, toxicspikes: 1, stickyweb: 1};
-				var hasHazards = false;
-				for (var hazard in hazards) {
+				let hazards = {stealthrock: 1, spikes: 1, toxicspikes: 1, stickyweb: 1};
+				let hasHazards = false;
+				for (let hazard in hazards) {
 					if (pokemon.side.getSideCondition(hazard)) {
 						hasHazards = true;
 						break;
@@ -1296,7 +1296,7 @@ exports.Formats = [
 				this.add('c|+bmelts|zero post hero');
 			}
 			if (name === 'cathy') {
-				var foe = toId(pokemon.side.foe.active[0].name);
+				let foe = toId(pokemon.side.foe.active[0].name);
 				if (foe === 'greatsage' && !this.convoPlayed) {
 					this.add('-message', '<~GreatSage> from my observation, it appears that most romantic partners occupy their discussions with repetitive declarations and other uninteresting content');
 					this.add('-message', '<&Cathy> lol');
@@ -1382,14 +1382,14 @@ exports.Formats = [
 		},
 		// Here we deal with some special mechanics due to custom sets and moves.
 		onBeforeMove: function (pokemon, target, move) {
-			var name = toId(pokemon.name);
+			let name = toId(pokemon.name);
 			// Special Shaymin forme change.
 			if (name === 'shaymin' && !pokemon.illusion) {
-				var targetSpecies = (move.category === 'Status') ? 'Shaymin' : 'Shaymin-Sky';
+				let targetSpecies = (move.category === 'Status') ? 'Shaymin' : 'Shaymin-Sky';
 
 				if (targetSpecies !== pokemon.template.species) {
 					this.add('message', pokemon.name + ((move.category === 'Status') ? ' has reverted to Land Forme!' : ' took to the sky once again!'));
-					var template = this.getTemplate(targetSpecies);
+					let template = this.getTemplate(targetSpecies);
 					pokemon.formeChange(targetSpecies);
 					pokemon.baseTemplate = template;
 					pokemon.setAbility(template.abilities['0']);
@@ -1405,7 +1405,7 @@ exports.Formats = [
 			}
 
 			if (pokemon.volatiles['needles']) {
-				var dice = this.random(3);
+				let dice = this.random(3);
 				pokemon.removeVolatile('needles');
 				if (dice === 2) {
 					this.boost({atk:1, spe:1, def:-1}, pokemon, pokemon, 'used needles');
@@ -1430,9 +1430,9 @@ exports.Formats = [
 				pokemon.name = '@kupo';
 				pokemon.kupoTransformed = false;
 			}
-			var name = toId(pokemon.name);
-			var sentences = [];
-			var sentence = '';
+			let name = toId(pokemon.name);
+			let sentences = [];
+			let sentence = '';
 
 			// Admins.
 			if (name === 'antar') {
@@ -1755,7 +1755,7 @@ exports.Formats = [
 				this.add('c|@WaterBomb|brb getting more denture cream');
 			}
 			if (name === 'xfix') {
-				var foe = pokemon.side.foe.active[0];
+				let foe = pokemon.side.foe.active[0];
 				if (foe.name === '@xfix') {
 					this.add('c|@xfix|(annoying Dittos...)');
 				} else if (foe.ability === 'magicbounce') {
@@ -1879,7 +1879,7 @@ exports.Formats = [
 			// Shaymin forme change.
 			if (toId(pokemon.name) === 'shaymin' && !pokemon.illusion) {
 				if (pokemon.template.species === 'Shaymin') {
-					var template = this.getTemplate('Shaymin-Sky');
+					let template = this.getTemplate('Shaymin-Sky');
 					pokemon.formeChange('Shaymin-Sky');
 					pokemon.baseTemplate = template;
 					pokemon.setAbility(template.abilities['0']);
@@ -1909,13 +1909,13 @@ exports.Formats = [
 			}
 		},
 		onModifyPokemon: function (pokemon) {
-			var name = toId(pokemon.name);
+			let name = toId(pokemon.name);
 			// Enforce choice item locking on custom moves.
 			// qtrx only has one move anyway. This isn't implemented for Cathy since her moves are all custom. Don't trick her a Scarf!
 			if (name !== 'qtrx' && name !== 'Cathy') {
-				var moves = pokemon.moveset;
+				let moves = pokemon.moveset;
 				if (pokemon.getItem().isChoice && pokemon.lastMove === moves[3].id) {
-					for (var i = 0; i < 3; i++) {
+					for (let i = 0; i < 3; i++) {
 						if (!moves[i].disabled) {
 							pokemon.disableMove(moves[i].id, false);
 							moves[i].disabled = true;
@@ -1925,8 +1925,8 @@ exports.Formats = [
 			}
 			// Enforce taunt disabling custom moves.
 			if (pokemon.volatiles['taunt']) {
-				var moves = pokemon.moveset;
-				for (var i = 0; i < moves.length; i++) {
+				let moves = pokemon.moveset;
+				for (let i = 0; i < moves.length; i++) {
 					if (this.getMove(moves[i].id).category === 'Status' && !moves[i].disabled) {
 						pokemon.disableMove(moves[i].id, false);
 						moves[i].disabled = true;
@@ -1937,8 +1937,8 @@ exports.Formats = [
 		// Specific residual events for custom moves.
 		// This allows the format to have kind of custom side effects and volatiles.
 		onResidual: function (battle) {
-			for (var s in battle.sides) {
-				var thisSide = battle.sides[s];
+			for (let s in battle.sides) {
+				let thisSide = battle.sides[s];
 				if (thisSide.premonTimer > 4) {
 					thisSide.premonTimer = 0;
 					thisSide.premonEffect = true;
@@ -1946,9 +1946,9 @@ exports.Formats = [
 					if (thisSide.premonTimer === 4) thisSide.addSideCondition('safeguard');
 					thisSide.premonTimer++;
 				}
-				for (var p in thisSide.active) {
-					var pokemon = thisSide.active[p];
-					var name = toId(pokemon.name);
+				for (let p in thisSide.active) {
+					let pokemon = thisSide.active[p];
+					let name = toId(pokemon.name);
 
 					if (pokemon.side.premonEffect) {
 						pokemon.side.premonEffect = false;
@@ -1973,7 +1973,7 @@ exports.Formats = [
 						this.add('c|@Beowulf|/me buzzes loudly!');
 					}
 					if (name === 'cathy' && !pokemon.fainted && !pokemon.illusion) {
-						var messages = [
+						let messages = [
 							'kicking is hilarious!',
 							'flooding the chat log with kicks makes me lol',
 							'please don\'t stop me from having fun',
@@ -2012,7 +2012,7 @@ exports.Formats = [
 				};
 			}
 
-			var name = toId(pokemon.illusion && move.sourceEffect === 'allyswitch' ? pokemon.illusion.name : pokemon.name);
+			let name = toId(pokemon.illusion && move.sourceEffect === 'allyswitch' ? pokemon.illusion.name : pokemon.name);
 			// Prevent visual glitch with Spell Steal.
 			move.effectType = 'Move';
 			// Just because it's funny.
@@ -2091,18 +2091,18 @@ exports.Formats = [
 						this.heal(pokemon.maxhp);
 						this.add('-status', pokemon, 'slp', '[from] move: Rest');
 					}
-					var moves = [];
-					for (var i = 0; i < pokemon.moveset.length; i++) {
-						var move = pokemon.moveset[i].id;
+					let moves = [];
+					for (let i = 0; i < pokemon.moveset.length; i++) {
+						let move = pokemon.moveset[i].id;
 						if (move && move !== 'sleeptalk') moves.push(move);
 					}
-					var move = '';
+					let move = '';
 					if (moves.length) move = moves[this.random(moves.length)];
 					if (!move) return false;
 					this.useMove(move, pokemon);
-					var activate = false;
-					var boosts = {};
-					for (var i in pokemon.boosts) {
+					let activate = false;
+					let boosts = {};
+					for (let i in pokemon.boosts) {
 						if (pokemon.boosts[i] < 0) {
 							activate = true;
 							boosts[i] = 0;
@@ -2132,7 +2132,7 @@ exports.Formats = [
 				delete move.secondaries;
 				move.onTryHit = function (target, pokemon) {
 					this.attrLastMove('[still]');
-					var move = pokemon.template.speciesid === 'meloettapirouette' ? 'Brick Break' : 'Relic Song';
+					let move = pokemon.template.speciesid === 'meloettapirouette' ? 'Brick Break' : 'Relic Song';
 					this.add('-anim', pokemon, move, target);
 				};
 				move.onHit = function (target, pokemon, move) {
@@ -2185,7 +2185,7 @@ exports.Formats = [
 				move.status = 'brn';
 				move.self = {boosts: {spa:-1}};
 				move.onHit = function (target, source) {
-					var oldAbility = target.setAbility('solarpower');
+					let oldAbility = target.setAbility('solarpower');
 					if (oldAbility) {
 						this.add('-ability', target, target.ability, '[from] move: Blazing Star - Ten Evil Stars');
 					}
@@ -2199,7 +2199,7 @@ exports.Formats = [
 				move.accuracy = 100;
 				move.self = {boosts: {spe:1}};
 				move.onHit = function (target, pokemon) {
-					var decision = this.willMove(pokemon);
+					let decision = this.willMove(pokemon);
 					if (decision && target.gender === 'F') {
 						this.cancelMove(pokemon);
 						this.queue.unshift(decision);
@@ -2218,7 +2218,7 @@ exports.Formats = [
 					}
 				};
 				move.onHit = function (target, source) {
-					var lastMove = source.illusion.moveset[source.illusion.moves.length - 1];
+					let lastMove = source.illusion.moveset[source.illusion.moves.length - 1];
 					this.useMove(lastMove.id, source);
 				};
 			}
@@ -2267,7 +2267,7 @@ exports.Formats = [
 			if (move.id === 'worryseed' && name === 'acedia') {
 				move.name = 'Procrastination';
 				move.onHit = function (pokemon, source) {
-					var oldAbility = pokemon.setAbility('slowstart');
+					let oldAbility = pokemon.setAbility('slowstart');
 					if (oldAbility) {
 						this.add('-ability', pokemon, 'Slow Start', '[from] move: Procrastination');
 						if (this.random(100) < 10) source.faint();
@@ -2341,7 +2341,7 @@ exports.Formats = [
 					return !!this.willAct() && this.runEvent('StallMove', target);
 				};
 				move.onHit = function (pokemon) {
-					var foe = pokemon.side.foe.active[0];
+					let foe = pokemon.side.foe.active[0];
 					if (foe.ability !== 'soundproof') {
 						this.add('-message', 'The Audioshield is making a deafening noise!');
 						this.damage(foe.maxhp / 12, foe, pokemon);
@@ -2417,7 +2417,7 @@ exports.Formats = [
 				};
 			}
 			if (move.id === 'detect' && name === 'dell') {
-				var dmg = Math.ceil(pokemon.maxhp / (pokemon.ability === 'simple' ? 2 : 4));
+				let dmg = Math.ceil(pokemon.maxhp / (pokemon.ability === 'simple' ? 2 : 4));
 				move.name = 'Aura Parry';
 				move.self = {boosts: {atk:1, spa:1, spe:1}};
 				move.onTryHit = function (target, source) {
@@ -2461,12 +2461,12 @@ exports.Formats = [
 						}
 					};
 					move.onHit = function (target, source) {
-						var possibleTypes = [];
-						var attackType = source.lastAttackType;
+						let possibleTypes = [];
+						let attackType = source.lastAttackType;
 						source.lastAttackType = 'None';
-						for (var type in this.data.TypeChart) {
+						for (let type in this.data.TypeChart) {
 							if (target.hasType(type)) continue;
-							var typeCheck = this.data.TypeChart[type].damageTaken[attackType];
+							let typeCheck = this.data.TypeChart[type].damageTaken[attackType];
 							if (typeCheck === 1) {
 								possibleTypes.push(type);
 							}
@@ -2474,7 +2474,7 @@ exports.Formats = [
 						if (!possibleTypes.length) {
 							return false;
 						}
-						var type = possibleTypes[this.random(possibleTypes.length)];
+						let type = possibleTypes[this.random(possibleTypes.length)];
 						if (!target.setType(type)) {
 							return false;
 						}
@@ -2528,7 +2528,7 @@ exports.Formats = [
 				move.name = 'Hazard Pass';
 				delete move.boosts;
 				move.onHit = function (pokemon) {
-					var hazards = ['stealthrock', 'spikes', 'toxicspikes', 'stickyweb'].randomize();
+					let hazards = ['stealthrock', 'spikes', 'toxicspikes', 'stickyweb'].randomize();
 					pokemon.side.addSideCondition(hazards[0]);
 					pokemon.side.addSideCondition(hazards[1]);
 				};
@@ -2558,8 +2558,8 @@ exports.Formats = [
 				delete move.secondary;
 				delete move.secondaries;
 				move.onHit = function (pokemon, source) {
-					var boosts = {};
-					var stats = Object.keys(pokemon.stats).slice(1);
+					let boosts = {};
+					let stats = Object.keys(pokemon.stats).slice(1);
 					boosts[stats[this.random(4)]] = -1;
 					this.boost(boosts, pokemon, source);
 				};
@@ -2571,8 +2571,8 @@ exports.Formats = [
 				move.basePower = 90;
 				// If we use onHit but use source, we don't have to edit self.onHit.
 				move.onHit = function (pokemon, source) {
-					var side = source.side;
-					for (var i = 0; i < side.pokemon.length; i++) {
+					let side = source.side;
+					for (let i = 0; i < side.pokemon.length; i++) {
 						side.pokemon[i].status = '';
 					}
 					this.add('-cureteam', source, '[from] move: Beyblade');
@@ -2598,7 +2598,7 @@ exports.Formats = [
 				move.flags = {};
 				move.priority = 2;
 				move.onHit = function (pokemon, user) {
-					var template = pokemon.template;
+					let template = pokemon.template;
 					if (pokemon.fainted || pokemon.illusion) {
 						return false;
 					}
@@ -2610,22 +2610,22 @@ exports.Formats = [
 					}
 					user.transformed = true;
 					user.typesData = [];
-					for (var i = 0, l = pokemon.typesData.length; i < l; i++) {
+					for (let i = 0, l = pokemon.typesData.length; i < l; i++) {
 						user.typesData.push({
 							type: pokemon.typesData[i].type,
 							suppressed: false,
 							isAdded: pokemon.typesData[i].isAdded
 						});
 					}
-					for (var statName in user.stats) {
+					for (let statName in user.stats) {
 						user.stats[statName] = pokemon.stats[statName];
 					}
 					user.moveset = [];
 					user.moves = [];
-					for (var i = 0; i < pokemon.moveset.length; i++) {
-						var move = this.getMove(user.set.moves[i]);
-						var moveData = pokemon.moveset[i];
-						var moveName = moveData.move;
+					for (let i = 0; i < pokemon.moveset.length; i++) {
+						let move = this.getMove(user.set.moves[i]);
+						let moveData = pokemon.moveset[i];
+						let moveName = moveData.move;
 						if (moveData.id === 'hiddenpower') {
 							moveName = 'Hidden Power ' + user.hpType;
 						}
@@ -2639,7 +2639,7 @@ exports.Formats = [
 						});
 						user.moves.push(toId(moveName));
 					}
-					for (var j in pokemon.boosts) {
+					for (let j in pokemon.boosts) {
 						user.boosts[j] = pokemon.boosts[j];
 					}
 					this.add('-transform', user, pokemon);
@@ -2660,7 +2660,7 @@ exports.Formats = [
 					return 35;
 				};
 				move.onEffectiveness = function (typeMod, target, type, move) {
-					var eff = 1;
+					let eff = 1;
 					if (toId(pokemon.side.foe.active[0].name) === 'lawrenceiii') eff = -1;
 					return eff; // Shadow moves are SE against all non-Shadow mons.
 				};
@@ -2751,7 +2751,7 @@ exports.Formats = [
 				move.secondaries = [{
 					chance:100,
 					onHit: function (target, source) {
-						var result = this.random(2);
+						let result = this.random(2);
 						if (result < 1) {
 							target.trySetStatus('brn', source);
 						} else {
@@ -2785,16 +2785,16 @@ exports.Formats = [
 					this.add('-anim', pokemon, "Fairy Lock", pokemon); // DRAMATIC FLASHING
 				};
 				move.onHit = function (target, source) {
-					var gibberish = '';
-					var hits = 0;
-					var hps = ['hiddenpowerbug', 'hiddenpowerdark', 'hiddenpowerdragon', 'hiddenpowerelectric', 'hiddenpowerfighting', 'hiddenpowerfire', 'hiddenpowerflying', 'hiddenpowerghost', 'hiddenpowergrass', 'hiddenpowerground', 'hiddenpowerice', 'hiddenpowerpoison', 'hiddenpowerpsychic', 'hiddenpowerrock', 'hiddenpowersteel', 'hiddenpowerwater'];
+					let gibberish = '';
+					let hits = 0;
+					let hps = ['hiddenpowerbug', 'hiddenpowerdark', 'hiddenpowerdragon', 'hiddenpowerelectric', 'hiddenpowerfighting', 'hiddenpowerfire', 'hiddenpowerflying', 'hiddenpowerghost', 'hiddenpowergrass', 'hiddenpowerground', 'hiddenpowerice', 'hiddenpowerpoison', 'hiddenpowerpsychic', 'hiddenpowerrock', 'hiddenpowersteel', 'hiddenpowerwater'];
 					this.add('c|@qtrx|/me slams face into keyboard!');
 					source.isDuringAttack = true; // Prevents the user from being kicked out in the middle of using Hidden Powers.
-					for (var i = 0; i < move.hitcount; i++) {
+					for (let i = 0; i < move.hitcount; i++) {
 						if (target.hp !== 0) {
-							var len = 16 + this.random(35);
+							let len = 16 + this.random(35);
 							gibberish = '';
-							for (var j = 0; j < len; j++) gibberish += String.fromCharCode(48 + this.random(79));
+							for (let j = 0; j < len; j++) gibberish += String.fromCharCode(48 + this.random(79));
 							this.add('-message', gibberish);
 							this.useMove(hps[this.random(16)], source, target);
 							hits++;
@@ -2851,7 +2851,7 @@ exports.Formats = [
 						this.heal(source.maxhp, source, source);
 					}
 					this.add('-clearallboost');
-					for (var i = 0; i < this.sides.length; i++) {
+					for (let i = 0; i < this.sides.length; i++) {
 						if (this.sides[i].active[0]) this.sides[i].active[0].clearBoosts();
 					}
 				};
@@ -3085,19 +3085,19 @@ exports.Formats = [
 				move.onTryHit = function (target, source) {
 					if (!source.isActive) return null;
 					if (this.random(777) !== 42) return;
-					var opponent = pokemon.side.foe.active[0];
+					let opponent = pokemon.side.foe.active[0];
 					opponent.setStatus('brn');
-					var possibleStatuses = ['confusion', 'flinch', 'attract', 'focusenergy', 'foresight', 'healblock'];
-					for (var i = 0; i < possibleStatuses.length; i++) {
+					let possibleStatuses = ['confusion', 'flinch', 'attract', 'focusenergy', 'foresight', 'healblock'];
+					for (let i = 0; i < possibleStatuses.length; i++) {
 						if (this.random(3) === 1) {
 							opponent.addVolatile(possibleStatuses[i]);
 						}
 					}
 
 					function generateNoise() {
-						var noise = '';
-						var random = this.random(40, 81);
-						for (var i = 0; i < random; i++) {
+						let noise = '';
+						let random = this.random(40, 81);
+						for (let i = 0; i < random; i++) {
 							if (this.random(4) !== 0) {
 								// Non-breaking space
 								noise += '\u00A0';
@@ -3110,7 +3110,7 @@ exports.Formats = [
 					this.add('-message', "(Enemy " + generateNoise.call(this) + " TMTRAINER " + opponent.name + " is frozen solid?)");
 					this.add('-message', "(Enemy " + generateNoise.call(this) + " TMTRAINER " + opponent.name + " is hurt by its burn!)");
 					this.damage(opponent.maxhp * this.random(42, 96) * 0.01, opponent, opponent);
-					var exclamation = source.status === 'brn' ? '!' : '?';
+					let exclamation = source.status === 'brn' ? '!' : '?';
 					this.add('-message', "(Enemy " + generateNoise.call(this) + " TMTRAINER @xfix is hurt by its burn" + exclamation + ")");
 					this.damage(source.maxhp * this.random(24, 48) * 0.01, source, source);
 					return null;
@@ -3148,9 +3148,9 @@ exports.Formats = [
 				delete move.self;
 				move.onHit = function (target, source) {
 					if (source.hp) {
-						var hasRemovedHazards = false;
-						var sideConditions = {'spikes': 1, 'toxicspikes': 1, 'stealthrock': 1, 'stickyweb': 1};
-						for (var i in sideConditions) {
+						let hasRemovedHazards = false;
+						let sideConditions = {'spikes': 1, 'toxicspikes': 1, 'stealthrock': 1, 'stickyweb': 1};
+						for (let i in sideConditions) {
 							if (target.side.removeSideCondition(i)) {
 								hasRemovedHazards = true;
 								this.add('-sideend', target.side, this.getEffect(i).name, '[from] move: Doubles Purism', '[of] ' + source);
@@ -3189,11 +3189,11 @@ exports.Formats = [
 				};
 				move.onHit = function (target, source) {
 					if (this.random(2) === 1) target.addVolatile('confusion');
-					var status = ['par', 'brn', 'frz', 'psn', 'tox', 'slp'][this.random(6)];
+					let status = ['par', 'brn', 'frz', 'psn', 'tox', 'slp'][this.random(6)];
 					if (this.random(2) === 1) target.trySetStatus(status);
-					var boosts = {};
-					var increase = ['atk', 'def', 'spa', 'spd', 'spe', 'accuracy'][this.random(6)];
-					var decrease = ['atk', 'def', 'spa', 'spd', 'spe', 'accuracy'][this.random(6)];
+					let boosts = {};
+					let increase = ['atk', 'def', 'spa', 'spd', 'spe', 'accuracy'][this.random(6)];
+					let decrease = ['atk', 'def', 'spa', 'spd', 'spe', 'accuracy'][this.random(6)];
 					boosts[increase] = 1;
 					boosts[decrease] = -1;
 					this.boost(boosts, source, source);
@@ -3279,8 +3279,8 @@ exports.Formats = [
 				move.accuracy = 100;
 				delete move.onMoveFail;
 				move.onHit = function (target, source) {
-					var result = this.random(100);
-					var chance = source.hasAbility('serenegrace') ? 60 : 30;
+					let result = this.random(100);
+					let chance = source.hasAbility('serenegrace') ? 60 : 30;
 					// If the result is less than 60 or 30, then Kibitz will flinch the target.
 					if (this.willMove(target) && result < chance) {
 						target.addVolatile('flinch');
@@ -3292,9 +3292,9 @@ exports.Formats = [
 			if (move.id === 'psychup' && name === 'hugendugen') {
 				move.name = 'Policy Decision';
 				move.onHit = function (target, source) {
-					var targetBoosts = {};
-					var targetDeboosts = {};
-					for (var i in target.boosts) {
+					let targetBoosts = {};
+					let targetDeboosts = {};
+					for (let i in target.boosts) {
 						targetBoosts[i] = target.boosts[i];
 						targetDeboosts[i] = -target.boosts[i];
 					}
@@ -3485,8 +3485,8 @@ exports.Formats = [
 						pokemon.side.addSideCondition('lightscreen');
 						pokemon.side.addSideCondition('safeguard');
 						pokemon.side.addSideCondition('mist');
-						for (var i = 0; i < 6; i++) {
-							var thanker = pokemon.side.pokemon[i];
+						for (let i = 0; i < 6; i++) {
+							let thanker = pokemon.side.pokemon[i];
 							if (toId(thanker.name) !== name && !thanker.fainted) this.add('c|' + thanker.name + '|Thanks Diatom!');
 							pokemon.hasBeenThanked = true;
 						}
