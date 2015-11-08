@@ -24,15 +24,15 @@ exports.BattleMovedex = {
 					moves.push(move);
 				}
 			}
-			var move = '';
+			var randomMove = '';
 			if (moves.length) {
 				moves.sort(function (a, b) {return a.num - b.num;});
-				move = moves[this.random(moves.length)].id;
+				randomMove = moves[this.random(moves.length)].id;
 			}
-			if (!move) {
+			if (!randomMove) {
 				return false;
 			}
-			this.useMove(move, target);
+			this.useMove(randomMove, target);
 		},
 		secondary: false,
 		target: "self",
