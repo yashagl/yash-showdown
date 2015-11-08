@@ -527,7 +527,7 @@ let GlobalRoom = (function () {
 		user.prepBattle(formatid, 'search', null, this.finishSearchBattle.bind(this, user, formatid));
 
 		if (!user.locked) {
-			var searcher = toId(user)
+			let searcher = toId(user)
 			if (!Rooms.lobby.enableLadderMessages) return false;
 			if (Rooms.lobby) Rooms.lobby.addRaw(searcher + ' is searching for a battle (' + formatid + ')!');
 		}
@@ -908,7 +908,7 @@ let BattleRoom = (function () {
 		// Declare variables here in case we need them for non-rated battles logging.
 		let p1score = 0.5;
 		let winnerid = toId(winner);
-		var color = '#cc301f';
+		let color = '#cc301f';
 
 		// Check if the battle was rated to update the ladder, return its response, and log the battle.
 		if (this.rated) {
@@ -943,7 +943,7 @@ let BattleRoom = (function () {
 				//
 
 				if (this.format === 'inverserandomlotw1') {
-					var wid = toId(winner);
+					let wid = toId(winner);
 					Database.read('bp', wid, function (err, initial) {
 						if (err) throw err;
 						if (!initial) initial = 0;
@@ -953,7 +953,7 @@ let BattleRoom = (function () {
 					});
 					this.push("|raw|<b><font color='" + color + "'>" + Tools.escapeHTML(winner) + "</font> has won " + "<font color='" + color + "'>2</font> Battle Points for winning the rated Ladder of the Week battle!</b>");
 				} else if (this.format !== '1v1random' && this.format !== '1v1challengecup' && this.format !== '1v1') {
-					var wid = toId(winner);
+					let wid = toId(winner);
 					Database.read('bp', wid, function (err, initial) {
 						if (err) throw err;
 						if (!initial) initial = 0;
