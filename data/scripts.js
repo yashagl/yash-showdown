@@ -5314,19 +5314,19 @@ exports.BattleScripts = {
 
 		for (let i = 0, l = setList.length; i < l; i++) {
 			let curSet = setList[i];
-			let curSetletiants = [];
+			let curSetVariants = [];
 			for (let j = 0, m = curSet.moves.length; j < m; j++) {
-				let letiantIndex = this.random(curSet.moves[j].length);
-				curSetletiants.push(letiantIndex);
+				let variantIndex = this.random(curSet.moves[j].length);
+				curSetVariants.push(variantIndex);
 			}
-			effectivePool.push({set: curSet, moveletiants: curSetletiants});
+			effectivePool.push({set: curSet, moveVariants: curSetVariants});
 		}
 
 		let setData = effectivePool[this.random(effectivePool.length)];
 		let moves = [];
 		for (let i = 0; i < setData.set.moves.length; i++) {
 			let moveSlot = setData.set.moves[i];
-			moves.push(setData.moveletiants ? moveSlot[setData.moveletiants[i]] : moveSlot[this.random(moveSlot.length)]);
+			moves.push(setData.moveVariants ? moveSlot[setData.moveVariants[i]] : moveSlot[this.random(moveSlot.length)]);
 		}
 
 		return {
@@ -6147,7 +6147,7 @@ exports.BattleScripts = {
 	},
 	randomSeasonalStaffTeam: function (side) {
 		let team = [];
-		let letiant = this.random(2);
+		let variant = this.random(2);
 		// Hardcoded sets of the available Pokémon.
 		let sets = {
 			// Admins.
@@ -6188,8 +6188,8 @@ exports.BattleScripts = {
 				evs: {hp:252, def:4, spd:252}, nature: 'Sassy'
 			},
 			'~V4': {
-				species: 'Victini', ability: 'Desolate Land', item: (letiant === 0 ? ['Life Orb', 'Charcoal', 'Leftovers'][this.random(3)] : ['Life Orb', 'Choice Scarf', 'Leftovers'][this.random(3)]), gender: 'M',
-				moves: (letiant === 0 ? ['thousandarrows', 'bolt strike', 'shiftgear', 'dragonascent', 'closecombat', 'substitute'] : ['thousandarrows', 'bolt strike', 'dragonascent', 'closecombat']),
+				species: 'Victini', ability: 'Desolate Land', item: (variant === 0 ? ['Life Orb', 'Charcoal', 'Leftovers'][this.random(3)] : ['Life Orb', 'Choice Scarf', 'Leftovers'][this.random(3)]), gender: 'M',
+				moves: (variant === 0 ? ['thousandarrows', 'bolt strike', 'shiftgear', 'dragonascent', 'closecombat', 'substitute'] : ['thousandarrows', 'bolt strike', 'dragonascent', 'closecombat']),
 				baseSignatureMove: 'vcreate', signatureMove: "V-Generate",
 				evs: {hp:4, atk:252, spe:252}, nature: 'Jolly'
 			},
@@ -6250,13 +6250,13 @@ exports.BattleScripts = {
 				evs: {hp:252, atk:252, def:4}, nature: 'Serious'
 			},
 			'@AM': {
-				species: 'Tyranitar', ability: 'Adaptability', item: (letiant === 1 ? 'Lum Berry' : 'Choice Scarf'), gender: 'M',
-				moves: (letiant === 1 ? ['earthquake', 'diamondstorm', 'swordsdance', 'meanlook'] : ['knockoff', 'diamondstorm', 'earthquake']),
+				species: 'Tyranitar', ability: 'Adaptability', item: (variant === 1 ? 'Lum Berry' : 'Choice Scarf'), gender: 'M',
+				moves: (variant === 1 ? ['earthquake', 'diamondstorm', 'swordsdance', 'meanlook'] : ['knockoff', 'diamondstorm', 'earthquake']),
 				baseSignatureMove: 'pursuit', signatureMove: "Predator",
 				evs: {atk:252, def:4, spe: 252}, nature: 'Jolly'
 			},
 			'@antemortem': {
-				species: 'Clefable', ability: (letiant === 1 ? 'Sheer Force' : 'Multiscale'), item: (letiant === 1 ? 'Life Orb' : 'Leftovers'), gender: 'M',
+				species: 'Clefable', ability: (variant === 1 ? 'Sheer Force' : 'Multiscale'), item: (variant === 1 ? 'Life Orb' : 'Leftovers'), gender: 'M',
 				moves: ['earthpower', 'cosmicpower', 'recover', 'gigadrain'],
 				baseSignatureMove: 'drainingkiss', signatureMove: "Postmortem",
 				evs: {hp:252, spa:252, def:4}, nature: 'Modest'
