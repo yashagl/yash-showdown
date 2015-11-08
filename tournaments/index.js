@@ -705,8 +705,8 @@ Tournament = (function () {
 		// Tournament Battle Winnings
 		//
 
-		var tourSize = this.generator.users.size;
-		var sizeRequiredToEarn = 3;
+		let tourSize = this.generator.users.size;
+		let sizeRequiredToEarn = 3;
 		let result = 'draw';
 		if (from === winner) {
 			result = 'win';
