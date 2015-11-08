@@ -785,14 +785,14 @@ Tournament = (function () {
 		// Tournament Winnings
 		//
 
-		var color = '#cc301f';
-		var sizeRequiredToEarn = 3;
-		var currencyName = function (amount) {
-			var name = " Battle Point";
+		let color = '#cc301f';
+		let sizeRequiredToEarn = 3;
+		let currencyName = function (amount) {
+			let name = " Battle Point";
 			return amount === 1 ? name : name + "s";
 		};
-		var data = this.generator.getResults().map(usersToNames).toString();
-		var winner, runnerUp;
+		let data = this.generator.getResults().map(usersToNames).toString();
+		let winner, runnerUp;
 
 		if (data.indexOf(',') >= 0) {
 			data = data.split(',');
@@ -802,13 +802,13 @@ Tournament = (function () {
 			winner = data;
 		}
 
-		var wid = toId(winner);
-		var rid = toId(runnerUp);
-		var tourSize = this.generator.users.size;
+		let wid = toId(winner);
+		let rid = toId(runnerUp);
+		let tourSize = this.generator.users.size;
 
 		if (tourSize >= sizeRequiredToEarn) {
-			var firstBP = Math.round(tourSize / 2);
-			var secondBP = Math.round(firstBP / 2);
+			let firstBP = Math.round(tourSize / 2);
+			let secondBP = Math.round(firstBP / 2);
 
 			Database.read('bp', wid, function (err, initial) {
 				if (err) throw err;
