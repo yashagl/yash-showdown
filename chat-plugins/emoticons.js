@@ -193,8 +193,9 @@ function create_table() {
 	var emotes_list = [];
 	var emotes_group_list = [];
 	var len = emotes_name.length;
+	var i;
 
-	for (var i = 0; i < len; i++) {
+	for (i = 0; i < len; i++) {
 		emotes_list.push("<td>" +
 			"<img src='" + emotes[emotes_name[i]] + "'' title='" + emotes_name[i] + "' height='30' width='30' />" +
 			emotes_name[i] + "</td>");
@@ -202,7 +203,7 @@ function create_table() {
 
 	var emotes_list_right = emotes_list.splice(len / 2, len / 2);
 
-	for (var i = 0; i < len / 2; i++) {
+	for (i = 0; i < len / 2; i++) {
 		var emote1 = emotes_list[i],
 			emote2 = emotes_list_right[i];
 		if (emote2) {
