@@ -254,13 +254,7 @@ var Context = exports.Context = (function () {
 				this.errorReply("To see it for yourself, use: /" + message.substr(1));
 				return false;
 			}
-
-			// broadcast cooldown
-			var normalized = message.toLowerCase().replace(/[^a-z0-9\s!,]/g, '');
 			this.add('|c|' + this.user.getIdentity(this.room.id) + '|' + (suppressMessage || message));
-			this.room.lastBroadcast = normalized;
-			this.room.lastBroadcastTime = Date.now();
-
 			this.broadcasting = true;
 		}
 		return true;
