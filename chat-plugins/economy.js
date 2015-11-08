@@ -7,8 +7,9 @@ var shop = [
 	['Poof', 'Buy a poof message to be added into your pool of possible poofs. Poofs are custom leave messages.', 20],
 	['Fix', 'Buy the ability to alter your current custom avatar. (Don\'t buy this if you don\'t have a custom avatar. If you have a custom avatar and would like to apply it to other usernames, contact the admin "wolf" and don\'t buy this.)', 25],
 	['Title', 'Buy a user title for your profile. (Can be seen via "/profile username". Check "/profile wolf" for an example.)', 30],
-	['BlackStar', 'Buy a \u2605 to go in front of your name and puts you at the top of the user list. (Lasts for four weeks.)', 40],
-	['Avatar', 'Buy a custom avatar to be applied to your name. (You supply. Images larger than 80x80 may not show correctly.)', 50]
+	['Avatar', 'Buy a custom avatar to be applied to your name. (You supply. Images larger than 80x80 may not show correctly.)', 50],
+	['JoinPhrase', 'Buy a join phrase that the bot says every time you join the Lobby.', 60],
+	['BlackStar', 'Buy a \u2605 to go in front of your name and puts you at the top of the user list. (Lasts for four weeks.)', 60],
 ];
 
 var shopDisplay = getShopDisplay(shop);
@@ -135,9 +136,12 @@ function handleBoughtItem(item, user, cost) {
 				});
 			});
 		});
+	} else if (item === 'title' || item === 'joinphrase' || item === 'blackstar') {
+		var msg = '**' + user.name + " has bought " + item + ".**";
+		this.sendReply('Please contact the admins Castform, wolf, or Zeffy to get ' + item + '. Use "/tell wolf, message here". Swap "wolf" with "ctfrm" or "zeffy" to contact a different admin.');
 	} else {
 		var msg = '**' + user.name + " has bought " + item + ".**";
-		this.sendReply('Please contact the admin "wolf" to get ' + item + '. Use "/tell wolf, message here".');
+		this.sendReply('Please contact the admin wolf to get ' + item + '. Use "/tell wolf, message here".');
 	}
 }
 
