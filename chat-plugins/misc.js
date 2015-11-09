@@ -63,7 +63,7 @@ exports.commands = {
 		if (!this.can('rmall', null, room)) return false;
 		if (!target) return this.parse('/help rmall');
 
-		var pmName = ' Server PM [Do not reply]';
+		var pmName = ' Room PM [Do not reply]';
 
 		for (var i in room.users) {
 			var message = '|pm|' + pmName + '|' + room.users[i].getIdentity() + '|' + target;
