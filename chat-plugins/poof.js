@@ -298,7 +298,7 @@ exports.commands = {
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
 			user.leaveRoom(room);
-		} else if (userid.toUpperCase() === 'KINGDOMOFKAPPA') {
+		} else if (userid.toUpperCase() === 'KINGDOM OF KAPPA') {
 			var message = target || kingdomofkappa[Math.floor(Math.random() * kingdomofkappa.length)];
 			if (message.indexOf('{{user}}') < 0) {
 				message = '{{user}} ' + message;
@@ -312,7 +312,7 @@ exports.commands = {
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
 			user.leaveRoom(room);
-		} else if (userid.toUpperCase() === 'KINGDOMOFTEA') {
+		} else if (userid.toUpperCase() === 'KINGDOM OF TEA') {
 			var message = target || kingdomoftea[Math.floor(Math.random() * kingdomoftea.length)];
 			if (message.indexOf('{{user}}') < 0) {
 				message = '{{user}} ' + message;
