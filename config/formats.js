@@ -16,7 +16,7 @@ exports.Formats = [
 		team: 'randomHighTier',
 		ruleset: ['Random (no PotD)'],
 		onBegin: function () {
-			this.add('This is the Ladder of the Week! Use the "Search for a battle" button to try and win the LotW. The winner is the one who is #1 on the ladder by 10 PM ET on Saturday. They receive a \u2605 beside their name for a week.');
+			this.add('raw|This is the Ladder of the Week! Use the "Search for a battle" button to try and win the LotW. The winner is the one who is #1 on the ladder by 10 PM ET on Saturday. They receive a \u2605 beside their name for a week.');
 		}
 	},
 	{
