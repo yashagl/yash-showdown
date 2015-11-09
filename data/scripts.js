@@ -2225,6 +2225,9 @@ exports.BattleScripts = {
 			// Not available on ORAS
 			if (template.species === 'Pichu-Spiky-eared') continue;
 
+			// Useless in Random Battle without greatly lowering the levels of everything else
+			if (template.species === 'Unown') continue;
+
 			let tier = template.tier;
 			switch (tier) {
 			case 'LC':
