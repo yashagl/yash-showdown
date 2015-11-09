@@ -5812,11 +5812,11 @@ exports.BattleScripts = {
 		let pokemonLeft = 0;
 		let dice = this.random(100);
 		if (dice < 40) {
-			lead = 'groudon';
+			var lead = 'groudon';
 		} else if (dice < 80) {
-			lead = 'kyogre';
+			var lead = 'kyogre';
 		} else {
-			lead = 'rayquaza';
+			var lead = 'rayquaza';
 		}
 		let pokemon = [this.randomSet(this.getTemplate(lead), 0)];
 
@@ -6038,21 +6038,21 @@ exports.BattleScripts = {
 
 			let dice = this.random(8);
 			if (dice < 1) {
-				lead = 'pikachu';
+				var lead = 'pikachu';
 			} else if (dice < 2) {
-				lead = 'jigglypuff';
+				var lead = 'jigglypuff';
 			} else if (dice < 3) {
-				lead = 'mewtwo';
+				var lead = 'mewtwo';
 			} else if (dice < 4) {
-				lead = 'charizard';
+				var lead = 'charizard';
 			} else if (dice < 5) {
-				lead = 'ivysaur';
+				var lead = 'ivysaur';
 			} else if (dice < 6) {
-				lead = 'squirtle';
+				var lead = 'squirtle';
 			} else if (dice < 7) {
-				lead = 'lucario';
+				var lead = 'lucario';
 			} else {
-				lead = 'greninja';
+				var lead = 'greninja';
 			}
 
 			if (pokemon.length === 0) {
@@ -6971,21 +6971,21 @@ exports.BattleScripts = {
 
 			let dice = this.random(8);
 			if (dice < 1) {
-				lead = 'banette';
+				var lead = 'banette';
 			} else if (dice < 2) {
-				lead = 'klefki';
+				var lead = 'klefki';
 			} else if (dice < 3) {
-				lead = 'liepard';
+				var lead = 'liepard';
 			} else if (dice < 4) {
-				lead = 'murkrow';
+				var lead = 'murkrow';
 			} else if (dice < 5) {
-				lead = 'purrloin';
+				var lead = 'purrloin';
 			} else if (dice < 6) {
-				lead = 'sableye';
+				var lead = 'sableye';
 			} else if (dice < 7) {
-				lead = 'thundurus';
+				var lead = 'thundurus';
 			} else {
-				lead = 'tornadus';
+				var lead = 'tornadus';
 			}
 
 			if (pokemon.length === 0) {
