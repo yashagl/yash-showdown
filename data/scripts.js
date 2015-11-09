@@ -5825,11 +5825,11 @@ exports.BattleScripts = {
 		let rayquazaPool = ['beautifly', 'taillow', 'swellow', 'ninjask', 'zubat', 'golbat', 'crobat', 'electrike', 'manectric', 'plusle', 'minun', 'magnemite', 'magneton', 'magnezone', 'voltorb', 'electrode', 'doduo', 'dodrio', 'swablu', 'altaria', 'tropius', 'pichu', 'pikachu', 'pikachucosplay', 'pikachurockstar', 'pikachubelle', 'pikachupopstar', 'pikachuphd', 'pikachulibre', 'raichu', 'natu', 'xatu', 'bagon', 'shelgon', 'salamence', 'latias', 'latios'];
 
 		if (lead === 'groudon') {
-			pokemonPool = groudonPool;
+			var pokemonPool = groudonPool;
 		} else if (lead === 'kyogre') {
-			pokemonPool = kyogrePool;
+			var pokemonPool = kyogrePool;
 		} else {
-			pokemonPool = rayquazaPool;
+			var pokemonPool = rayquazaPool;
 		}
 
 		let baseFormes = {};
