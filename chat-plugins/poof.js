@@ -55,6 +55,10 @@ const indiancharizard = [
 	"was struck by Dragon Slayer Anrin's dark magic."
 ];
 
+const kingdomofkappa = [
+	"retreats to get more cucumbers."
+];
+
 const kingdomoftea = [
 	"retreats to get more tea."
 ];
@@ -82,6 +86,10 @@ const thedarkaffliction = [
 const wolf = [
 	"howls to the moon.",
 	"runs off into a forest."
+];
+
+const xcrystalberryx = [
+	"Please don't be too sad. Crystal will return soon :)"
 ];
 
 const zincoxide = [
@@ -290,7 +298,21 @@ exports.commands = {
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
 			user.leaveRoom(room);
-		} else if (userid.toUpperCase() === 'KINGDOM OF TEA') {
+		} else if (userid.toUpperCase() === 'KINGDOMOFKAPPA') {
+			var message = target || kingdomofkappa[Math.floor(Math.random() * kingdomofkappa.length)];
+			if (message.indexOf('{{user}}') < 0) {
+				message = '{{user}} ' + message;
+			}
+			message = message.replace(/{{user}}/g, user.name);
+
+			var colour = '#' + [1, 1, 1].map(function () {
+				var part = Math.floor(Math.random() * 0xaa);
+				return (part < 0x10 ? '0' : '') + part.toString(16);
+			}).join('');
+
+			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
+			user.leaveRoom(room);
+		} else if (userid.toUpperCase() === 'KINGDOMOFTEA') {
 			var message = target || kingdomoftea[Math.floor(Math.random() * kingdomoftea.length)];
 			if (message.indexOf('{{user}}') < 0) {
 				message = '{{user}} ' + message;
@@ -358,6 +380,16 @@ exports.commands = {
 				message = '{{user}} ' + message;
 			}
 			message = message.replace(/{{user}}/g, user.name);
+
+			var colour = '#' + [1, 1, 1].map(function () {
+				var part = Math.floor(Math.random() * 0xaa);
+				return (part < 0x10 ? '0' : '') + part.toString(16);
+			}).join('');
+
+			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
+			user.leaveRoom(room);
+		} else if (userid.toUpperCase() === 'XCRYSTALBERRYX') {
+			var message = target || xcrystalberryx[Math.floor(Math.random() * xcrystalberryx.length)];
 
 			var colour = '#' + [1, 1, 1].map(function () {
 				var part = Math.floor(Math.random() * 0xaa);
