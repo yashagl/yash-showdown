@@ -222,7 +222,7 @@ exports.commands = {
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
 			user.leaveRoom(room);
-		} else if (userid.toUpperCase() === 'DARKAZELF') {
+		} else if (userid.toUpperCase() === 'DARK AZELF') {
 			var message = target || darkazelf[Math.floor(Math.random() * darkazelf.length)];
 
 			var colour = '#' + [1, 1, 1].map(function () {
