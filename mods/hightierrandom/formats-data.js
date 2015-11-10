@@ -1,6 +1,6 @@
 exports.BattleFormatsData = {
 	charizard: {
-		requiredItem: ["Charizardite X","Charizardite Y"]
+		requiredItem: "Charizardite X"
 	},
 	beedrill: {
 		requiredItem: "Beedrillite"
