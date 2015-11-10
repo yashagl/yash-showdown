@@ -5,7 +5,7 @@ var shop = [
 	['Star', 'Buy a \u2606 to go in front of your name and puts you at the top of the user list. (Goes away if you leave for more than one hour or the server restarts.)', 3],
 	['Ticket', 'Buys a lottery ticket for a chance to win lots of Battle Points.', 5],
 	['Poof', 'Buy a poof message to be added into your pool of possible poofs. Poofs are custom leave messages.', 20],
-	['Fix', 'Buy a one-time change for your avatar or join phrase. (Don\'t buy this if you haven\'t bought an avatar or join phrase before. If you have a custom avatar and would like to apply it to other usernames, contact the admin wolf and don\'t buy this.)', 30],
+	['Mod', 'Buy a one-time change for your avatar or join phrase. (Don\'t buy this if you haven\'t bought an avatar or join phrase before. If you have a custom avatar and would like to apply it to other usernames, contact the admin wolf and don\'t buy this.)', 30],
 	['Title', 'Buy a user title for your profile. (Can be seen via "/profile username". Check "/profile wolf" for an example.)', 30],
 	['Avatar', 'Buy a custom avatar to be applied to your name. (You supply. Images larger than 80x80 may not show correctly.)', 60],
 	['JoinPhrase', 'Buy a join phrase that the bot submits in the chat every time you join the Lobby.', 60],
@@ -139,7 +139,7 @@ function handleBoughtItem(item, user, cost) {
 	} else if (item === 'poof') {
 		var msg = '**' + user.name + " has bought " + item + ".**";
 		this.sendReply('Please contact the admin wolf to get ' + item + '. Use "/tell wolf, poof message here". Also mention any alternate usernames if you have any.');
-	} else if (item === 'fix' || item === 'avatar') {
+	} else if (item === 'mod' || item === 'avatar') {
 		var msg = '**' + user.name + " has bought " + item + ".**";
 		this.sendReply('Please contact the admin wolf to get ' + item + '. Use "/tell wolf, avatar image link here". Also mention any alternate usernames if you have any.');
 	} else if (item === 'title' || item === 'joinphrase' || item === 'blackstar') {
