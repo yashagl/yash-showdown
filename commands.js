@@ -971,7 +971,7 @@ exports.commands = {
 		if (!targetUser || !targetUser.connected) {
 			return this.sendReply("User " + this.targetUsername + " not found.");
 		}
-		if (targetUser.userid === user.userid && !this.can('kick', targetUser, room)) return this.sendReply('Please buy a poof from the "/shop" instead.');
+		if (targetUser.userid === user.userid && !this.can('kick', targetUser)) return this.sendReply('Please buy a poof from the "/shop" instead.');
 		if (!this.can('kick', targetUser, room)) return false;
 		let msg = (target ? " " + target + "" : "");
 		this.add(targetUser.name + msg);
