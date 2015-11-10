@@ -7,7 +7,7 @@ var shop = [
 	['Poof', 'Buy a poof message to be added into your pool of possible poofs. Poofs are custom leave messages that are used via "/poof".', 20],
 	['Adjustment', 'Buy a one-time change for your avatar or join phrase. (Don\'t buy this if you haven\'t bought an avatar or join phrase before. If you have a custom avatar and would like to apply it to other usernames, contact the admin wolf and don\'t buy this.)', 30],
 	['Title', 'Buy a user title for your profile. (Can be seen via "/profile username". Check "/profile wolf" for an example.)', 30],
-	['Avatar', 'Buy a custom avatar to be applied to your name. (You supply. Images larger than 80x80 may not show correctly.)', 60],
+	['Avatar', 'Buy a custom avatar to be applied to your name. (You supply. Images larger than 80px by 80px may not show correctly.)', 60],
 	['BlackStar', 'Buy a \u2605 that goes in front of your name and puts you at the top of the user list. (Lasts for four weeks.)', 60],
 	['JoinPhrase', 'Buy a join phrase that the bot submits in the chat every time you join the Lobby.', 60]
 ];
