@@ -121,8 +121,8 @@ function handleBoughtItem(item, user, cost) {
 		var _this = this;
 		Database.get('pot', function (err, pot) {
 			if (err) throw err;
-			if (!pot) pot = 0;
-			Database.set('pot', pot + cost,  function (err, pot) {
+			if (!pot) pot = 5;
+			Database.set('pot', pot + 3,  function (err, pot) {
 				if (err) throw err;
 				Database.read('tickets', user.userid, function (err, tickets) {
 					if (err) throw err;
@@ -499,23 +499,12 @@ exports.commands = {
 
 	picklottery: function (target, room, user) {
 		if (!this.can('picklottery')) return false;
-		var chance = Math.round(Math.random());
 		var _this = this;
 		Database.users(function (err, users) {
 			if (err) throw err;
 			users = users.filter(function (user) {
 				return user.tickets && user.tickets.length > 0;
 			});
-			if (!chance) {
-				var msg = "<center><h2>Lottery!</h2>Nobody has won the lottery. Good luck to everyone next time!</center>";
-				_this.parse('/declare ' + msg);
-				room.update();
-				return users.forEach(function (user) {
-					Database.write('tickets', null, user.username, function (err) {
-						if (err) throw err;
-					});
-				});
-			}
 			var tickets = [];
 			users.forEach(function (user) {
 				if (!Array.isArray(user.tickets)) user.tickets = user.tickets.split(', ');
