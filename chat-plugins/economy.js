@@ -138,10 +138,10 @@ function handleBoughtItem(item, user, cost) {
 		});
 	} else if (item === 'poof') {
 		var msg = '**' + user.name + " has bought " + item + ".**";
-		this.sendReply('Please contact the admin wolf to get ' + item + '. Use "/tell wolf, poof message here". Also mention any alternate usernames if you have any.');
+		this.sendReply('Please contact the admin wolf to get ' + item + '. Use "/tell wolf, poof message here". If you want it to be set to any other usernames, mention them too.');
 	} else if (item === 'adjustment' || item === 'avatar') {
 		var msg = '**' + user.name + " has bought " + item + ".**";
-		this.sendReply('Please contact the admin wolf to get ' + item + '. Use "/tell wolf, avatar image link here". Also mention any alternate usernames if you have any.');
+		this.sendReply('Please contact the admin wolf to get ' + item + '. Use "/tell wolf, avatar image link here". If you want it to be set to any other usernames, mention them too.');
 	} else if (item === 'title' || item === 'joinphrase' || item === 'blackstar') {
 		var msg = '**' + user.name + " has bought " + item + ".**";
 		this.sendReply('Please contact the admins Castform, wolf, or Zeffy to get ' + item + '. Use "/tell wolf, message here". Swap "wolf" with "ctfrm" or "zeffy" to contact a different admin.');
