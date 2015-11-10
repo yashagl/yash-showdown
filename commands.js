@@ -2317,7 +2317,7 @@ exports.commands = {
 				let canForceTimer = user.can('timer', null, room);
 				if (room.resetTimer) {
 					room.stopKickInactive(user, canForceTimer);
-					if (canForceTimer) room.send('|inactiveoff|Timer was turned off by staff. Please do not turn it back on until our staff say it\'s okay');
+					if (canForceTimer) room.send('|inactiveoff|Timer was turned off by staff. Please do not turn it back on until our staff say it\'s okay.');
 				}
 			} else if (target === 'on' || target === 'true' || !target) {
 				room.requestKickInactive(user, user.can('timer'));
