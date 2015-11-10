@@ -516,7 +516,7 @@ exports.commands = {
 			var winner = tickets[winningIndex];
 			Database.get('pot', function (err, pot) {
 				if (err) throw err;
-				var winnings = Math.floor(pot * 3 / 4);
+				var winnings = pot;
 				if (!winner) return _this.sendReply("No one has bought tickets.");
 				Database.read('bp', winner.username, function (err, amount) {
 					if (err) throw err;
@@ -526,7 +526,7 @@ exports.commands = {
 						var msg = "<center><h2>Lottery!</h2><h4><font color='red'><b>" + winner.username + "</b></font> has won the lottery with the ticket id of " + winner.ticket + "! This user has gained " + winnings + currencyName(winnings) + " and now has a total of " + total + currencyName(total) + ".</h4></center>";
 						_this.parse('/declare ' + msg);
 						room.update();
-						Database.set('pot', 0, function (err) {
+						Database.set('pot', 5, function (err) {
 							if (err) throw err;
 							users.forEach(function (user) {
 								Database.write('tickets', null, user.username, function (err) {
@@ -545,7 +545,7 @@ exports.commands = {
 		if (!this.canBroadcast()) return;
 		Database.get('pot', function (err, pot) {
 			if (err) throw err;
-			if (!pot) pot = 0;
+			if (!pot) pot = 5;
 			this.sendReplyBox("The current jackpot is " + pot + currencyName(pot) + ".");
 		}.bind(this));
 	},
