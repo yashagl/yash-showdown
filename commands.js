@@ -1122,11 +1122,6 @@ exports.commands = {
 			return this.privateModCommand("(" + targetUser.name + " would be locked by " + user.name + problem + ".)");
 		}
 
-		if (targetUser.confirmed) {
-			let from = targetUser.deconfirm();
-			Monitor.log("[CrisisMonitor] " + targetUser.name + " was locked by " + user.name + " and demoted from " + from.join(", ") + ".");
-		}
-
 		// Destroy personal rooms of the locked user.
 		for (let i in targetUser.roomCount) {
 			if (i === 'global') continue;
@@ -1196,11 +1191,6 @@ exports.commands = {
 		if (Users.checkBanned(targetUser.latestIp) && !target && !targetUser.connected) {
 			let problem = " but was already banned";
 			return this.privateModCommand("(" + targetUser.name + " would be banned by " + user.name + problem + ".)");
-		}
-
-		if (targetUser.confirmed) {
-			let from = targetUser.deconfirm();
-			Monitor.log("[CrisisMonitor] " + targetUser.name + " was banned by " + user.name + " and demoted from " + from.join(", ") + ".");
 		}
 
 		// Destroy personal rooms of the banned user.
