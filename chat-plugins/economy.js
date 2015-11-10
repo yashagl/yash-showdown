@@ -141,7 +141,7 @@ function handleBoughtItem(item, user, cost) {
 		this.sendReply('Please contact the admin wolf to get ' + item + '. Use "/tell wolf, poof message here". If you want it to be set to any other usernames, mention them as well.');
 	} else if (item === 'title' || item === 'joinphrase' || item === 'blackstar') {
 		var msg = '**' + user.name + " has bought " + item + ".**";
-		this.sendReply('Please contact the admins Castform, wolf, or Zeffy to get ' + item + '. Use "/tell wolf, message here". If you bought a title or a join phrase, include your desired join phrase or title. Swap "wolf" with "ctfrm" or "zeffy" to contact a different admin.');
+		this.sendReply('Please contact the admins Castform, wolf, or Zeffy to get ' + item + '. Use "/tell wolf, message here". Swap "wolf" with "ctfrm" or "zeffy" to contact a different admin. If you bought a title or a join phrase, include your desired join phrase or title.');
 	} else {
 		var msg = '**' + user.name + " has bought " + item + ".**";
 		this.sendReply('Please contact the admin wolf to get ' + item + '. Use "/tell wolf, message here". If you bought an avatar or an adjustment for your avatar, include the image link. If you bought an adjustment for your join phrase, include your desired join phrase. If you want it to be set to any other usernames, mention them as well.');
