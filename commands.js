@@ -1182,7 +1182,7 @@ exports.commands = {
 		}
 
 		let unlocked = Users.unlock(target);
-		let unnameLocked = Users.unnameLock(target);
+		let nameUnlocked = Users.nameUnlock(target);
 
 		if (unlocked) {
 			let names = Object.keys(unlocked);
@@ -1190,8 +1190,8 @@ exports.commands = {
 				" unlocked by " + user.name + "." + reason);
 			if (!reason) this.globalModlog("UNLOCK", target, " by " + user.name);
 			if (targetUser) targetUser.popup("" + user.name + " has unlocked you.");
-		} else if (unnameLocked) {
-			let names = Object.keys(unnameLocked);
+		} else if (nameUnlocked) {
+			let names = Object.keys(nameUnlocked);
 			this.addModCommand(names.join(", ") + " " + ((names.length > 1) ? "were" : "was") +
 				" unlocked by " + user.name + "." + reason);
 			if (!reason) this.globalModlog("UNLOCK", target, " by " + user.name);

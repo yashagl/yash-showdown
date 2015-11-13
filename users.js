@@ -217,7 +217,7 @@ function unlockRange(range) {
 	delete lockedRanges[range];
 	delete rangelockedUsers[range];
 }
-function unnameLock(name, unnameLocked) {
+function nameUnlock(name, nameUnlocked) {
 	let userid = toId(name);
 	let user = getUser(userid);
 	let userips = null;
@@ -226,24 +226,24 @@ function unnameLock(name, unnameLocked) {
 		if (user.nameLocked) {
 			user.nameLocked = false;
 			user.updateIdentity();
-			unnameLocked = unnameLocked || {};
-			unnameLocked[name] = 1;
+			nameUnlocked = nameUnlocked || {};
+			nameUnlocked[name] = 1;
 		}
 	}
 	for (let id in nameLockedUsers) {
 		if (nameLockedUsers[id] === userid || id === userid) {
 			delete nameLockedUsers[id];
-			unnameLocked = unnameLocked || {};
-			unnameLocked[name] = 1;
+			nameUnlocked = nameUnlocked || {};
+			nameUnlocked[name] = 1;
 		}
 	}
-	return unnameLocked;
+	return nameUnlocked;
 }
 Users.unban = unban;
 Users.unlock = unlock;
 Users.lockRange = lockRange;
 Users.unlockRange = unlockRange;
-Users.unnameLock = unnameLock;
+Users.nameUnlock = nameUnlock;
 
 /*********************************************************
  * Routing
