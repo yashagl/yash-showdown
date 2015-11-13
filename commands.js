@@ -1242,7 +1242,7 @@ exports.commands = {
 		targetUser.namelock(false, userid);
 		return true;
 	},
-	namelockhelp: ["/namelock OR /nlock [username], [reason] - Locks the user from talking in all chats. Only locks the username and not the IP. Requires: % @ & ~"],
+	namelockhelp: ["/namelock OR /nl [username], [reason] - Locks the user from talking in all chats. Only locks the username and not the IP. Requires: % @ & ~"],
 
 	forceban: 'ban',
 	b: 'ban',
