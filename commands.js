@@ -1202,9 +1202,10 @@ exports.commands = {
 	},
 	unlockhelp: ["/unlock [username] - Unlocks the user. Requires: % @ & ~"],
 
+	nl: 'namelock',
 	nlock: 'namelock',
 	namelock: function (target, room, user, connection, cmd) {
-		if (!target) return this.parse('/help lock');
+		if (!target) return this.parse('/help namelock');
 
 		target = this.splitTarget(target);
 		let targetUser = this.targetUser;
@@ -1241,7 +1242,7 @@ exports.commands = {
 		targetUser.namelock(false, userid);
 		return true;
 	},
-	lockhelp: ["/lock OR /l [username], [reason] - Locks the user from talking in all chats. Requires: % @ & ~"],
+	namelockhelp: ["/namelock OR /nlock [username], [reason] - Locks the user from talking in all chats. Only locks the username and not the IP. Requires: % @ & ~"],
 
 	forceban: 'ban',
 	b: 'ban',
