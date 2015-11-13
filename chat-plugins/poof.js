@@ -103,7 +103,7 @@ exports.commands = {
 		if (Config.poofOff) return this.sendReply("Poof is currently disabled.");
 		if (!this.canTalk(message)) return false;
 		var userid = user.name
-		userid = userid.replace(/[^\x00-\x7F]/g, "");
+		userid = userid.replace(/[^a-zA-Z0-9]|\s+/g, "");
 		if (userid.toUpperCase() === 'WOLF') {
 			var message = target || wolf[Math.floor(Math.random() * wolf.length)];
 			if (message.indexOf('{{user}}') < 0) {
@@ -152,7 +152,7 @@ exports.commands = {
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
 			user.leaveRoom(room);
-		} else if (userid.toUpperCase() === 'ANRIN DAS' || userid.toUpperCase() === 'ANRIN N') {
+		} else if (userid.toUpperCase() === 'ANRINDAS' || userid.toUpperCase() === 'ANRINN') {
 			var message = target || anrindas[Math.floor(Math.random() * anrindas.length)];
 			if (message.indexOf('{{user}}') < 0) {
 				message = '{{user}} ' + message;
@@ -166,7 +166,7 @@ exports.commands = {
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
 			user.leaveRoom(room);
-		} else if (userid.toUpperCase() === 'AXTHEEFROST' || userid.toUpperCase() === 'ANDY VENUS') {
+		} else if (userid.toUpperCase() === 'AXTHEEFROST' || userid.toUpperCase() === 'ANDYVENUS') {
 			var message = target || axtheefrost[Math.floor(Math.random() * axtheefrost.length)];
 			if (message.indexOf('{{user}}') < 0) {
 				message = '{{user}} ' + message;
@@ -180,7 +180,7 @@ exports.commands = {
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
 			user.leaveRoom(room);
-		} else if (userid.toUpperCase() === 'BIDOOF FTW') {
+		} else if (userid.toUpperCase() === 'BIDOOFFTW') {
 			var message = target || bidoofftw[Math.floor(Math.random() * bidoofftw.length)];
 			if (message.indexOf('{{user}}') < 0) {
 				message = '{{user}} ' + message;
@@ -222,7 +222,7 @@ exports.commands = {
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
 			user.leaveRoom(room);
-		} else if (userid.toUpperCase() === 'DARK AZELF') {
+		} else if (userid.toUpperCase() === 'DARKAZELF') {
 			var message = target || darkazelf[Math.floor(Math.random() * darkazelf.length)];
 
 			var colour = '#' + [1, 1, 1].map(function () {
@@ -232,7 +232,7 @@ exports.commands = {
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
 			user.leaveRoom(room);
-		} else if (userid.toUpperCase() === 'DARK LIGHT1999') {
+		} else if (userid.toUpperCase() === 'DARKLIGHT1999') {
 			var message = target || darklight1999[Math.floor(Math.random() * darklight1999.length)];
 			if (message.indexOf('{{user}}') < 0) {
 				message = '{{user}} ' + message;
@@ -246,7 +246,7 @@ exports.commands = {
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
 			user.leaveRoom(room);
-		} else if (userid.toUpperCase() === 'DARK SHADOW 6') {
+		} else if (userid.toUpperCase() === 'DARKSHADOW6') {
 			var message = target || darkshadow6[Math.floor(Math.random() * darkshadow6.length)];
 
 			var colour = '#' + [1, 1, 1].map(function () {
@@ -270,7 +270,7 @@ exports.commands = {
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
 			user.leaveRoom(room);
-		} else if (userid.toUpperCase() === 'HANNU MIKKOLA') {
+		} else if (userid.toUpperCase() === 'HANNUMIKKOLA') {
 			var message = target || hannumikkola[Math.floor(Math.random() * hannumikkola.length)];
 			if (message.indexOf('{{user}}') < 0) {
 				message = '{{user}} ' + message;
@@ -298,7 +298,7 @@ exports.commands = {
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
 			user.leaveRoom(room);
-		} else if (userid.toUpperCase() === 'KINGDOM OF KAPPA') {
+		} else if (userid.toUpperCase() === 'KINGDOMOFKAPPA') {
 			var message = target || kingdomofkappa[Math.floor(Math.random() * kingdomofkappa.length)];
 			if (message.indexOf('{{user}}') < 0) {
 				message = '{{user}} ' + message;
@@ -312,7 +312,7 @@ exports.commands = {
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
 			user.leaveRoom(room);
-		} else if (userid.toUpperCase() === 'KINGDOM OF TEA') {
+		} else if (userid.toUpperCase() === 'KINGDOMOFTEA') {
 			var message = target || kingdomoftea[Math.floor(Math.random() * kingdomoftea.length)];
 			if (message.indexOf('{{user}}') < 0) {
 				message = '{{user}} ' + message;
@@ -398,7 +398,7 @@ exports.commands = {
 
 			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
 			user.leaveRoom(room);
-		} else if (userid.toUpperCase() === 'ZINC OXIDE') {
+		} else if (userid.toUpperCase() === 'ZINCOXIDE') {
 			var message = target || zincoxide[Math.floor(Math.random() * zincoxide.length)];
 
 			var colour = '#' + [1, 1, 1].map(function () {
