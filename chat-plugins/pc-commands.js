@@ -39,15 +39,15 @@ exports.commands = {
 	},
 	toggleladdermsghelp: ["/toggleladdermsg - Toggle ladder messages on or off."],
 
-	ascii: function (target, room, user) {
+	plaintext: function (target, room, user) {
 		if (!target) return;
 		if (!this.canBroadcast()) return;
 		var originalVersion = target;
 		var newVersion = target;
-		newVersion = newVersion.replace(/[^\x00-\x7F]/g, "?");
+		newVersion = newVersion.replace(/[^a-zA-Z0-9]|\s+/g, "");
 		this.sendReplyBox(
 			"Original version: " + originalVersion + "<br />" +
-			"ASCII-only version: " + newVersion
+			"Plain text version: " + newVersion
 		);
 	},
 
