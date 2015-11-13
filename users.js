@@ -94,6 +94,7 @@ let lockedIps = Users.lockedIps = Object.create(null);
 let lockedUsers = Users.lockedUsers = Object.create(null);
 let lockedRanges = Users.lockedRanges = Object.create(null);
 let rangelockedUsers = Users.rangeLockedUsers = Object.create(null);
+let namelockedUsers = Users.namelockedUsers = Object.create(null);
 
 /**
  * Searches for IP in table.
@@ -216,10 +217,33 @@ function unlockRange(range) {
 	delete lockedRanges[range];
 	delete rangelockedUsers[range];
 }
+function unnamelock(name, unnamelocked) {
+	let userid = toId(name);
+	let user = getUser(userid);
+	let userips = null;
+	if (user) {
+		if (user.userid === userid) name = user.name;
+		if (user.namelocked) {
+			user.namelocked = false;
+			user.updateIdentity();
+			unnamelocked = unnamelocked || {};
+			unnamelocked[name] = 1;
+		}
+	}
+	for (let id in namelockedUsers) {
+		if (namelockedUsers[id] === userid || id === userid) {
+			delete namelockedUsers[id];
+			unnamelocked = unnamelocked || {};
+			unnamelocked[name] = 1;
+		}
+	}
+	return unnamelocked;
+}
 Users.unban = unban;
 Users.unlock = unlock;
 Users.lockRange = lockRange;
 Users.unlockRange = unlockRange;
+Users.unnamelock = unnamelock;
 
 /*********************************************************
  * Routing
@@ -557,7 +581,7 @@ User = (function () {
 		this.send('|popup|' + message.replace(/\n/g, '||'));
 	};
 	User.prototype.getIdentity = function (roomid) {
-		if (this.locked) {
+		if (this.locked || this.namelocked) {
 			return '‽' + this.name;
 		}
 		if (roomid) {
@@ -895,6 +919,7 @@ User = (function () {
 				this.autoconfirmed = userid;
 			} else if (userType === '5') {
 				this.lock(false, userid + '#permalock');
+				this.namelock(false, userid + '#permalock');
 			} else if (userType === '6') {
 				this.ban(false, userid);
 			}
@@ -977,6 +1002,12 @@ User = (function () {
 			if (lockedUsers[userid] !== userid) bannedUnder = ' because of rule-breaking by your alt account ' + lockedUsers[userid];
 			this.send("|popup|Your username (" + name + ") is locked" + bannedUnder + "'. Your lock will expire in a few days." + (Config.appealurl ? " Or you can appeal at:\n" + Config.appealurl : ""));
 			this.lock(true, userid);
+		}
+		if (registered && userid in namelockedUsers) {
+			let bannedUnder = '';
+			if (namelockedUsers[userid] !== userid) bannedUnder = ' because of rule-breaking by your alt account ' + namelockedUsers[userid];
+			this.send("|popup|Your username (" + name + ") is locked" + bannedUnder + "'. Your lock will expire in a few days." + (Config.appealurl ? " Or you can appeal at:\n" + Config.appealurl : ""));
+			this.namelock(true, userid);
 		}
 		if (this.group === Config.groupsranking[0]) {
 			let range = this.locked || Users.shortenHost(this.latestHost);
@@ -1131,6 +1162,7 @@ User = (function () {
 		if (this.confirmed) {
 			this.autoconfirmed = this.confirmed;
 			this.locked = false;
+			this.namelocked = false;
 		}
 		if (this.autoconfirmed && this.semilocked) {
 			if (this.semilocked === '#dnsbl') {
@@ -1318,6 +1350,16 @@ User = (function () {
 		if (this.autoconfirmed) lockedUsers[this.autoconfirmed] = userid;
 		lockedUsers[this.userid] = userid;
 		this.locked = userid;
+		this.autoconfirmed = '';
+		this.updateIdentity();
+	};
+	User.prototype.namelock = function (userid) {
+		// recurse only once; the root for-loop already locks everything with your IP
+		if (!userid) userid = this.userid;
+
+		if (this.autoconfirmed) namelockedUsers[this.autoconfirmed] = userid;
+		namelockedUsers[this.userid] = userid;
+		this.namelocked = userid;
 		this.autoconfirmed = '';
 		this.updateIdentity();
 	};

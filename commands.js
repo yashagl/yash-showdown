@@ -160,6 +160,12 @@ exports.commands = {
 		if (targetUser.locked && !user.can('lock')) {
 			return this.errorReply("This user is locked and cannot PM.");
 		}
+		if (user.namelocked && !targetUser.can('lock')) {
+			return this.errorReply("You can only private message members of the moderation team (users marked by %, @, &, or ~) when locked.");
+		}
+		if (targetUser.namelocked && !user.can('lock')) {
+			return this.errorReply("This user is locked and cannot PM.");
+		}
 		if (targetUser.ignorePMs && targetUser.ignorePMs !== user.group && !user.can('lock')) {
 			if (!targetUser.can('lock')) {
 				return this.errorReply("This user is blocking private messages right now.");
@@ -1054,12 +1060,23 @@ exports.commands = {
 		}
 		if (!this.can('mute', targetUser, room)) return false;
 		let canBeMutedFurther = ((room.getMuteTime(targetUser) || 0) <= (muteDuration * 5 / 6));
-		if ((room.isMuted(targetUser) && !canBeMutedFurther) || targetUser.locked || !targetUser.connected) {
-			let problem = " but was already " + (!targetUser.connected ? "offline" : targetUser.locked ? "locked" : "muted");
+		if ((room.isMuted(targetUser) && !canBeMutedFurther)) {
 			if (!target) {
-				return this.privateModCommand("(" + targetUser.name + " would be muted by " + user.name + problem + ".)");
+				return this.privateModCommand("(" + targetUser.name + " would be muted by " + user.name + " but was already muted.)");
 			}
-			return this.addModCommand("" + targetUser.name + " would be muted by " + user.name + problem + "." + (target ? " (" + target + ")" : ""));
+			return this.addModCommand("" + targetUser.name + " would be muted by " + user.name + " but was already muted." + (target ? " (" + target + ")" : ""));
+		}
+		if ((targetUser.locked || targetUser.namelocked)) {
+			if (!target) {
+				return this.privateModCommand("(" + targetUser.name + " would be muted by " + user.name + " but was already locked.)");
+			}
+			return this.addModCommand("" + targetUser.name + " would be muted by " + user.name + " but was already locked." + (target ? " (" + target + ")" : ""));
+		}
+		if ((!targetUser.connected)) {
+			if (!target) {
+				return this.privateModCommand("(" + targetUser.name + " would be muted by " + user.name + " but was already offline.)");
+			}
+			return this.addModCommand("" + targetUser.name + " would be muted by " + user.name + " but was already offline." + (target ? " (" + target + ")" : ""));
 		}
 
 		if (targetUser in room.users) targetUser.popup("|modal|" + user.name + " has muted you in " + room.id + " for " + muteDuration.duration() + ". " + target);
@@ -1160,11 +1177,21 @@ exports.commands = {
 		if (targetUser && targetUser.locked && targetUser.locked.charAt(0) === '#') {
 			reason = ' (' + targetUser.locked + ')';
 		}
+		if (targetUser && targetUser.namelocked && targetUser.namelocked.charAt(0) === '#') {
+			reason = ' (' + targetUser.namelocked + ')';
+		}
 
 		let unlocked = Users.unlock(target);
+		let unnamelocked = Users.unnamelock(target);
 
 		if (unlocked) {
 			let names = Object.keys(unlocked);
+			this.addModCommand(names.join(", ") + " " + ((names.length > 1) ? "were" : "was") +
+				" unlocked by " + user.name + "." + reason);
+			if (!reason) this.globalModlog("UNLOCK", target, " by " + user.name);
+			if (targetUser) targetUser.popup("" + user.name + " has unlocked you.");
+		} else if (unnamelocked) {
+			let names = Object.keys(unnamelocked);
 			this.addModCommand(names.join(", ") + " " + ((names.length > 1) ? "were" : "was") +
 				" unlocked by " + user.name + "." + reason);
 			if (!reason) this.globalModlog("UNLOCK", target, " by " + user.name);
@@ -1174,6 +1201,47 @@ exports.commands = {
 		}
 	},
 	unlockhelp: ["/unlock [username] - Unlocks the user. Requires: % @ & ~"],
+
+	nlock: 'namelock',
+	namelock: function (target, room, user, connection, cmd) {
+		if (!target) return this.parse('/help lock');
+
+		target = this.splitTarget(target);
+		let targetUser = this.targetUser;
+		if (!targetUser) return this.errorReply("User '" + this.targetUsername + "' does not exist.");
+		if (target.length > MAX_REASON_LENGTH) {
+			return this.errorReply("The reason is too long. It cannot exceed " + MAX_REASON_LENGTH + " characters.");
+		}
+		if (!this.can('lock', targetUser)) return false;
+
+		if ((targetUser.locked || targetUser.namelocked) && !target) {
+			return this.privateModCommand("(" + targetUser.name + " would be locked by " + user.name + " but was already locked.)");
+		}
+		if ((Users.checkBanned(targetUser.latestIp)) && !target) {
+			return this.privateModCommand("(" + targetUser.name + " would be locked by " + user.name + " but was already banned.)");
+		}
+
+		// Destroy personal rooms of the locked user.
+		for (let i in targetUser.roomCount) {
+			if (i === 'global') continue;
+			let targetRoom = Rooms.get(i);
+			if (targetRoom.isPersonal && targetRoom.auth[targetUser.userid] && targetRoom.auth[targetUser.userid] === '#') {
+				targetRoom.destroy();
+			}
+		}
+
+		targetUser.popup("|modal|" + user.name + " has locked you from talking in chats, battles, and PMing regular users." + (target ? "\n\nReason: " + target : "") + "\n\nIf you feel that your lock was unjustified, you can still PM staff members (%, @, &, and ~) to discuss it" + (Config.appealurl ? " or you can appeal:\n" + Config.appealurl : ".") + "\n\nYour lock will expire in a few days.");
+
+		this.addModCommand("" + targetUser.name + " was locked from talking by " + user.name + "." + (target ? " (" + target + ")" : ""));
+		let userid = this.getLastIdOf(targetUser);
+		this.add('|unlink|hide|' + userid);
+		if (userid !== toId(this.inputUsername)) this.add('|unlink|hide|' + toId(this.inputUsername));
+
+		this.globalModlog("LOCK", targetUser, " by " + user.name + (target ? ": " + target : ""));
+		targetUser.namelock(false, userid);
+		return true;
+	},
+	lockhelp: ["/lock OR /l [username], [reason] - Locks the user from talking in all chats. Requires: % @ & ~"],
 
 	forceban: 'ban',
 	b: 'ban',
@@ -1258,7 +1326,7 @@ exports.commands = {
 			return this.parse('/help unbanall');
 		}
 		// we have to do this the hard way since it's no longer a global
-		let punishKeys = ['bannedIps', 'bannedUsers', 'lockedIps', 'lockedUsers', 'lockedRanges', 'rangeLockedUsers'];
+		let punishKeys = ['bannedIps', 'bannedUsers', 'lockedIps', 'lockedUsers', 'lockedRanges', 'rangeLockedUsers', 'namelockedUsers'];
 		for (let i = 0; i < punishKeys.length; i++) {
 			let dict = Users[punishKeys[i]];
 			for (let entry in dict) delete dict[entry];
@@ -1354,7 +1422,7 @@ exports.commands = {
 	mn: 'modnote',
 	modnote: function (target, room, user, connection) {
 		if (!target) return this.parse('/help modnote');
-		if ((user.locked || room.isMuted(user)) && !user.can('bypassall')) return this.errorReply("You cannot do this while unable to talk.");
+		if ((user.locked || user.namelocked || room.isMuted(user)) && !user.can('bypassall')) return this.errorReply("You cannot do this while unable to talk.");
 
 		if (target.length > MAX_REASON_LENGTH) {
 			return this.errorReply("The note is too long. It cannot exceed " + MAX_REASON_LENGTH + " characters.");
@@ -1447,7 +1515,7 @@ exports.commands = {
 	mc: 'modchat',
 	modchat: function (target, room, user) {
 		if (!target) return this.sendReply("Moderated chat is currently set to: " + room.modchat);
-		if ((user.locked || room.isMuted(user)) && !user.can('bypassall')) return this.errorReply("You cannot do this while unable to talk.");
+		if ((user.locked || user.namelocked || room.isMuted(user)) && !user.can('bypassall')) return this.errorReply("You cannot do this while unable to talk.");
 		if (!this.can('modchat', null, room)) return false;
 
 		if (room.modchat && room.modchat.length <= 1 && Config.groupsranking.indexOf(room.modchat) > 1 && !user.can('modchatall', null, room)) {
@@ -1597,7 +1665,7 @@ exports.commands = {
 			return false;
 		}
 
-		if (targetUser.locked || Users.checkBanned(targetUser.latestIp)) {
+		if (targetUser.locked || targetUser.namelocked || Users.checkBanned(targetUser.latestIp)) {
 			hidetype = 'hide|';
 		} else if ((room.bannedUsers[toId(name)] && room.bannedIps[targetUser.latestIp]) || user.can('rangeban')) {
 			hidetype = 'roomhide|';
