@@ -1045,13 +1045,7 @@ exports.commands = {
 			return this.errorReply("The reason is too long. It cannot exceed " + MAX_REASON_LENGTH + " characters.");
 		}
 
-		if (cmd === 'hm' || cmd === 'hourmute') {
-			let muteDuration = HOURMUTE_LENGTH;
-		} else if (cmd === 'permamute' || cmd === 'permanentmute') {
-			let muteDuration = PERMAMUTE_LENGTH;
-		} else {
-			let muteDuration = MUTE_LENGTH;
-		}
+		let muteDuration = ((cmd === 'hm' || cmd === 'hourmute') ? HOURMUTE_LENGTH : MUTE_LENGTH);
 		if (!this.can('mute', targetUser, room)) return false;
 		let canBeMutedFurther = ((room.getMuteTime(targetUser) || 0) <= (muteDuration * 5 / 6));
 		if ((room.isMuted(targetUser) && !canBeMutedFurther) || targetUser.locked || !targetUser.connected) {
