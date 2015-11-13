@@ -160,10 +160,10 @@ exports.commands = {
 		if (targetUser.locked && !user.can('lock')) {
 			return this.errorReply("This user is locked and cannot PM.");
 		}
-		if (user.namelocked && !targetUser.can('lock')) {
+		if (user.nameLocked && !targetUser.can('lock')) {
 			return this.errorReply("You can only private message members of the moderation team (users marked by %, @, &, or ~) when locked.");
 		}
-		if (targetUser.namelocked && !user.can('lock')) {
+		if (targetUser.nameLocked && !user.can('lock')) {
 			return this.errorReply("This user is locked and cannot PM.");
 		}
 		if (targetUser.ignorePMs && targetUser.ignorePMs !== user.group && !user.can('lock')) {
@@ -1066,7 +1066,7 @@ exports.commands = {
 			}
 			return this.addModCommand("" + targetUser.name + " would be muted by " + user.name + " but was already muted." + (target ? " (" + target + ")" : ""));
 		}
-		if ((targetUser.locked || targetUser.namelocked)) {
+		if ((targetUser.locked || targetUser.nameLocked)) {
 			if (!target) {
 				return this.privateModCommand("(" + targetUser.name + " would be muted by " + user.name + " but was already locked.)");
 			}
@@ -1177,12 +1177,12 @@ exports.commands = {
 		if (targetUser && targetUser.locked && targetUser.locked.charAt(0) === '#') {
 			reason = ' (' + targetUser.locked + ')';
 		}
-		if (targetUser && targetUser.namelocked && targetUser.namelocked.charAt(0) === '#') {
-			reason = ' (' + targetUser.namelocked + ')';
+		if (targetUser && targetUser.nameLocked && targetUser.nameLocked.charAt(0) === '#') {
+			reason = ' (' + targetUser.nameLocked + ')';
 		}
 
 		let unlocked = Users.unlock(target);
-		let unnamelocked = Users.unnamelock(target);
+		let unnameLocked = Users.unnameLock(target);
 
 		if (unlocked) {
 			let names = Object.keys(unlocked);
@@ -1190,8 +1190,8 @@ exports.commands = {
 				" unlocked by " + user.name + "." + reason);
 			if (!reason) this.globalModlog("UNLOCK", target, " by " + user.name);
 			if (targetUser) targetUser.popup("" + user.name + " has unlocked you.");
-		} else if (unnamelocked) {
-			let names = Object.keys(unnamelocked);
+		} else if (unnameLocked) {
+			let names = Object.keys(unnameLocked);
 			this.addModCommand(names.join(", ") + " " + ((names.length > 1) ? "were" : "was") +
 				" unlocked by " + user.name + "." + reason);
 			if (!reason) this.globalModlog("UNLOCK", target, " by " + user.name);
@@ -1215,7 +1215,7 @@ exports.commands = {
 		}
 		if (!this.can('lock', targetUser)) return false;
 
-		if ((targetUser.locked || targetUser.namelocked) && !target) {
+		if ((targetUser.locked || targetUser.nameLocked) && !target) {
 			return this.privateModCommand("(" + targetUser.name + " would be locked by " + user.name + " but was already locked.)");
 		}
 		if ((Users.checkBanned(targetUser.latestIp)) && !target) {
@@ -1239,7 +1239,7 @@ exports.commands = {
 		if (userid !== toId(this.inputUsername)) this.add('|unlink|hide|' + toId(this.inputUsername));
 
 		this.globalModlog("LOCK", targetUser, " by " + user.name + (target ? ": " + target : ""));
-		targetUser.namelock(false, userid);
+		targetUser.nameLock(false, userid);
 		return true;
 	},
 	namelockhelp: ["/namelock OR /nl [username], [reason] - Locks the user from talking in all chats. Only locks the username and not the IP. Requires: % @ & ~"],
@@ -1327,7 +1327,7 @@ exports.commands = {
 			return this.parse('/help unbanall');
 		}
 		// we have to do this the hard way since it's no longer a global
-		let punishKeys = ['bannedIps', 'bannedUsers', 'lockedIps', 'lockedUsers', 'lockedRanges', 'rangeLockedUsers', 'namelockedUsers'];
+		let punishKeys = ['bannedIps', 'bannedUsers', 'lockedIps', 'lockedUsers', 'lockedRanges', 'rangeLockedUsers', 'nameLockedUsers'];
 		for (let i = 0; i < punishKeys.length; i++) {
 			let dict = Users[punishKeys[i]];
 			for (let entry in dict) delete dict[entry];
@@ -1423,7 +1423,7 @@ exports.commands = {
 	mn: 'modnote',
 	modnote: function (target, room, user, connection) {
 		if (!target) return this.parse('/help modnote');
-		if ((user.locked || user.namelocked || room.isMuted(user)) && !user.can('bypassall')) return this.errorReply("You cannot do this while unable to talk.");
+		if ((user.locked || user.nameLocked || room.isMuted(user)) && !user.can('bypassall')) return this.errorReply("You cannot do this while unable to talk.");
 
 		if (target.length > MAX_REASON_LENGTH) {
 			return this.errorReply("The note is too long. It cannot exceed " + MAX_REASON_LENGTH + " characters.");
@@ -1516,7 +1516,7 @@ exports.commands = {
 	mc: 'modchat',
 	modchat: function (target, room, user) {
 		if (!target) return this.sendReply("Moderated chat is currently set to: " + room.modchat);
-		if ((user.locked || user.namelocked || room.isMuted(user)) && !user.can('bypassall')) return this.errorReply("You cannot do this while unable to talk.");
+		if ((user.locked || user.nameLocked || room.isMuted(user)) && !user.can('bypassall')) return this.errorReply("You cannot do this while unable to talk.");
 		if (!this.can('modchat', null, room)) return false;
 
 		if (room.modchat && room.modchat.length <= 1 && Config.groupsranking.indexOf(room.modchat) > 1 && !user.can('modchatall', null, room)) {
@@ -1666,7 +1666,7 @@ exports.commands = {
 			return false;
 		}
 
-		if (targetUser.locked || targetUser.namelocked || Users.checkBanned(targetUser.latestIp)) {
+		if (targetUser.locked || targetUser.nameLocked || Users.checkBanned(targetUser.latestIp)) {
 			hidetype = 'hide|';
 		} else if ((room.bannedUsers[toId(name)] && room.bannedIps[targetUser.latestIp]) || user.can('rangeban')) {
 			hidetype = 'roomhide|';

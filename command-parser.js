@@ -90,7 +90,7 @@ function canTalk(user, room, connection, message, targetUser) {
 		connection.sendTo(room, "You are locked from talking in chat.");
 		return false;
 	}
-	if (room && user.namelocked) {
+	if (room && user.nameLocked) {
 		connection.sendTo(room, "You are locked from talking in chat.");
 		return false;
 	}

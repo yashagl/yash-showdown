@@ -94,7 +94,7 @@ let lockedIps = Users.lockedIps = Object.create(null);
 let lockedUsers = Users.lockedUsers = Object.create(null);
 let lockedRanges = Users.lockedRanges = Object.create(null);
 let rangelockedUsers = Users.rangeLockedUsers = Object.create(null);
-let namelockedUsers = Users.namelockedUsers = Object.create(null);
+let nameLockedUsers = Users.nameLockedUsers = Object.create(null);
 
 /**
  * Searches for IP in table.
@@ -217,33 +217,33 @@ function unlockRange(range) {
 	delete lockedRanges[range];
 	delete rangelockedUsers[range];
 }
-function unnamelock(name, unnamelocked) {
+function unnameLock(name, unnameLocked) {
 	let userid = toId(name);
 	let user = getUser(userid);
 	let userips = null;
 	if (user) {
 		if (user.userid === userid) name = user.name;
-		if (user.namelocked) {
-			user.namelocked = false;
+		if (user.nameLocked) {
+			user.nameLocked = false;
 			user.updateIdentity();
-			unnamelocked = unnamelocked || {};
-			unnamelocked[name] = 1;
+			unnameLocked = unnameLocked || {};
+			unnameLocked[name] = 1;
 		}
 	}
-	for (let id in namelockedUsers) {
-		if (namelockedUsers[id] === userid || id === userid) {
-			delete namelockedUsers[id];
-			unnamelocked = unnamelocked || {};
-			unnamelocked[name] = 1;
+	for (let id in nameLockedUsers) {
+		if (nameLockedUsers[id] === userid || id === userid) {
+			delete nameLockedUsers[id];
+			unnameLocked = unnameLocked || {};
+			unnameLocked[name] = 1;
 		}
 	}
-	return unnamelocked;
+	return unnameLocked;
 }
 Users.unban = unban;
 Users.unlock = unlock;
 Users.lockRange = lockRange;
 Users.unlockRange = unlockRange;
-Users.unnamelock = unnamelock;
+Users.unnameLock = unnameLock;
 
 /*********************************************************
  * Routing
@@ -581,7 +581,7 @@ User = (function () {
 		this.send('|popup|' + message.replace(/\n/g, '||'));
 	};
 	User.prototype.getIdentity = function (roomid) {
-		if (this.locked || this.namelocked) {
+		if (this.locked || this.nameLocked) {
 			return '‽' + this.name;
 		}
 		if (roomid) {
@@ -919,7 +919,7 @@ User = (function () {
 				this.autoconfirmed = userid;
 			} else if (userType === '5') {
 				this.lock(false, userid + '#permalock');
-				this.namelock(false, userid + '#permalock');
+				this.nameLock(false, userid + '#permalock');
 			} else if (userType === '6') {
 				this.ban(false, userid);
 			}
@@ -1003,11 +1003,11 @@ User = (function () {
 			this.send("|popup|Your username (" + name + ") is locked" + bannedUnder + "'. Your lock will expire in a few days." + (Config.appealurl ? " Or you can appeal at:\n" + Config.appealurl : ""));
 			this.lock(true, userid);
 		}
-		if (registered && userid in namelockedUsers) {
+		if (registered && userid in nameLockedUsers) {
 			let bannedUnder = '';
-			if (namelockedUsers[userid] !== userid) bannedUnder = ' because of rule-breaking by your alt account ' + namelockedUsers[userid];
+			if (nameLockedUsers[userid] !== userid) bannedUnder = ' because of rule-breaking by your alt account ' + nameLockedUsers[userid];
 			this.send("|popup|Your username (" + name + ") is locked" + bannedUnder + "'. Your lock will expire in a few days." + (Config.appealurl ? " Or you can appeal at:\n" + Config.appealurl : ""));
-			this.namelock(true, userid);
+			this.nameLock(true, userid);
 		}
 		if (this.group === Config.groupsranking[0]) {
 			let range = this.locked || Users.shortenHost(this.latestHost);
@@ -1162,7 +1162,7 @@ User = (function () {
 		if (this.confirmed) {
 			this.autoconfirmed = this.confirmed;
 			this.locked = false;
-			this.namelocked = false;
+			this.nameLocked = false;
 		}
 		if (this.autoconfirmed && this.semilocked) {
 			if (this.semilocked === '#dnsbl') {
@@ -1353,13 +1353,13 @@ User = (function () {
 		this.autoconfirmed = '';
 		this.updateIdentity();
 	};
-	User.prototype.namelock = function (userid) {
+	User.prototype.nameLock = function (userid) {
 		// recurse only once; the root for-loop already locks everything with your IP
 		if (!userid) userid = this.userid;
 
-		if (this.autoconfirmed) namelockedUsers[this.autoconfirmed] = userid;
-		namelockedUsers[this.userid] = userid;
-		this.namelocked = userid;
+		if (this.autoconfirmed) nameLockedUsers[this.autoconfirmed] = userid;
+		nameLockedUsers[this.userid] = userid;
+		this.nameLocked = userid;
 		this.autoconfirmed = '';
 		this.updateIdentity();
 	};
