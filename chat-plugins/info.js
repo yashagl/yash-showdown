@@ -1978,7 +1978,7 @@ exports.commands = {
 		this.sendReplyBox(
 			"<b>~ Administrators</b><br />" +
 			"- Ausaudriel (Audy)<br />" +
-			"- Castform (Chase, Chaseform, orb castform)<br />" +
+			"- Castform (Chase, Chaseform, HungLikeACastform, lopunny, Mega Lopunny, orb castform, Stella Carlin)<br />" +
 			"- Hiroshi Sotomura (Sotomura, Sotomura606)<br />" +
 			"- Lance (Livewire)<br />" +
 			"- Nolafus<br />" +
@@ -1986,11 +1986,12 @@ exports.commands = {
 			"- Sheep (Cirnysheep)<br />" +
 			"- shenanigans (razor leaf, unkempt harold)<br />" +
 			"- Sylphiel<br />" +
-			"- wolf<br />" +
-			"- Zeffy<br /><br />" +
+			"- wolf (wofl)<br />" +
+			"- Zeffy (Wizard of Judaism)<br /><br />" +
 			"<b>@ Moderators</b><br />" +
 			"- Achromatic<br />" +
 			"- Aslan (Rainbow Arcanine)<br />" +
+			"- Aurora<br />" +
 			"- Christos<br />" +
 			"- Dragon (Aura Blackquill, bellossom, Captain Syrup, Dragii, Emeruade, Erika Senpai, Iris, Kjelle, Miss Fortune, Mitsuruu, Nabooru, Tharja)<br />" +
 			"- Omicron (Megido, omicronhuh)<br />" +
