@@ -1,3 +1,5 @@
+'use strict';
+
 exports.BattleFormatsData = {
 	charizard: {
 		requiredItem: "Charizardite X"

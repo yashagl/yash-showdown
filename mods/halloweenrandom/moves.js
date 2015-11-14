@@ -1,3 +1,5 @@
+'use strict';
+
 exports.BattleMovedex = {
 	"trickotreat": {
 		num: -1,

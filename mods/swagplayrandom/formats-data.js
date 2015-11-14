@@ -1,3 +1,5 @@
+'use strict';
+
 exports.BattleFormatsData = {
 	murkrow: {
 		randomBattleMoves: ["swagger","foulplay","substitute","roost"],
