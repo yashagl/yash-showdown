@@ -9,14 +9,22 @@ exports.Formats = [
 	///////////////////////////////////////////////////////////////////
 
 	{
-		name: "High Tier Random (LotW 2)",
-		section: "ORAS Singles",
+		name: "Inverse OU (LotW 3)",
+		section: "Other Metagames",
 
-		mod: 'hightierrandom',
-		team: 'randomHighTier',
-		ruleset: ['Random (no PotD)'],
+		ruleset: ['Pokemon', 'Standard', 'Team Preview', 'Swagger Clause', 'Baton Pass Clause'],
+		banlist: ['Uber', 'Soul Dew'],
 		onBegin: function () {
 			this.add('raw|This is the Ladder of the Week! Use the "Look for a battle" button to try and win the LotW. The winner is the user who is #1 on the ladder by 10 PM ET on Saturday. They receive a \u2605 beside their name for a week.');
+		},
+		onNegateImmunity: function (pokemon, type) {
+			if (type in this.data.TypeChart && this.runEvent('Immunity', pokemon, null, null, type)) return false;
+		},
+		onEffectiveness: function (typeMod, target, type, move) {
+			// The effectiveness of Freeze Dry on Water isn't reverted
+			if (move && move.id === 'freezedry' && type === 'Water') return;
+			if (move && !this.getImmunity(move, type)) return 1;
+			return -typeMod;
 		}
 	},
 	{
