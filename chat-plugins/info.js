@@ -1989,7 +1989,6 @@ exports.commands = {
 			"- wolf (wofl)<br />" +
 			"- Zeffy (Wizard of Judaism)<br /><br />" +
 			"<b>@ Moderators</b><br />" +
-			"- Achromatic<br />" +
 			"- Aslan (Rainbow Arcanine, TOP PERCENTAGE)<br />" +
 			"- Aurora<br />" +
 			"- Christos<br />" +
