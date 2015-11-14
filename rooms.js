@@ -942,7 +942,7 @@ let BattleRoom = (function () {
 				// Battle Point Winnings
 				//
 
-				if (this.format === 'hightierrandomlotw2') {
+				if (this.format === 'inverseoulotw3') {
 					let wid = toId(winner);
 					Database.read('bp', wid, function (err, initial) {
 						if (err) throw err;
