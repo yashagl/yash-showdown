@@ -4,6 +4,7 @@ exports.parseEmoticons = parseEmoticons;
 
 var emotes = {
 	':absol:': 'http://cbc.pokecommunity.com/config/emoticons/absol.png',
+	':aids:': 'http://cbc.pokecommunity.com/config/emoticons/aids.png',
 	':arceus:': 'http://cbc.pokecommunity.com/config/emoticons/arceus.png',
 	':armycat:': 'http://cbc.pokecommunity.com/config/emoticons/armycat.png',
 	':azelf:': 'http://cbc.pokecommunity.com/config/emoticons/azelf.png',
