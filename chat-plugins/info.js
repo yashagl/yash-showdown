@@ -1990,7 +1990,7 @@ exports.commands = {
 			"- Zeffy (Wizard of Judaism)<br /><br />" +
 			"<b>@ Moderators</b><br />" +
 			"- Achromatic<br />" +
-			"- Aslan (Rainbow Arcanine)<br />" +
+			"- Aslan (Rainbow Arcanine, TOP PERCENTAGE)<br />" +
 			"- Aurora<br />" +
 			"- Christos<br />" +
 			"- Dragon (Aura Blackquill, bellossom, Captain Syrup, Dragii, Emeruade, Erika Senpai, Iris, Kjelle, Miss Fortune, Mitsuruu, Nabooru, Tharja)<br />" +
