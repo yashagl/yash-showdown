@@ -1978,7 +1978,7 @@ exports.commands = {
 		this.sendReplyBox(
 			"<b>~ Administrators</b><br />" +
 			"- Ausaudriel (Audy)<br />" +
-			"- Castform (Chase, Chaseform, HungLikeACastform, lopunny, Mega Lopunny, orb castform, Stella Carlin)<br />" +
+			"- Castform (Chase, Chaseform, orb castform)<br />" +
 			"- Hiroshi Sotomura (Sotomura, Sotomura606)<br />" +
 			"- Lance (Livewire)<br />" +
 			"- Nolafus<br />" +
