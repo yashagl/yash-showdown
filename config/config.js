@@ -558,6 +558,7 @@ exports.customavatars = {
 	'sopheria7': 'itssopheria.jpg',
 	'noatan': 'noatan.png',
 	'nakasu': 'nakasu.gif',
+	'pmseth': 'pmseth.gif',
 };
 
 // custom avatars appear in profile by specifiying server url.
