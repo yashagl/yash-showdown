@@ -9,13 +9,13 @@ exports.Formats = [
 	///////////////////////////////////////////////////////////////////
 
 	{
-		name: "Inverse OU (LotW 3)",
+		name: "[LotW 3] Inverse OU",
 		section: "ORAS Singles",
 
 		ruleset: ['Pokemon', 'Standard', 'Team Preview', 'Swagger Clause', 'Baton Pass Clause'],
 		banlist: ['Uber', 'Soul Dew'],
 		onBegin: function () {
-			this.add('raw|This is the Ladder of the Week! Use the "Look for a battle" button to try and win the LotW. The winner is the user who is #1 on the ladder by 10 PM ET on Saturday. They receive a \u2605 beside their name for a week.');
+			this.add('raw|This is the Ladder of the Week! Use the "Look for a battle" button to try and win the LotW. The winner is the user who is #1 on the ladder by 10 PM ET on Saturday. They receive a <img src="http://cbc.pokecommunity.com/config/user-list-images/lotw-trophy.png" /> beside their name for a week.');
 		},
 		onNegateImmunity: function (pokemon, type) {
 			if (type in this.data.TypeChart && this.runEvent('Immunity', pokemon, null, null, type)) return false;
