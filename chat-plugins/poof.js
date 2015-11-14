@@ -75,6 +75,10 @@ const shinysquirtlesquad = [
 	"is gone for class"
 ];
 
+const slate = [
+	"Believe in a smiling god, mon ch\u00e9ri."
+];
+
 const srinator = [
 	"elfs smells too much, ima leave"
 ];
@@ -356,6 +360,16 @@ exports.commands = {
 				message = '{{user}} ' + message;
 			}
 			message = message.replace(/{{user}}/g, user.name);
+
+			var colour = '#' + [1, 1, 1].map(function () {
+				var part = Math.floor(Math.random() * 0xaa);
+				return (part < 0x10 ? '0' : '') + part.toString(16);
+			}).join('');
+
+			room.addRaw('<center><strong><font color="' + colour + '">~~ ' + Tools.escapeHTML(message) + ' ~~</font></strong></center>');
+			user.leaveRoom(room);
+		} else if (userid.toUpperCase() === 'SLATE') {
+			var message = target || slate[Math.floor(Math.random() * slate.length)];
 
 			var colour = '#' + [1, 1, 1].map(function () {
 				var part = Math.floor(Math.random() * 0xaa);
