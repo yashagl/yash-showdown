@@ -10,7 +10,7 @@ exports.Formats = [
 
 	{
 		name: "Inverse OU (LotW 3)",
-		section: "Other Metagames",
+		section: "ORAS Singles",
 
 		ruleset: ['Pokemon', 'Standard', 'Team Preview', 'Swagger Clause', 'Baton Pass Clause'],
 		banlist: ['Uber', 'Soul Dew'],
