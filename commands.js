@@ -1218,11 +1218,14 @@ exports.commands = {
 		}
 		if (!this.can('lock', targetUser)) return false;
 
-		if ((targetUser.locked || targetUser.nameLocked) && !target) {
-			return this.privateModCommand("(" + targetUser.name + " would be locked by " + user.name + " but was already locked.)");
+		if ((targetUser.nameLocked) && !target) {
+			return this.privateModCommand("(" + targetUser.name + " would be namelocked by " + user.name + " but was already namelocked.)");
+		}
+		if ((targetUser.locked) && !target) {
+			return this.privateModCommand("(" + targetUser.name + " would be namelocked by " + user.name + " but was already locked.)");
 		}
 		if ((Users.checkBanned(targetUser.latestIp)) && !target) {
-			return this.privateModCommand("(" + targetUser.name + " would be locked by " + user.name + " but was already banned.)");
+			return this.privateModCommand("(" + targetUser.name + " would be namelocked by " + user.name + " but was already banned.)");
 		}
 
 		// Destroy personal rooms of the locked user.
