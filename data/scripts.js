@@ -3506,10 +3506,12 @@ exports.BattleScripts = {
 			}
 		}
 
+		let typeCount = {};
+		let typeComboCount = {};
 		let baseFormes = {};
 		let uberCount = 0;
 		let puCount = 0;
-		let megaCount = 0;
+		let teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
 
 		while (pokemonPool.length && pokemonLeft < 6) {
 			let template = this.getTemplate(this.sampleNoReplace(pokemonPool));
@@ -3520,6 +3522,9 @@ exports.BattleScripts = {
 
 			// Not available on ORAS
 			if (template.species === 'Pichu-Spiky-eared') continue;
+
+			// Useless in Random Battle without greatly lowering the levels of everything else
+			if (template.species === 'Unown') continue;
 
 			let tier = template.tier;
 			switch (tier) {
@@ -3579,21 +3584,50 @@ exports.BattleScripts = {
 				if (template.species !== 'Pikachu' && this.random(30) >= 1) continue;
 			}
 
-			let set = this.randomSet(template, pokemon.length, megaCount);
+			// Limit 2 of any type
+			let types = template.types;
+			let skip = false;
+			for (let t = 0; t < types.length; t++) {
+				if (typeCount[types[t]] > 1 && this.random(5) >= 1) {
+					skip = true;
+					break;
+				}
+			}
+			if (skip) continue;
+
+			let set = this.randomSet(template, pokemon.length, teamDetails);
 
 			// Illusion shouldn't be on the last pokemon of the team
 			if (set.ability === 'Illusion' && pokemonLeft > 4) continue;
 
+			// Limit 1 of any type combination
+			let typeCombo = types.join();
+			if (set.ability === 'Drought' || set.ability === 'Drizzle') {
+				// Drought and Drizzle don't count towards the type combo limit
+				typeCombo = set.ability;
+			}
+			if (typeCombo in typeComboCount) continue;
+
 			// Limit the number of Megas to one
 			let forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
 			let isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
-			if (isMegaSet && megaCount > 0) continue;
+			if (isMegaSet && teamDetails.megaCount > 0) continue;
 
 			// Okay, the set passes, add it to our team
 			pokemon.push(set);
 
 			// Now that our Pokemon has passed all checks, we can increment our counters
 			pokemonLeft++;
+
+			// Increment type counters
+			for (let t = 0; t < types.length; t++) {
+				if (types[t] in typeCount) {
+					typeCount[types[t]]++;
+				} else {
+					typeCount[types[t]] = 1;
+				}
+			}
+			typeComboCount[typeCombo] = 1;
 
 			// Increment Uber/NU counters
 			if (tier === 'Uber') {
@@ -3602,8 +3636,12 @@ exports.BattleScripts = {
 				puCount++;
 			}
 
-			// Increment mega and base species counters
-			if (isMegaSet) megaCount++;
+			// Increment mega, stealthrock, and base species counters
+			if (isMegaSet) teamDetails.megaCount++;
+			if (set.ability === 'Snow Warning') teamDetails['hail'] = 1;
+			if (set.ability === 'Drizzle' || set.moves.indexOf('raindance') >= 0) teamDetails['rain'] = 1;
+			if (set.moves.indexOf('stealthrock') >= 0) teamDetails.stealthRock++;
+			if (set.moves.indexOf('defog') >= 0 || set.moves.indexOf('rapidspin') >= 0) teamDetails.hazardClear++;
 			baseFormes[template.baseSpecies] = 1;
 		}
 		return pokemon;
@@ -4530,10 +4568,12 @@ exports.BattleScripts = {
 			}
 		}
 
+		let typeCount = {};
+		let typeComboCount = {};
 		let baseFormes = {};
 		let uberCount = 0;
 		let puCount = 0;
-		let megaCount = 0;
+		let teamDetails = {megaCount: 0, stealthRock: 0, hazardClear: 0};
 
 		while (pokemonPool.length && pokemonLeft < 6) {
 			let template = this.getTemplate(this.sampleNoReplace(pokemonPool));
@@ -4544,6 +4584,9 @@ exports.BattleScripts = {
 
 			// Not available on ORAS
 			if (template.species === 'Pichu-Spiky-eared') continue;
+
+			// Useless in Random Battle without greatly lowering the levels of everything else
+			if (template.species === 'Unown') continue;
 
 			let tier = template.tier;
 			switch (tier) {
@@ -4603,21 +4646,50 @@ exports.BattleScripts = {
 				if (template.species !== 'Pikachu' && this.random(30) >= 1) continue;
 			}
 
-			let set = this.randomSet(template, pokemon.length, megaCount);
+			// Limit 2 of any type
+			let types = template.types;
+			let skip = false;
+			for (let t = 0; t < types.length; t++) {
+				if (typeCount[types[t]] > 1 && this.random(5) >= 1) {
+					skip = true;
+					break;
+				}
+			}
+			if (skip) continue;
+
+			let set = this.randomSet(template, pokemon.length, teamDetails);
 
 			// Illusion shouldn't be on the last pokemon of the team
 			if (set.ability === 'Illusion' && pokemonLeft > 4) continue;
 
+			// Limit 1 of any type combination
+			let typeCombo = types.join();
+			if (set.ability === 'Drought' || set.ability === 'Drizzle') {
+				// Drought and Drizzle don't count towards the type combo limit
+				typeCombo = set.ability;
+			}
+			if (typeCombo in typeComboCount) continue;
+
 			// Limit the number of Megas to one
 			let forme = template.otherFormes && this.getTemplate(template.otherFormes[0]);
 			let isMegaSet = this.getItem(set.item).megaStone || (forme && forme.isMega && forme.requiredMove && set.moves.indexOf(toId(forme.requiredMove)) >= 0);
-			if (isMegaSet && megaCount > 0) continue;
+			if (isMegaSet && teamDetails.megaCount > 0) continue;
 
 			// Okay, the set passes, add it to our team
 			pokemon.push(set);
 
 			// Now that our Pokemon has passed all checks, we can increment our counters
 			pokemonLeft++;
+
+			// Increment type counters
+			for (let t = 0; t < types.length; t++) {
+				if (types[t] in typeCount) {
+					typeCount[types[t]]++;
+				} else {
+					typeCount[types[t]] = 1;
+				}
+			}
+			typeComboCount[typeCombo] = 1;
 
 			// Increment Uber/NU counters
 			if (tier === 'Uber') {
@@ -4626,8 +4698,12 @@ exports.BattleScripts = {
 				puCount++;
 			}
 
-			// Increment mega and base species counters
-			if (isMegaSet) megaCount++;
+			// Increment mega, stealthrock, and base species counters
+			if (isMegaSet) teamDetails.megaCount++;
+			if (set.ability === 'Snow Warning') teamDetails['hail'] = 1;
+			if (set.ability === 'Drizzle' || set.moves.indexOf('raindance') >= 0) teamDetails['rain'] = 1;
+			if (set.moves.indexOf('stealthrock') >= 0) teamDetails.stealthRock++;
+			if (set.moves.indexOf('defog') >= 0 || set.moves.indexOf('rapidspin') >= 0) teamDetails.hazardClear++;
 			baseFormes[template.baseSpecies] = 1;
 		}
 		return pokemon;
