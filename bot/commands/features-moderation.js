@@ -481,6 +481,7 @@ exports.commands = {
 	viewgautoban: 'viewgblacklist',
 	viewglobalblacklist: 'viewgblacklist',
 	viewglobalbans: 'viewgblacklist',
+	viewglobalban: 'viewgblacklist',
 	viewglobalautobans: 'viewgblacklist',
 	viewglobalautoban: 'viewgblacklist',
 	viewgblacklist: function (arg, by, room, cmd) {
