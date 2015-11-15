@@ -1397,7 +1397,7 @@ exports.commands = {
 
 	rangelock: function (target, room, user) {
 		if (!target) return this.errorReply("Please specify a range to lock.");
-		if (!this.can('rangeban')) return false;
+		if (!this.can('ban')) return false;
 
 		let isIp = (target.slice(-1) === '*');
 		let range = (isIp ? target : Users.shortenHost(target));
@@ -1410,7 +1410,7 @@ exports.commands = {
 	unrangelock: 'rangeunlock',
 	rangeunlock: function (target, room, user) {
 		if (!target) return this.errorReply("Please specify a range to unlock.");
-		if (!this.can('rangeban')) return false;
+		if (!this.can('ban')) return false;
 
 		let range = (target.slice(-1) === '*' ? target : Users.shortenHost(target));
 		if (!Users.lockedRanges[range]) return this.errorReply("The range " + range + " is not locked.");

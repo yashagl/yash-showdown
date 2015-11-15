@@ -684,7 +684,6 @@ exports.grouplist = [
 		roomvoice: true,
 		ip: true,
 		modchatall: true,
-		rangeban: true,
 		gdeclare: true,
 		clearall: true,
 		roomplayer: true
