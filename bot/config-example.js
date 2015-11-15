@@ -143,7 +143,6 @@ exports.debug = {
 	sent: false
 };
 
-
 /*
 * Configuration for specific
 * commands and features
@@ -358,9 +357,6 @@ exports.groupChatTryJoinInterval = 60 * 1000;
 exports.groupchats['groupchat-ecuacion-test'] = {
 	toJoin: ['/join groupchat-ecuacion-test'],
 	onJoin: ['Hi guys!'],
-	onLeave: [],
-	roomAuth: {
-		'+': [/^.*$/]
-	}
+	onLeave: []
 };
 */

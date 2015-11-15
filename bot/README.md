@@ -4,17 +4,16 @@
 [![Build Status](https://travis-ci.org/Ecuacion/Pokemon-Showdown-Node-Bot.svg)](https://travis-ci.org/Ecuacion/Pokemon-Showdown-Node-Bot)
 [![Dependency Status](https://david-dm.org/Ecuacion/Pokemon-Showdown-Node-Bot.svg)](https://david-dm.org/Ecuacion/Pokemon-Showdown-Node-Bot)
 [![devDependency Status](https://david-dm.org/Ecuacion/Pokemon-Showdown-Node-Bot/dev-status.svg)](https://david-dm.org/Ecuacion/Pokemon-Showdown-Node-Bot#info=devDependencies)
+[![Version](https://img.shields.io/badge/version-0.3.0-orange.svg)](https://github.com/Ecuacion/Pokemon-Showdown-Node-Bot#pokemon-showdown-bot-for-node)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](http://opensource.org/licenses/MIT)
 
-This is a [Pokemon Showdown](https://github.com/Zarel/Pokemon-Showdown) bot written in JavaScript for [Node](http://nodejs.org/), based on [Pokemon Showdown Bot](https://github.com/TalkTakesTime/Pokemon-Showdown-Bot). 
+This is a [Pokemon Showdown](https://github.com/Zarel/Pokemon-Showdown) bot written in JavaScript for [Node](http://nodejs.org/)
 
 This bot is based on commands and features, which are explained [here](https://github.com/Ecuacion/Pokemon-Showdown-Node-Bot/blob/master/DEVELOPMENT.md). This is intended to ease bot configuration and customization, separating commands in multiple files, multiple features in different folders and merging functions in Global Objects like Bot, CommandParser or Settings. This bot also works in multiple languages at the same time, useful for language rooms.
 
-[![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](https://github.com/Ecuacion/Pokemon-Showdown-Node-Bot#pokemon-showdown-bot-for-node)
-
 Features included in this package:
  - **Base:** Basic commands for getting basic information, manage command permissions, languages and dynamic commands (only-text commands useful for giving information).
- - **Chat-Plugins:** This includes a customizable 'quote' command, random answer and pokemon informational commands.
+ - **Chat-Plugins:** This includes a customizable database of jokes and quotes, random answer and pokemon informational commands. This also includes a 'translate' command for pokemon stuff.
  - **Moderation:** Automated chat moderation for infractions like spam, flood, caps, stretching, etc  This also includes a blacklist and welcome messages called join-phrases.
  - **Battle:** Automated battle bot for challenges, ladder and tournaments. This also includes teams management commands. Note that this is not an artificial intelligence, just an improvised algorithm that simulates in-game players (just for fun).
  - **Chat Logger:** Stores logs of chat rooms and/or pms. This also includes an optional logs server.
@@ -40,14 +39,14 @@ Then open a shell console, use `cd` to reach the directory of the bot and instal
 ```
 $ npm install --production
 ```
-If you want to use `Gulp` test, install all dependencies with `npm install`
+If you want to use `npm test` for developement, install all dependencies with `npm install`
 
 Now, to start the bot use:
 ```
 $ node index.js
 ```
 
-To configure your bot, copy `config-example.js` to `config.js` and edit that file. You can specify bot login credentials among other things. If you don't specify credentials, the bot will log in a random username started by 'Bot'. Read the [Configuration Guide](https://gist.github.com/Ecuacion/351a0a467bc5b057e86f) for more information
+To configure your bot, copy `config-example.js` to `config.js` and edit that file. You can specify bot login credentials among other things. If you don't specify credentials, the bot will log in a random username started by 'Bot'. Read the [Configuration Guide](https://github.com/Ecuacion/Pokemon-Showdown-Node-Bot/blob/master/CONFIGGUIDE.md) for more information
 
 Keeping your bot updated
 ------------
@@ -79,7 +78,7 @@ When you want to update, you can follow these steps:
 Configuration
 ------------
 
-Once copied `config.js` from `config-example.js` you can edit config options to customize the bot.
+Check the [configuration guide](https://github.com/Ecuacion/Pokemon-Showdown-Node-Bot/blob/master/CONFIGGUIDE.md) for more information.
 
 **Connection Details**
  - `Config.server`: Server url, for example main server url is `sim.smogon.com`

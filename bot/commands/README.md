@@ -40,6 +40,8 @@ Misc commands for multiple features:
  - `pick [option1], [option2], ...` - Choose between multiple options
  - `randomanswer` - Get a random answer
  - `usage` - Get a link to Smogon official usage stats
+ - `joke` - Get a random joke from the local database
+ - `quote` - Get a random quote from the local database
 
 Commands for getting pokemon info:
 
@@ -53,15 +55,14 @@ Commands for getting pokemon info:
  - `recovery [poke]` - Get recovery moves
  - `hazards [poke]` - Get hazards moves
 
-Commands for managing a database of jokes or quotes. Then, users can get a random one using **quote** or **joke** command:
+Commands for managing the local database of jokes and quotes:
 
- - `quote` or `joke` - Get a random quote / joke
- - `addquotes [http://hastebin.com/raw/example]` - Add quotes from a Hastebin document
- - `temp [text]` - Set temp var, to create or modify a quote / joke
- - `setquote [id]` - Create or modify a quote / joke using the **temp** var
- - `delquote [id]` - Remove a quote by Id
- - `viewquote [id]` - View a quote by Id
- - `viewquotes` - Upload quote list to Hastebin
+ - `addquote [id], [text]` - Add a new quote
+ - `delquote [id]` - Delete an existing quote
+ - `listquotes` - Upload quotes to hastebin
+ - `addjoke [id], [text]` - Add a new joke
+ - `deljoke [id]` - Delete an existing joke
+ - `listjokes` - Upload jokes to hastebin
 
 Administrative Commands
 ------------
@@ -83,14 +84,22 @@ Commands for developing (only for excepted users)
 
  - `eval` or `js` - Execute arbitrary JavaScript
  - `send` - Send anything to the server
+ - `reload [commands/config/features/laguages]` - Hotpatch source files
+ - `updategit` - Fast forward from git repo
+
+CommandParser developing commands
+
  - `ignore [user]` - Bot will ignore an user
  - `unignore [user]` - Stop ignoring an user
  - `sleep [room]` - Change the room status to `Sleeping`, to disable bot commands in a room
  - `wake [room]` - Change the room status to `Ready`, to re-enable bot  commands in a room
  - `status` or `roomstatus [room]` - Show the current status. Abbreviations: [c - chat, b - battle][r - ready, s - sleeping][Bot group][p - public, h - hidden]. Example: crup = chat, ready, user, private
- - `reload [commands/config/features/laguages]` - Hotpatch source files
- - `updategit` - Fast forward from git repo
- - `kill` - End the process
+
+Commands for terminating the process (for restarting the bot)
+
+ - `lockdown` - Set lockdown mode, use `endlockdown` to revert it
+ - `kill` - End the process after using lockdown
+ - `forcekill` - Kill the process
 
 Moderation
 ------------
@@ -258,6 +267,13 @@ Commands for auto-invite feature
 
 Group Chats
 ------------
+
+Automated Promotion
+
+ - `setautorank [on/off]` - Enable or disable automated promotion in a room
+ - `autorank [rank/off]` - Set the autopromotion rank for all users when joining the room
+ - `autorank [user], [rank/deauth]` - Set the autopromotion rank for a single user
+ - `listautorank` - Upload the autopromotion list to Hastebin
 
 Developing commands for GroupChats feature
 
