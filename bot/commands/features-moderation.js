@@ -369,9 +369,9 @@ exports.commands = {
 	ungblacklist: 'ungautoban',
 	ungban: 'ungautoban',
 	ungab: 'ungautoban',
-	globalunblacklist: 'gautoban',
-	globalunban: 'gautoban',
-	globalunautoban: 'gautoban',
+	unglobalblacklist: 'gautoban',
+	unglobalban: 'gautoban',
+	unglobalautoban: 'gautoban',
 	ungautoban: function (arg, by, room, cmd) {
 		if (!this.can('gautoban')) return;
 		var tarRoom = room;
