@@ -1240,7 +1240,7 @@ exports.commands = {
 		targetUser.popup("|modal|" + user.name + " has locked you from talking in chats, battles, and PMing regular users." + (target ? "\n\nReason: " + target : "") + "\n\nIf you feel that your lock was unjustified, you can still PM staff members (%, @, &, and ~) to discuss it" + (Config.appealurl ? " or you can appeal:\n" + Config.appealurl : ".") + "\n\nYour lock will expire in a few days.");
 
 		this.add("" + targetUser.name + " was locked from talking by " + user.name + "." + (target ? " (" + target + ")" : ""));
-		this.privateModCommand("" + targetUser.name + " was namelocked from talking by " + user.name + "." + (target ? " (" + target + ")" : ""));
+		this.privateModCommand("(" + targetUser.name + " was namelocked from talking by " + user.name + "." + (target ? " (" + target + ")" : ")"));
 		let userid = this.getLastIdOf(targetUser);
 		this.add('|unlink|hide|' + userid);
 		if (userid !== toId(this.inputUsername)) this.add('|unlink|hide|' + toId(this.inputUsername));
