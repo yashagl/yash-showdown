@@ -79,12 +79,21 @@ exports.Formats = [
 	{
 		name: "RU",
 		desc: [
-			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3549031/\">np: RU Stage 11</a>",
+			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3555823/\">np: RU Stage 12</a>",
 			"&bullet; <a href=\"https://www.smogon.com/dex/xy/tags/ru/\">RU Banlist</a>",
 			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3538036/\">RU Viability Ranking</a>"
 		],
 		section: "ORAS Singles",
 
+		searchShow: false,
+		ruleset: ['UU'],
+		banlist: ['UU', 'BL2']
+	},
+	{
+		name: "RU (suspect test)",
+		section: "ORAS Singles",
+
+		challengeShow: false,
 		ruleset: ['UU'],
 		banlist: ['UU', 'BL2']
 	},
@@ -3912,7 +3921,7 @@ exports.Formats = [
 				for (let key in pokemon.abilities) {
 					let abilityId = toId(pokemon.abilities[key]);
 					if (abilityMap[abilityId]) {
-						abilityMap[abilityId].push(speciesid);
+						abilityMap[abilityId][pokemon.evos ? 'push' : 'unshift'](speciesid);
 					} else {
 						abilityMap[abilityId] = [speciesid];
 					}
@@ -3974,6 +3983,7 @@ exports.Formats = [
 			let pokemonWithAbility = this.format.abilityMap[abilityId];
 			if (!pokemonWithAbility) return ["" + set.ability + " is an invalid ability."];
 			let isBaseAbility = Object.values(template.abilities).map(toId).indexOf(abilityId) >= 0;
+			if (!isBaseAbility && abilityId in this.format.customBans.inheritedAbilities) return ["" + set.ability + " is banned from being passed down."];
 
 			// Items must be fully validated here since we may pass a different item to the base set validator.
 			let item = this.tools.getItem(set.item);
@@ -3999,7 +4009,7 @@ exports.Formats = [
 				if (donorTemplate.species !== set.species && toId(donorTemplate.species) in this.format.customBans.donor) {
 					problems = ["" + donorTemplate.species + " is banned from passing abilities down."];
 					continue;
-				} else if (donorTemplate.species !== set.species && !isBaseAbility && abilityId in this.format.customBans.inheritedAbilities) {
+				} else if (donorTemplate.species !== set.species && abilityId in this.format.customBans.inheritedAbilities) {
 					problems = ["The ability " + this.tools.getAbility(abilityId).name + " is banned from being passed down."];
 					continue;
 				}
