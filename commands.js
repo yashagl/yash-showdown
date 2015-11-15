@@ -1204,6 +1204,9 @@ exports.commands = {
 
 	nl: 'namelock',
 	nlock: 'namelock',
+	nicklock: 'namelock',
+	lockname: 'namelock',
+	locknick: 'namelock',
 	namelock: function (target, room, user, connection, cmd) {
 		if (!target) return this.parse('/help namelock');
 
