@@ -258,6 +258,7 @@ exports.commands = {
 	viewbans: 'viewblacklist',
 	vab: 'viewblacklist',
 	viewautobans: 'viewblacklist',
+	viewautoban: 'viewblacklist',
 	viewblacklist: function (arg, by, room, cmd) {
 		if (!this.can('autoban')) return;
 		var tarRoom = room;
@@ -475,9 +476,11 @@ exports.commands = {
 	viewgbans: 'viewgblacklist',
 	vgab: 'viewgblacklist',
 	viewgautobans: 'viewgblacklist',
+	viewgautoban: 'viewgblacklist',
 	viewglobalblacklist: 'viewgblacklist',
 	viewglobalbans: 'viewgblacklist',
 	viewglobalautobans: 'viewgblacklist',
+	viewglobalautoban: 'viewgblacklist',
 	viewgblacklist: function (arg, by, room, cmd) {
 		if (!this.can('gautoban')) return;
 		var tarRoom = room;
