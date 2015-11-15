@@ -285,6 +285,13 @@ exports.Formats = [
 		ruleset: ['Random (no PotD)']
 	},
 	{
+		name: "Color Random",
+		section: "Random Battles (aka Randbats)",
+
+		team: 'randomColor',
+		ruleset: ['Random (no PotD)']
+	},
+	{
 		name: "Inverse Random",
 		section: "Random Battles (aka Randbats)",
 
