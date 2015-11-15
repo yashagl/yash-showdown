@@ -256,6 +256,7 @@ exports.commands = {
 	},
 
 	viewbans: 'viewblacklist',
+	viewban: 'viewblacklist',
 	vab: 'viewblacklist',
 	viewautobans: 'viewblacklist',
 	viewautoban: 'viewblacklist',
@@ -474,6 +475,7 @@ exports.commands = {
 	},
 
 	viewgbans: 'viewgblacklist',
+	viewgban: 'viewgblacklist',
 	vgab: 'viewgblacklist',
 	viewgautobans: 'viewgblacklist',
 	viewgautoban: 'viewgblacklist',
