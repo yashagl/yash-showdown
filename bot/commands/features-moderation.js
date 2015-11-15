@@ -60,7 +60,41 @@ function unblacklistRegex(regex, room) {
 	return false;
 }
 
-Settings.addPermissions(['autoban', 'banword', 'joinphrase']);
+function blacklistGlobal(user) {
+	if (!Settings.settings['gautoban'] || !Settings.settings['gautoban'][user]) {
+		if (!Settings.settings['gautoban']) Settings.settings['gautoban'] = {};
+		Settings.settings['gautoban'][user] = 1;
+		return true;
+	}
+	return false;
+}
+
+function unblacklistGlobal(user) {
+	if (Settings.settings['gautoban'] && Settings.settings['gautoban'][user]) {
+		delete Settings.settings['gautoban'][user];
+		return true;
+	}
+	return false;
+}
+
+function blacklistGlobalRegex(regex) {
+	if (!Settings.settings['regexgautoban'] || !Settings.settings['regexgautoban'][regex]) {
+		if (!Settings.settings['regexgautoban']) Settings.settings['regexgautoban'] = {};
+		Settings.settings['regexgautoban'][regex] = 1;
+		return true;
+	}
+	return false;
+}
+
+function unblacklistGlobalRegex(regex) {
+	if (Settings.settings['regexgautoban'] && Settings.settings['regexgautoban'][regex]) {
+		delete Settings.settings['regexgautoban'][regex];
+		return true;
+	}
+	return false;
+}
+
+Settings.addPermissions(['autoban', 'gautoban', 'banword', 'joinphrase']);
 
 exports.commands = {
 	/**************************
@@ -72,9 +106,14 @@ exports.commands = {
 	ab: 'autoban',
 	autoban: function (arg, by, room, cmd) {
 		if (!this.can('autoban')) return;
-		if (room !== 'staff') return this.say(room, 'The blacklist commands must be used in the "Staff" room.');
-		var tarRoom = 'lobby';
+		var tarRoom = room;
+		var targetObj = Tools.getTargetRoom(arg);
 		var textHelper = '';
+		if (targetObj && this.isExcepted) {
+			arg = targetObj.arg;
+			tarRoom = targetObj.room;
+			textHelper = ' (' + tarRoom + ')';
+		}
 		if (!Bot.rooms[tarRoom] || Bot.rooms[tarRoom].type !== 'chat') return this.reply(this.trad('notchat') + textHelper);
 		if (!this.isExcepted && !this.botRanked(Tools.getGroup('moderator'))) return this.reply(this.botName + " " + this.trad('notmod').replace('@', Tools.getGroup('moderator')));
 
@@ -96,7 +135,7 @@ exports.commands = {
 				alreadyAdded.push(tarUser);
 				continue;
 			}
-			this.say(tarRoom, '/ban ' + tarUser + ', ' + this.trad('bu'));
+			this.say(tarRoom, '/roomban ' + tarUser + ', ' + this.trad('bu'));
 			added.push(tarUser);
 		}
 
@@ -118,9 +157,14 @@ exports.commands = {
 	unab: 'unautoban',
 	unautoban: function (arg, by, room, cmd) {
 		if (!this.can('autoban')) return;
-		if (room !== 'staff') return this.say(room, 'The blacklist commands must be used in the "Staff" room.');
-		var tarRoom = 'lobby';
+		var tarRoom = room;
+		var targetObj = Tools.getTargetRoom(arg);
 		var textHelper = '';
+		if (targetObj && this.isExcepted) {
+			arg = targetObj.arg;
+			tarRoom = targetObj.room;
+			textHelper = ' (' + tarRoom + ')';
+		}
 		if (!Bot.rooms[tarRoom] || Bot.rooms[tarRoom].type !== 'chat') return this.reply(this.trad('notchat') + textHelper);
 		if (!this.isExcepted && !this.botRanked(Tools.getGroup('moderator'))) return this.reply(this.botName + " " + this.trad('notmod').replace('@', Tools.getGroup('moderator')));
 
@@ -141,7 +185,7 @@ exports.commands = {
 				notRemoved.push(tarUser);
 				continue;
 			}
-			this.say(tarRoom, '/unban ' + tarUser);
+			this.say(tarRoom, '/roomunban ' + tarUser);
 			removed.push(tarUser);
 		}
 
@@ -157,9 +201,14 @@ exports.commands = {
 	rab: 'regexautoban',
 	regexautoban: function (arg, user, room) {
 		if (!this.can('autoban')) return;
-		if (room !== 'staff') return this.say(room, 'The blacklist commands must be used in the "Staff" room.');
-		var tarRoom = 'lobby';
+		var tarRoom = room;
+		var targetObj = Tools.getTargetRoom(arg);
 		var textHelper = '';
+		if (targetObj && this.isExcepted) {
+			arg = targetObj.arg;
+			tarRoom = targetObj.room;
+			textHelper = ' (' + tarRoom + ')';
+		}
 		if (!Bot.rooms[tarRoom] || Bot.rooms[tarRoom].type !== 'chat') return this.reply(this.trad('notchat') + textHelper);
 		if (!this.isExcepted && !this.botRanked(Tools.getGroup('moderator'))) return this.reply(Bot.status.nickName + " " + this.trad('notmod').replace('@', Tools.getGroup('moderator')));
 
@@ -185,9 +234,14 @@ exports.commands = {
 	unrab: 'unregexautoban',
 	unregexautoban: function (arg, user, room) {
 		if (!this.can('autoban')) return;
-		if (room !== 'staff') return this.say(room, 'The blacklist commands must be used in the "Staff" room.');
-		var tarRoom = 'lobby';
+		var tarRoom = room;
+		var targetObj = Tools.getTargetRoom(arg);
 		var textHelper = '';
+		if (targetObj && this.isExcepted) {
+			arg = targetObj.arg;
+			tarRoom = targetObj.room;
+			textHelper = ' (' + tarRoom + ')';
+		}
 		if (!Bot.rooms[tarRoom] || Bot.rooms[tarRoom].type !== 'chat') return this.reply(this.trad('notchat') + textHelper);
 		if (!this.isExcepted && !this.botRanked(Tools.getGroup('moderator'))) return this.reply(Bot.status.nickName + " " + this.trad('notmod').replace('@', Tools.getGroup('moderator')));
 
@@ -243,6 +297,226 @@ exports.commands = {
 		if (Settings.settings['regexautoban'] && Settings.settings['regexautoban'][tarRoom]) {
 			text += '\n' + this.trad('listrab') + ' ' + tarRoom + ':\n\n';
 			for (var i in Settings.settings['regexautoban'][tarRoom]) {
+				text += i + "\n";
+				nBans++;
+			}
+		}
+
+		if (nBans) {
+			Tools.uploadToHastebin(text, function (r, linkStr) {
+				if (r) this.pmReply(linkStr);
+				else this.pmReply(this.trad('err'));
+			}.bind(this));
+		} else {
+			this.pmReply(this.trad('nousers') + ' ' + tarRoom);
+		}
+	},
+
+	gblacklist: 'gautoban',
+	gban: 'gautoban',
+	gab: 'gautoban',
+	globalblacklist: 'gautoban',
+	globalban: 'gautoban',
+	globalautoban: 'gautoban',
+	gautoban: function (arg, by, room, cmd) {
+		if (!this.can('gautoban')) return;
+		var tarRoom = room;
+		var targetObj = Tools.getTargetRoom(arg);
+		var textHelper = '';
+		if (targetObj && this.isExcepted) {
+			arg = targetObj.arg;
+			tarRoom = targetObj.room;
+			textHelper = ' (' + tarRoom + ')';
+		}
+		if (!Bot.rooms[tarRoom] || Bot.rooms[tarRoom].type !== 'chat') return this.reply(this.trad('notchat') + textHelper);
+		if (!this.isExcepted && !this.botRanked(Tools.getGroup('moderator'))) return this.reply(this.botName + " " + this.trad('notmod').replace('@', Tools.getGroup('moderator')));
+
+		var added = [];
+		var illegalNick = [];
+		var alreadyAdded = [];
+
+		arg = arg.split(',');
+
+		if (!arg.length || (arg.length === 1 && !arg[0].trim().length)) return this.reply(this.trad('notarg'));
+
+		for (var i = 0; i < arg.length; i++) {
+			var tarUser = toId(arg[i]);
+			if (tarUser.length < 1 || tarUser.length > 18) {
+				illegalNick.push(tarUser);
+				continue;
+			}
+			if (!blacklistGlobal(tarUser)) {
+				alreadyAdded.push(tarUser);
+				continue;
+			}
+			this.say(tarRoom, '/ban ' + tarUser + ', ' + this.trad('bu'));
+			added.push(tarUser);
+		}
+
+		var text = '';
+		var mn = '';
+		if (added.length) {
+			text += this.trad('u') + ' "' + added.join('", "') + '" ' + this.trad('added') + ' ';
+			mn += text;
+			Settings.save();
+		}
+		if (alreadyAdded.length) text += this.trad('u') + ' "' + alreadyAdded.join('", "') + '" ' + this.trad('already') + ' ';
+		if (illegalNick.length) text += this.trad('all') + ' ' + (text.length ? (this.trad('other') + ' ') : '') + ' ' + this.trad('illegal');
+		if (mn.length && (!Config.moderation || !Config.moderation.disableModNote)) this.say(tarRoom, "/mn " + text + " | By: " + by);
+		this.reply(text);
+	},
+
+	ungblacklist: 'ungautoban',
+	ungban: 'ungautoban',
+	ungab: 'ungautoban',
+	globalunblacklist: 'gautoban',
+	globalunban: 'gautoban',
+	globalunautoban: 'gautoban',
+	ungautoban: function (arg, by, room, cmd) {
+		if (!this.can('gautoban')) return;
+		var tarRoom = room;
+		var targetObj = Tools.getTargetRoom(arg);
+		var textHelper = '';
+		if (targetObj && this.isExcepted) {
+			arg = targetObj.arg;
+			tarRoom = targetObj.room;
+			textHelper = ' (' + tarRoom + ')';
+		}
+		if (!Bot.rooms[tarRoom] || Bot.rooms[tarRoom].type !== 'chat') return this.reply(this.trad('notchat') + textHelper);
+		if (!this.isExcepted && !this.botRanked(Tools.getGroup('moderator'))) return this.reply(this.botName + " " + this.trad('notmod').replace('@', Tools.getGroup('moderator')));
+
+		arg = arg.split(',');
+
+		var removed = [];
+		var notRemoved = [];
+
+		if (!arg.length || (arg.length === 1 && !arg[0].trim().length)) return this.reply(this.trad('notarg'));
+
+		for (var i = 0; i < arg.length; i++) {
+			var tarUser = toId(arg[i]);
+			if (tarUser.length < 1 || tarUser.length > 18) {
+				notRemoved.push(tarUser);
+				continue;
+			}
+			if (!unblacklistGlobal(tarUser)) {
+				notRemoved.push(tarUser);
+				continue;
+			}
+			this.say(tarRoom, '/unban ' + tarUser);
+			removed.push(tarUser);
+		}
+
+		var text = '';
+		if (removed.length) {
+			text += this.trad('u') + ' "' + removed.join('", "') + '" ' + this.trad('r') + ' ';
+			Settings.save();
+		}
+		if (notRemoved.length) text += (text.length ? (this.trad('noother') + ' ') : (this.trad('no') + ' ')) + this.trad('nopresent');
+		this.reply(text);
+	},
+
+	rgab: 'regexgautoban',
+	regexgautoban: function (arg, user, room) {
+		if (!this.can('gautoban')) return;
+		var tarRoom = room;
+		var targetObj = Tools.getTargetRoom(arg);
+		var textHelper = '';
+		if (targetObj && this.isExcepted) {
+			arg = targetObj.arg;
+			tarRoom = targetObj.room;
+			textHelper = ' (' + tarRoom + ')';
+		}
+		if (!Bot.rooms[tarRoom] || Bot.rooms[tarRoom].type !== 'chat') return this.reply(this.trad('notchat') + textHelper);
+		if (!this.isExcepted && !this.botRanked(Tools.getGroup('moderator'))) return this.reply(Bot.status.nickName + " " + this.trad('notmod').replace('@', Tools.getGroup('moderator')));
+
+		if (!arg) return this.reply(this.trad('notarg'));
+
+		try {
+			var testing = new RegExp(arg, 'i');
+		} catch (e) {
+			return this.reply(e.message);
+		}
+
+		if (/^(?:(?:\.+|[a-z0-9]|\\[a-z0-9SbB])(?![a-z0-9\.\\])(?:\*|\{\d+\,(?:\d+)?\}))+$/i.test(arg)) {
+			return this.reply(this.trad('re') + ' /' + arg + '/i ' + this.trad('notadd'));
+		}
+
+		var regex = '/' + arg + '/i';
+		if (!blacklistGlobalRegex(regex)) return this.reply('/' + regex + '/ ' + this.trad('already'));
+		Settings.save();
+		if (!Config.moderation || !Config.moderation.disableModNote) this.say(tarRoom, '/modnote ' + this.trad('re') + ' ' + regex + ' ' + this.trad('addby') + ' ' + user + '.');
+		this.reply(this.trad('re') + ' ' + regex + ' ' + this.trad('add'));
+	},
+
+	unrgab: 'unregexgautoban',
+	unregexgautoban: function (arg, user, room) {
+		if (!this.can('gautoban')) return;
+		var tarRoom = room;
+		var targetObj = Tools.getTargetRoom(arg);
+		var textHelper = '';
+		if (targetObj && this.isExcepted) {
+			arg = targetObj.arg;
+			tarRoom = targetObj.room;
+			textHelper = ' (' + tarRoom + ')';
+		}
+		if (!Bot.rooms[tarRoom] || Bot.rooms[tarRoom].type !== 'chat') return this.reply(this.trad('notchat') + textHelper);
+		if (!this.isExcepted && !this.botRanked(Tools.getGroup('moderator'))) return this.reply(Bot.status.nickName + " " + this.trad('notmod').replace('@', Tools.getGroup('moderator')));
+
+		if (!arg) return this.reply(this.trad('notarg'));
+
+		arg = '/' + arg.replace(/\\\\/g, '\\') + '/i';
+		if (!unblacklistGlobalRegex(arg)) return this.reply(this.trad('re') + ' ' + arg + ' ' + this.trad('notpresent'));
+
+		Settings.save();
+		if (!Config.moderation || !Config.moderation.disableModNote) this.say(tarRoom, '/modnote ' + this.trad('re') + ' ' + arg + ' ' + this.trad('rby') + ' ' + user + '.');
+		this.reply(this.trad('re') + ' ' + arg + ' ' + this.trad('r'));
+	},
+
+	viewgbans: 'viewgblacklist',
+	vgab: 'viewgblacklist',
+	viewgautobans: 'viewgblacklist',
+	viewglobalblacklist: 'viewgblacklist',
+	viewglobalbans: 'viewgblacklist',
+	viewglobalautobans: 'viewgblacklist',
+	viewgblacklist: function (arg, by, room, cmd) {
+		if (!this.can('gautoban')) return;
+		var tarRoom = room;
+		var targetObj = Tools.getTargetRoom(arg);
+		var textHelper = '';
+		if (targetObj && this.isExcepted) {
+			arg = targetObj.arg;
+			tarRoom = targetObj.room;
+			textHelper = ' (' + tarRoom + ')';
+		}
+		if (!Bot.rooms[tarRoom] || Bot.rooms[tarRoom].type !== 'chat') return this.reply(this.trad('notchat') + textHelper);
+
+		var text = '';
+		var nBans = 0;
+
+		if (arg.length) {
+			if (Settings.settings['gautoban']) {
+				var nick = toId(arg);
+				if (nick.length < 1 || nick.length > 18) {
+					return this.pmReply(this.trad('iu') + ': "' + nick + '".');
+				} else {
+					return this.pmReply(this.trad('u') + ' "' + nick + '" ' + this.trad('currently') + ' ' + (nick in Settings.settings['gautoban'] ? '' : (this.trad('not') + ' ')) + this.trad('b') + ' ' + tarRoom + '.');
+				}
+			} else {
+				return this.pmReply(this.trad('nousers') + ' ' + tarRoom);
+			}
+		}
+
+		if (Settings.settings['gautoban']) {
+			text += this.trad('listab') + ' ' + tarRoom + ':\n\n';
+			for (var i in Settings.settings['gautoban']) {
+				text += i + "\n";
+				nBans++;
+			}
+		}
+
+		if (Settings.settings['regexgautoban']) {
+			text += '\n' + this.trad('listrab') + ' ' + tarRoom + ':\n\n';
+			for (var i in Settings.settings['regexgautoban']) {
 				text += i + "\n";
 				nBans++;
 			}
