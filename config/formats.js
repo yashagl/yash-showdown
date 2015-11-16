@@ -234,7 +234,7 @@ exports.Formats = [
 			battle: 1
 		},
 		team: 'random',
-		ruleset: ['Pokemon', 'Sleep Clause Mod', 'HP Percentage Mod', 'Cancel Mod', 'Team Preview']
+		ruleset: ['Random (no PotD)']
 	},
 	{
 		name: "Uber Random",
@@ -3633,7 +3633,7 @@ exports.Formats = [
 		},
 		mod: 'metronomerandom',
 		team: 'randomMetronome',
-		ruleset: ['Pokemon', 'Sleep Clause Mod', 'HP Percentage Mod', 'Cancel Mod']
+		ruleset: ['Random (no PotD)']
 	},
 	{
 		name: "Metronome 6v6 Random",
@@ -3682,7 +3682,7 @@ exports.Formats = [
 			battle: 1
 		},
 		team: 'randomCC',
-		ruleset: ['Pokemon', 'HP Percentage Mod', 'Cancel Mod', 'Team Preview']
+		ruleset: ['Random (no PotD)']
 	},
 	{
 		name: "Doubles Hackmons Cup",
