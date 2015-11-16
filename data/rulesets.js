@@ -261,22 +261,6 @@ exports.BattleFormats = {
 			}
 		}
 	},
-	teampreview1v1: {
-		effectType: 'Rule',
-		onStartPriority: -10,
-		onStart: function () {
-			this.add('clearpoke');
-			for (let i = 0; i < this.sides[0].pokemon.length; i++) {
-				this.add('poke', this.sides[0].pokemon[i].side.id, this.sides[0].pokemon[i].details.replace(/(Arceus|Gourgeist|Genesect|Pumpkaboo)(-[a-zA-Z?]+)?/g, '$1-*'));
-			}
-			for (let i = 0; i < this.sides[1].pokemon.length; i++) {
-				this.add('poke', this.sides[1].pokemon[i].side.id, this.sides[1].pokemon[i].details.replace(/(Arceus|Gourgeist|Genesect|Pumpkaboo)(-[a-zA-Z?]+)?/g, '$1-*'));
-			}
-		},
-		onTeamPreview: function () {
-			this.makeRequest('teampreview', 1);
-		}
-	},
 	teampreview: {
 		effectType: 'Rule',
 		onStartPriority: -10,
@@ -292,22 +276,6 @@ exports.BattleFormats = {
 		onTeamPreview: function () {
 			let lengthData = this.getFormat().teamLength;
 			this.makeRequest('teampreview', lengthData && lengthData.battle || '');
-		}
-	},
-	teampreviewgbu: {
-		effectType: 'Rule',
-		onStartPriority: -10,
-		onStart: function () {
-			this.add('clearpoke');
-			for (let i = 0; i < this.sides[0].pokemon.length; i++) {
-				this.add('poke', this.sides[0].pokemon[i].side.id, this.sides[0].pokemon[i].details.replace(/(Arceus|Gourgeist|Genesect|Pumpkaboo)(-[a-zA-Z?]+)?/g, '$1-*'));
-			}
-			for (let i = 0; i < this.sides[1].pokemon.length; i++) {
-				this.add('poke', this.sides[1].pokemon[i].side.id, this.sides[1].pokemon[i].details.replace(/(Arceus|Gourgeist|Genesect|Pumpkaboo)(-[a-zA-Z?]+)?/g, '$1-*'));
-			}
-		},
-		onTeamPreview: function () {
-			this.makeRequest('teampreview', 3);
 		}
 	},
 	littlecup: {
