@@ -229,15 +229,12 @@ exports.Formats = [
 		name: "1v1 Random",
 		section: "Random Battles (aka Randbats)",
 
+		teamLength: {
+			validate: [1, 6],
+			battle: 1
+		},
 		team: 'random',
-		ruleset: ['Pokemon', 'Sleep Clause Mod', 'HP Percentage Mod', 'Cancel Mod', 'Team Preview 1v1'],
-		onBegin: function() {
-			this.debug('Cutting down to 1');
-			this.p1.pokemon = this.p1.pokemon.slice(0, 1);
-			this.p1.pokemonLeft = this.p1.pokemon.length;
-			this.p2.pokemon = this.p2.pokemon.slice(0, 1);
-			this.p2.pokemonLeft = this.p2.pokemon.length;
-		}
+		ruleset: ['Pokemon', 'Sleep Clause Mod', 'HP Percentage Mod', 'Cancel Mod', 'Team Preview']
 	},
 	{
 		name: "Uber Random",
@@ -3630,16 +3627,13 @@ exports.Formats = [
 		name: "Metronome 3v3 Random",
 		section: "Random Battles (aka Randbats)",
 
+		teamLength: {
+			validate: [3, 6],
+			battle: 3
+		},
 		mod: 'metronomerandom',
 		team: 'randomMetronome',
-		ruleset: ['Pokemon', 'Sleep Clause Mod', 'HP Percentage Mod', 'Cancel Mod', 'Team Preview GBU'],
-		onBegin: function() {
-			this.debug('Cutting down to 3');
-			this.p1.pokemon = this.p1.pokemon.slice(0, 3);
-			this.p1.pokemonLeft = this.p1.pokemon.length;
-			this.p2.pokemon = this.p2.pokemon.slice(0, 3);
-			this.p2.pokemonLeft = this.p2.pokemon.length;
-		}
+		ruleset: ['Pokemon', 'Sleep Clause Mod', 'HP Percentage Mod', 'Cancel Mod']
 	},
 	{
 		name: "Metronome 6v6 Random",
@@ -3683,15 +3677,12 @@ exports.Formats = [
 		name: "1v1 Challenge Cup",
 		section: "Random Battles (aka Randbats)",
 
+		teamLength: {
+			validate: [1, 6],
+			battle: 1
+		},
 		team: 'randomCC',
-		ruleset: ['Pokemon', 'HP Percentage Mod', 'Cancel Mod', 'Team Preview 1v1'],
-		onBegin: function () {
-			this.debug('Cutting down to 1');
-			this.p1.pokemon = this.p1.pokemon.slice(0, 1);
-			this.p1.pokemonLeft = this.p1.pokemon.length;
-			this.p2.pokemon = this.p2.pokemon.slice(0, 1);
-			this.p2.pokemonLeft = this.p2.pokemon.length;
-		}
+		ruleset: ['Pokemon', 'HP Percentage Mod', 'Cancel Mod', 'Team Preview']
 	},
 	{
 		name: "Doubles Hackmons Cup",
